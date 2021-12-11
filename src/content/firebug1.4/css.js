@@ -224,7 +224,7 @@ FBL.processAllStyleSheets = function(doc, styleSheetIterator)
     
     let styleSheets = doc.styleSheets;
     let importedStyleSheets = [];
-    let start;
+    let start, styleSheet, rules;
     if (FBTrace.DBG_CSS)
         start = new Date().getTime();
     
@@ -232,14 +232,14 @@ FBL.processAllStyleSheets = function(doc, styleSheetIterator)
     {
         try
         {
-            let styleSheet = styleSheets[i];
+            styleSheet = styleSheets[i];
             
             if ("firebugIgnore" in styleSheet) continue;
             
             // we must read the length to make sure we have permission to read 
             // the stylesheet's content. If an error occurs here, we cannot 
             // read the stylesheet due to access restriction policy
-            let rules = isIE ? styleSheet.rules : styleSheet.cssRules;
+            rules = isIE ? styleSheet.rules : styleSheet.cssRules;
             rules.length;
         }
         catch(e)

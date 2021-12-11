@@ -478,10 +478,10 @@ Firebug.HTML.onTreeClick = function (e)
     if (targ.className.indexOf('nodeControl') != -1 || targ.className == 'nodeTag')
     {
         let isIE = false;
-        
+        let control;
         if(targ.className == 'nodeTag')
         {
-            let control = isIE ? (targ.parentNode.previousSibling || targ) :
+            control = isIE ? (targ.parentNode.previousSibling || targ) :
                           (targ.parentNode.previousSibling || targ);
 
             selectElement(targ.parentNode.parentNode);
