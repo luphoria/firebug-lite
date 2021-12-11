@@ -864,9 +864,9 @@ Firebug.Panel =
 
             // TODO: xxxpedro
             // XXXjoe This is kind of cheating, but, feh.
-            //Firebug.chrome.onPanelSelect(object, this);
-            //if (uiListeners.length > 0)
-            //    dispatch(uiListeners, "onPanelSelect", [object, this]);  // TODO: make Firebug.chrome a uiListener
+            // Firebug.chrome.onPanelSelect(object, this);
+            // if (uiListeners.length > 0)
+            //     dispatch(uiListeners, "onPanelSelect", [object, this]);  // TODO: make Firebug.chrome a uiListener
         }
     },
 

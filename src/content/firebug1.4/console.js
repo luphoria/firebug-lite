@@ -493,7 +493,7 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
         };
 
         //TODO: xxxpedro console net limit!?
-        return;
+        // return;
         var netLimitRep = Firebug.NetMonitor.NetLimit;
         var nodes = netLimitRep.createTable(row, limitInfo);
 

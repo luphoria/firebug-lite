@@ -775,19 +775,19 @@ this.Element = domplate(Firebug.Rep,
      {
          // TODO: xxxpedro
          return "";
-         var value;
-         if (elt instanceof HTMLImageElement)
-             value = getFileName(elt.src);
-         else if (elt instanceof HTMLAnchorElement)
-             value = getFileName(elt.href);
-         else if (elt instanceof HTMLInputElement)
-             value = elt.value;
-         else if (elt instanceof HTMLFormElement)
-             value = getFileName(elt.action);
-         else if (elt instanceof HTMLScriptElement)
-             value = getFileName(elt.src);
+        //  var value;
+        //  if (elt instanceof HTMLImageElement)
+        //      value = getFileName(elt.src);
+        //  else if (elt instanceof HTMLAnchorElement)
+        //      value = getFileName(elt.href);
+        //  else if (elt instanceof HTMLInputElement)
+        //      value = elt.value;
+        //  else if (elt instanceof HTMLFormElement)
+        //      value = getFileName(elt.action);
+        //  else if (elt instanceof HTMLScriptElement)
+        //      value = getFileName(elt.src);
 
-         return value ? " " + cropString(value, 20) : "";
+        //  return value ? " " + cropString(value, 20) : "";
      },
 
      attrIterator: function(elt)
@@ -1390,8 +1390,8 @@ this.StackFrame = domplate(Firebug.Rep,  // XXXjjb Since the repObject is fn the
         var fileName = cropString(getFileName(frame.href), 20);
         return fileName + (frame.lineNo ? " (line " + frame.lineNo + ")" : "");
         
-        var fileName = cropString(getFileName(frame.href), 17);
-        return $STRF("Line", [fileName, frame.lineNo]);
+        // var fileName = cropString(getFileName(frame.href), 17);
+        // return $STRF("Line", [fileName, frame.lineNo]);
     },
 
     argIterator: function(frame)

@@ -3643,7 +3643,7 @@ var getDomMemberMap2 = function(name)
     /**/
     
     return props;
-    return extendArray(props, domMemberMap[name]);
+    // return extendArray(props, domMemberMap[name]);
 };
 
 // xxxpedro experimental get DOM members
