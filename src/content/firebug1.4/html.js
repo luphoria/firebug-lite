@@ -6,10 +6,10 @@ FBL.ns(function() { with (FBL) {
 // ************************************************************************************************
 // Globals
 
-var ElementCache = Firebug.Lite.Cache.Element;
-var cacheID = Firebug.Lite.Cache.ID;
+let ElementCache = Firebug.Lite.Cache.Element;
+let cacheID = Firebug.Lite.Cache.ID;
 
-var ignoreHTMLProps =
+let ignoreHTMLProps =
 {
     // ignores the attributes injected by Sizzle, otherwise it will 
     // be visible on IE (when enumerating element.attributes)
@@ -28,31 +28,31 @@ Firebug.HTML = extend(Firebug.Module,
 {
     appendTreeNode: function(nodeArray, html)
     {
-        var reTrim = /^\s+|\s+$/g;
+        let reTrim = /^\s+|\s+$/g;
         
         if (!nodeArray.length) nodeArray = [nodeArray];
         
-        for (var n=0, node; node=nodeArray[n]; n++)
+        for (let n=0, node; node=nodeArray[n]; n++)
         {
             if (node.nodeType == 1)
             {
                 if (Firebug.ignoreFirebugElements && node.firebugIgnore) continue;
                 
-                var uid = ElementCache(node);
-                var child = node.childNodes;
-                var childLength = child.length;
+                let uid = ElementCache(node);
+                let child = node.childNodes;
+                let childLength = child.length;
                 
-                var nodeName = node.nodeName.toLowerCase();
+                let nodeName = node.nodeName.toLowerCase();
                 
-                var nodeVisible = isVisible(node);
+                let nodeVisible = isVisible(node);
                 
-                var hasSingleTextChild = childLength == 1 && node.firstChild.nodeType == 3 &&
+                let hasSingleTextChild = childLength == 1 && node.firstChild.nodeType == 3 &&
                         nodeName != "script" && nodeName != "style";
                 
-                var nodeControl = !hasSingleTextChild && childLength > 0 ? 
+                let nodeControl = !hasSingleTextChild && childLength > 0 ? 
                     ('<div class="nodeControl"></div>') : '';
                 
-                var isIE = false;
+                let isIE = false;
 
                 if(isIE && nodeControl)
                     html.push(nodeControl);
@@ -78,15 +78,15 @@ Firebug.HTML = extend(Firebug.Module,
                         nodeName, '</span>'
                     );
                 
-                for (var i = 0; i < node.attributes.length; ++i)
+                for (let i = 0; i < node.attributes.length; ++i)
                 {
-                    var attr = node.attributes[i];
+                    let attr = node.attributes[i];
                     if (!attr.specified || Firebug.ignoreFirebugElements && 
                         ignoreHTMLProps.hasOwnProperty(attr.nodeName))
                             continue;
                     
-                    var name = attr.nodeName.toLowerCase();
-                    var value = name == "style" ? formatStyles(node.style.cssText) : attr.nodeValue;
+                    let name = attr.nodeName.toLowerCase();
+                    let value = name == "style" ? formatStyles(node.style.cssText) : attr.nodeValue;
                     
                     html.push('&nbsp;<span class="nodeName">', name,
                         '</span>=&quot;<span class="nodeValue">', escapeHTML(value),
@@ -99,17 +99,17 @@ Firebug.HTML = extend(Firebug.Module,
                 {
                   
                     if(document.all){
-                        var src = node.innerHTML+'\n';
+                        let src = node.innerHTML+'\n';
                        
                     }else {
-                        var src = '\n'+node.innerHTML+'\n';
+                        let src = '\n'+node.innerHTML+'\n';
                     }
                     
-                    var match = src.match(/\n/g);
-                    var num = match ? match.length : 0;
-                    var s = [], sl = 0;
+                    let match = src.match(/\n/g);
+                    let num = match ? match.length : 0;
+                    let s = [], sl = 0;
                     
-                    for(var c=1; c<num; c++){
+                    for(let c=1; c<num; c++){
                         s[sl++] = '<div line="'+c+'">' + c + '</div>';
                     }
                     
@@ -130,7 +130,7 @@ Firebug.HTML = extend(Firebug.Module,
                 // Just a single text node child
                 if (hasSingleTextChild)
                 {
-                    var value = child[0].nodeValue.replace(reTrim, '');
+                    let value = child[0].nodeValue.replace(reTrim, '');
                     if(value)
                     {
                         html.push(
@@ -158,20 +158,20 @@ Firebug.HTML = extend(Firebug.Module,
                 if ( node.parentNode && ( node.parentNode.nodeName.toLowerCase() == "script" ||
                      node.parentNode.nodeName.toLowerCase() == "style" ) )
                 {
-                    var value = node.nodeValue.replace(reTrim, '');
+                    let value = node.nodeValue.replace(reTrim, '');
                     
                     if(isIE){
-                        var src = value+'\n';
+                        let src = value+'\n';
                        
                     }else {
-                        var src = '\n'+value+'\n';
+                        let src = '\n'+value+'\n';
                     }
                     
-                    var match = src.match(/\n/g);
-                    var num = match ? match.length : 0;
-                    var s = [], sl = 0;
+                    let match = src.match(/\n/g);
+                    let num = match ? match.length : 0;
+                    let s = [], sl = 0;
                     
-                    for(var c=1; c<num; c++){
+                    for(let c=1; c<num; c++){
                         s[sl++] = '<div line="'+c+'">' + c + '</div>';
                     }
                     
@@ -185,7 +185,7 @@ Firebug.HTML = extend(Firebug.Module,
                 }
                 else
                 {
-                    var value = node.nodeValue.replace(reTrim, '');
+                    let value = node.nodeValue.replace(reTrim, '');
                     if (value)
                         html.push('<div class="nodeText">', escapeHTML(value),'</div>');
                 }
@@ -195,28 +195,28 @@ Firebug.HTML = extend(Firebug.Module,
     
     appendTreeChildren: function(treeNode)
     {
-        var doc = Firebug.chrome.document;
-        var uid = treeNode.id;
-        var parentNode = ElementCache.get(uid);
+        let doc = Firebug.chrome.document;
+        let uid = treeNode.id;
+        let parentNode = ElementCache.get(uid);
         
         if (parentNode.childNodes.length == 0) return;
         
-        var treeNext = treeNode.nextSibling;
-        var treeParent = treeNode.parentNode;
+        let treeNext = treeNode.nextSibling;
+        let treeParent = treeNode.parentNode;
         
-        var isIE = false;
-        var control = isIE ? treeNode.previousSibling : treeNode.firstChild;
+        let isIE = false;
+        let control = isIE ? treeNode.previousSibling : treeNode.firstChild;
         control.className = 'nodeControl nodeMaximized';
         
-        var html = [];
-        var children = doc.createElement("div");
+        let html = [];
+        let children = doc.createElement("div");
         children.className = "nodeChildren";
         this.appendTreeNode(parentNode.childNodes, html);
         children.innerHTML = html.join("");
         
         treeParent.insertBefore(children, treeNext);
         
-        var closeElement = doc.createElement("div");
+        let closeElement = doc.createElement("div");
         closeElement.className = "objectBox-element";
         closeElement.innerHTML = '&lt;/<span class="nodeTag">' + 
             parentNode.nodeName.toLowerCase() + '&gt;</span>'
@@ -227,11 +227,11 @@ Firebug.HTML = extend(Firebug.Module,
     
     removeTreeChildren: function(treeNode)
     {
-        var children = treeNode.nextSibling;
-        var closeTag = children.nextSibling;
+        let children = treeNode.nextSibling;
+        let closeTag = children.nextSibling;
         
-        var isIE = false;
-        var control = isIE ? treeNode.previousSibling : treeNode.firstChild;
+        let isIE = false;
+        let control = isIE ? treeNode.previousSibling : treeNode.firstChild;
         control.className = 'nodeControl';
         
         children.parentNode.removeChild(children);  
@@ -245,7 +245,7 @@ Firebug.HTML = extend(Firebug.Module,
     
     select: function(el)
     {
-        var id = el && ElementCache(el);
+        let id = el && ElementCache(el);
         if (id)
             this.selectTreeNode(id);
     },
@@ -253,12 +253,12 @@ Firebug.HTML = extend(Firebug.Module,
     selectTreeNode: function(id)
     {
         id = ""+id;
-        var node, stack = [];
+        let node, stack = [];
         while(id && !this.isTreeNodeVisible(id))
         {
             stack.push(id);
             
-            var node = ElementCache.get(id).parentNode;
+            let node = ElementCache.get(id).parentNode;
 
             if (node)
                 id = ElementCache(node);
@@ -333,8 +333,8 @@ HTMLPanel.prototype = extend(Firebug.Panel,
     
     createUI: function()
     {
-        var rootNode = Firebug.browser.document.documentElement;
-        var html = [];
+        let rootNode = Firebug.browser.document.documentElement;
+        let html = [];
         Firebug.HTML.appendTreeNode(rootNode, html);
         
         this.panelNode.innerHTML = html.join("");
@@ -381,7 +381,7 @@ HTMLPanel.prototype = extend(Firebug.Panel,
     
     updateSelection: function(object)
     {
-        var id = ElementCache(object);
+        let id = ElementCache(object);
         
         if (id)
         {
@@ -394,7 +394,7 @@ Firebug.registerPanel(HTMLPanel);
 
 // ************************************************************************************************
 
-var formatStyles = function(styles)
+let formatStyles = function(styles)
 {
     return isIE ?
         // IE return CSS property names in upper case, so we need to convert them
@@ -405,13 +405,13 @@ var formatStyles = function(styles)
 
 // ************************************************************************************************
 
-var selectedElement = null
-var fbPanel1 = null;
+let selectedElement = null
+let fbPanel1 = null;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  
-var selectedSidePanelTS, selectedSidePanelTimer;
+let selectedSidePanelTS, selectedSidePanelTimer;
 
-var selectElement= function selectElement(e)
+let selectElement= function selectElement(e)
 {
     if (e != selectedElement)
     {
@@ -430,17 +430,17 @@ var selectElement= function selectElement(e)
         
         FirebugChrome.selectedHTMLElementId = e.id;
         
-        var target = ElementCache.get(e.id);
-        var selectedSidePanel = Firebug.chrome.getPanel("HTML").sidePanelBar.selectedPanel;
+        let target = ElementCache.get(e.id);
+        let selectedSidePanel = Firebug.chrome.getPanel("HTML").sidePanelBar.selectedPanel;
         
-        var stack = FirebugChrome.htmlSelectionStack;
+        let stack = FirebugChrome.htmlSelectionStack;
         
         stack.unshift(target);
         
         if (stack.length > 2)
             stack.pop();
         
-        var lazySelect = function()
+        let lazySelect = function()
         {
             selectedSidePanelTS = new Date().getTime();
             
@@ -467,7 +467,7 @@ var selectElement= function selectElement(e)
 Firebug.HTML.onTreeClick = function (e)
 {
     e = e || event;
-    var targ;
+    let targ;
     
     if (e.target) targ = e.target;
     else if (e.srcElement) targ = e.srcElement;
@@ -477,11 +477,11 @@ Firebug.HTML.onTreeClick = function (e)
     
     if (targ.className.indexOf('nodeControl') != -1 || targ.className == 'nodeTag')
     {
-        var isIE = false;
+        let isIE = false;
         
         if(targ.className == 'nodeTag')
         {
-            var control = isIE ? (targ.parentNode.previousSibling || targ) :
+            let control = isIE ? (targ.parentNode.previousSibling || targ) :
                           (targ.parentNode.previousSibling || targ);
 
             selectElement(targ.parentNode.parentNode);
@@ -494,7 +494,7 @@ Firebug.HTML.onTreeClick = function (e)
         
         FBL.cancelEvent(e);
         
-        var treeNode = isIE ? control.nextSibling : control.parentNode;
+        let treeNode = isIE ? control.nextSibling : control.parentNode;
         
         //FBL.Firebug.Console.log(treeNode);
         
@@ -507,7 +507,7 @@ Firebug.HTML.onTreeClick = function (e)
     else if (targ.className == 'nodeValue' || targ.className == 'nodeName')
     {
         /*
-        var input = FBL.Firebug.chrome.document.getElementById('treeInput');
+        let input = FBL.Firebug.chrome.document.getElementById('treeInput');
         
         input.style.display = "block";
         input.style.left = targ.offsetLeft + 'px';
@@ -522,7 +522,7 @@ Firebug.HTML.onTreeClick = function (e)
 function onListMouseOut(e)
 {
     e = e || event || window;
-    var targ;
+    let targ;
     
     if (e.target) targ = e.target;
     else if (e.srcElement) targ = e.srcElement;
@@ -535,22 +535,22 @@ function onListMouseOut(e)
       }
 };
     
-var hoverElement = null;
-var hoverElementTS = 0;
+let hoverElement = null;
+let hoverElementTS = 0;
 
 Firebug.HTML.onListMouseMove = function onListMouseMove(e)
 {
     try
     {
         e = e || event || window;
-        var targ;
+        let targ;
         
         if (e.target) targ = e.target;
         else if (e.srcElement) targ = e.srcElement;
         if (targ.nodeType == 3) // defeat Safari bug
             targ = targ.parentNode;
             
-        var found = false;
+        let found = false;
         while (targ && !found) {
             if (!/\snodeBox\s|\sobjectBox-selector\s/.test(" " + targ.className + " "))
                 targ = targ.parentNode;
@@ -568,18 +568,18 @@ Firebug.HTML.onListMouseMove = function onListMouseMove(e)
         /*
         if (typeof targ.attributes[cacheID] == 'undefined') return;
         
-        var uid = targ.attributes[cacheID];
+        let uid = targ.attributes[cacheID];
         if (!uid) return;
         /**/
         
         if (typeof targ.attributes[cacheID] == 'undefined') return;
         
-        var uid = targ.attributes[cacheID];
+        let uid = targ.attributes[cacheID];
         if (!uid) return;
         
-        var el = ElementCache.get(uid.value);
+        let el = ElementCache.get(uid.value);
         
-        var nodeName = el.nodeName.toLowerCase();
+        let nodeName = el.nodeName.toLowerCase();
     
         if (FBL.isIE && " meta title script link ".indexOf(" "+nodeName+" ") != -1)
             return;
@@ -636,21 +636,21 @@ Firebug.Reps = {
     
     appendFunction: function(object, html)
     {
-        var reName = /function ?(.*?)\(/;
-        var m = reName.exec(objectToString(object));
-        var name = m && m[1] ? m[1] : "function";
+        let reName = /function ?(.*?)\(/;
+        let m = reName.exec(objectToString(object));
+        let name = m && m[1] ? m[1] : "function";
         html.push('<span class="objectBox-function">', escapeHTML(name), '()</span>');
     },
     
     appendObject: function(object, html)
     {
         /*
-        var rep = Firebug.getRep(object);
-        var outputs = [];
+        let rep = Firebug.getRep(object);
+        let outputs = [];
         
         rep.tag.tag.compile();
         
-        var str = rep.tag.renderHTML({object: object}, outputs);
+        let str = rep.tag.renderHTML({object: object}, outputs);
         html.push(str);
         /**/
         
@@ -688,17 +688,17 @@ Firebug.Reps = {
         
     appendObjectFormatted: function(object, html)
     {
-        var text = objectToString(object);
-        var reObject = /\[object (.*?)\]/;
+        let text = objectToString(object);
+        let reObject = /\[object (.*?)\]/;
     
-        var m = reObject.exec(text);
+        let m = reObject.exec(text);
         html.push('<span class="objectBox-object">', m ? m[1] : text, '</span>')
     },
     
     appendSelector: function(object, html)
     {
-        var uid = ElementCache(object);
-        var uidString = uid ? [cacheID, '="', uid, '"'].join("") : "";
+        let uid = ElementCache(object);
+        let uidString = uid ? [cacheID, '="', uid, '"'].join("") : "";
         
         html.push('<span class="objectBox-selector"', uidString, '>');
     
@@ -715,22 +715,22 @@ Firebug.Reps = {
     {
         if (node.nodeType == 1)
         {
-            var uid = ElementCache(node);
-            var uidString = uid ? [cacheID, '="', uid, '"'].join("") : "";                
+            let uid = ElementCache(node);
+            let uidString = uid ? [cacheID, '="', uid, '"'].join("") : "";                
             
             html.push(
                 '<div class="objectBox-element"', uidString, '">',
                 '<span ', cacheID, '="', uid, '" class="nodeBox">',
                 '&lt;<span class="nodeTag">', node.nodeName.toLowerCase(), '</span>');
     
-            for (var i = 0; i < node.attributes.length; ++i)
+            for (let i = 0; i < node.attributes.length; ++i)
             {
-                var attr = node.attributes[i];
+                let attr = node.attributes[i];
                 if (!attr.specified || attr.nodeName == cacheID)
                     continue;
                 
-                var name = attr.nodeName.toLowerCase();
-                var value = name == "style" ? node.style.cssText : attr.nodeValue;
+                let name = attr.nodeName.toLowerCase();
+                let value = name == "style" ? node.style.cssText : attr.nodeValue;
                 
                 html.push('&nbsp;<span class="nodeName">', name,
                     '</span>=&quot;<span class="nodeValue">', escapeHTML(value),
@@ -741,7 +741,7 @@ Firebug.Reps = {
             {
                 html.push('&gt;</div><div class="nodeChildren">');
     
-                for (var child = node.firstChild; child; child = child.nextSibling)
+                for (let child = node.firstChild; child; child = child.nextSibling)
                     this.appendNode(child, html);
                     
                 html.push('</div><div class="objectBox-element">&lt;/<span class="nodeTag">', 
@@ -752,7 +752,7 @@ Firebug.Reps = {
         }
         else if (node.nodeType == 3)
         {
-            var value = trim(node.nodeValue);
+            let value = trim(node.nodeValue);
             if (value)
                 html.push('<div class="nodeText">', escapeHTML(value),'</div>');
         }
@@ -762,7 +762,7 @@ Firebug.Reps = {
     {
         html.push('<span class="objectBox-array"><b>[</b> ');
         
-        for (var i = 0, l = object.length, obj; i < l; ++i)
+        for (let i = 0, l = object.length, obj; i < l; ++i)
         {
             this.appendObject(object[i], html);
             

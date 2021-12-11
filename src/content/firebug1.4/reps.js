@@ -1,18 +1,18 @@
 /* See license.txt for terms of usage */
 
-var FirebugReps = FBL.ns(function() { with (FBL) {
+let FirebugReps = FBL.ns(function() { with (FBL) {
 
 
 // ************************************************************************************************
 // Common Tags
 
-var OBJECTBOX = this.OBJECTBOX =
+let OBJECTBOX = this.OBJECTBOX =
     SPAN({"class": "objectBox objectBox-$className"});
 
-var OBJECTBLOCK = this.OBJECTBLOCK =
+let OBJECTBLOCK = this.OBJECTBLOCK =
     DIV({"class": "objectBox objectBox-$className"});
 
-var OBJECTLINK = this.OBJECTLINK = isIE6 ? // IE6 object link representation
+let OBJECTLINK = this.OBJECTLINK = isIE6 ? // IE6 object link representation
     A({
         "class": "objectLink objectLink-$className a11yFocus",
         href: "javascript:void(0)",
@@ -138,10 +138,10 @@ this.Func = domplate(Firebug.Rep,
 
     summarizeFunction: function(fn)
     {
-        var fnRegex = /function ([^(]+\([^)]*\)) \{/;
-        var fnText = safeToString(fn);
+        let fnRegex = /function ([^(]+\([^)]*\)) \{/;
+        let fnText = safeToString(fn);
 
-        var m = fnRegex.exec(fnText);
+        let m = fnRegex.exec(fnText);
         return m ? m[1] : "function()";
     },
 
@@ -171,7 +171,7 @@ this.Func = domplate(Firebug.Rep,
 
     inspectObject: function(fn, context)
     {
-        var sourceLink = findSourceForFunction(fn, context);
+        let sourceLink = findSourceForFunction(fn, context);
         if (sourceLink)
             Firebug.chrome.select(sourceLink);
         if (FBTrace.DBG_FUNCTION_NAME)
@@ -180,7 +180,7 @@ this.Func = domplate(Firebug.Rep,
 
     getTooltip: function(fn, context)
     {
-        var script = findScriptForFunctionInContext(context, fn);
+        let script = findScriptForFunctionInContext(context, fn);
         if (script)
             return $STRF("Line", [normalizeURL(script.fileName), script.baseLineNumber]);
         else
@@ -190,7 +190,7 @@ this.Func = domplate(Firebug.Rep,
 
     getTitle: function(fn, context)
     {
-        var name = fn.name ? fn.name : "function";
+        let name = fn.name ? fn.name : "function";
         return name + "()";
     },
 
@@ -201,10 +201,10 @@ this.Func = domplate(Firebug.Rep,
         if (!script)
             return;
 
-        var scriptInfo = getSourceFileAndLineByScript(context, script);
-        var monitored = scriptInfo ? fbs.isMonitored(scriptInfo.sourceFile.href, scriptInfo.lineNo) : false;
+        let scriptInfo = getSourceFileAndLineByScript(context, script);
+        let monitored = scriptInfo ? fbs.isMonitored(scriptInfo.sourceFile.href, scriptInfo.lineNo) : false;
 
-        var name = script ? getFunctionName(script, context) : fn.name;
+        let name = script ? getFunctionName(script, context) : fn.name;
         return [
             {label: "CopySource", command: bindFixed(this.copySource, this, fn) },
             "-",
@@ -221,7 +221,7 @@ this.jsdScript = domplate(Firebug.Rep,
 {
     copySource: function(script)
     {
-        var fn = script.functionObject.getWrappedValue();
+        let fn = script.functionObject.getWrappedValue();
         return FirebugReps.Func.copySource(fn);
     },
 
@@ -243,7 +243,7 @@ this.jsdScript = domplate(Firebug.Rep,
 
     inspectObject: function(script, context)
     {
-        var sourceLink = getSourceLinkForScript(script, context);
+        let sourceLink = getSourceLinkForScript(script, context);
         if (sourceLink)
             Firebug.chrome.select(sourceLink);
     },
@@ -260,18 +260,18 @@ this.jsdScript = domplate(Firebug.Rep,
 
     getTitle: function(script, context)
     {
-        var fn = script.functionObject.getWrappedValue();
+        let fn = script.functionObject.getWrappedValue();
         return FirebugReps.Func.getTitle(fn, context);
     },
 
     getContextMenuItems: function(script, target, context)
     {
-        var fn = script.functionObject.getWrappedValue();
+        let fn = script.functionObject.getWrappedValue();
 
-        var scriptInfo = getSourceFileAndLineByScript(context, script);
-           var monitored = scriptInfo ? fbs.isMonitored(scriptInfo.sourceFile.href, scriptInfo.lineNo) : false;
+        let scriptInfo = getSourceFileAndLineByScript(context, script);
+           let monitored = scriptInfo ? fbs.isMonitored(scriptInfo.sourceFile.href, scriptInfo.lineNo) : false;
 
-        var name = getFunctionName(script, context);
+        let name = getFunctionName(script, context);
 
         return [
             {label: "CopySource", command: bindFixed(this.copySource, this, script) },
@@ -315,21 +315,21 @@ this.Obj = domplate(Firebug.Rep,
     propIterator: function (object)
     {
         ///Firebug.ObjectShortIteratorMax;
-        var maxLength = 55; // default max length for long representation
+        let maxLength = 55; // default max length for long representation
         
         if (!object)
             return [];
 
-        var props = [];
-        var length = 0;
+        let props = [];
+        let length = 0;
         
-        var numProperties = 0;
-        var numPropertiesShown = 0;
-        var maxLengthReached = false;
+        let numProperties = 0;
+        let numPropertiesShown = 0;
+        let maxLengthReached = false;
         
-        var lib = this;
+        let lib = this;
         
-        var propRepsMap = 
+        let propRepsMap = 
         {
             "boolean": this.propNumberTag,
             "number": this.propNumberTag,
@@ -339,12 +339,12 @@ this.Obj = domplate(Firebug.Rep,
 
         try
         {
-            var title = Firebug.Rep.getTitle(object);
+            let title = Firebug.Rep.getTitle(object);
             length += title.length;
 
-            for (var name in object)
+            for (let name in object)
             {
-                var value;
+                let value;
                 try
                 {
                     value = object[name];
@@ -354,15 +354,15 @@ this.Obj = domplate(Firebug.Rep,
                     continue;
                 }
                 
-                var type = typeof(value);
+                let type = typeof(value);
                 if (type == "boolean" || 
                     type == "number" || 
                     (type == "string" && value) || 
                     (type == "object" && value && value.toString))
                 {
-                    var tag = propRepsMap[type];
+                    let tag = propRepsMap[type];
                     
-                    var value = (type == "object") ?
+                    let value = (type == "object") ?
                         Firebug.getRep(value).getTitle(value) :
                         value + "";
                         
@@ -422,14 +422,14 @@ this.Obj = domplate(Firebug.Rep,
         if (!object)
             return [];
 
-        var props = [];
-        var len = 0, count = 0;
+        let props = [];
+        let len = 0, count = 0;
 
         try
         {
-            for (var name in object)
+            for (let name in object)
             {
-                var value;
+                let value;
                 try
                 {
                     value = object[name];
@@ -439,12 +439,12 @@ this.Obj = domplate(Firebug.Rep,
                     continue;
                 }
 
-                var t = typeof(value);
+                let t = typeof(value);
                 if (t == "boolean" || t == "number" || (t == "string" && value)
                     || (t == "object" && value && value.toString))
                 {
-                    var rep = Firebug.getRep(value);
-                    var tag = rep.shortTag || rep.tag;
+                    let rep = Firebug.getRep(value);
+                    let tag = rep.shortTag || rep.tag;
                     if (t == "object")
                     {
                         value = rep.getTitle(value);
@@ -488,14 +488,14 @@ this.Obj = domplate(Firebug.Rep,
         if (!object)
             return [];
 
-        var props = [];
-        var len = 0;
+        let props = [];
+        let len = 0;
 
         try
         {
-            for (var name in object)
+            for (let name in object)
             {
-                var val;
+                let val;
                 try
                 {
                     val = object[name];
@@ -505,11 +505,11 @@ this.Obj = domplate(Firebug.Rep,
                     continue;
                 }
 
-                var t = typeof val;
+                let t = typeof val;
                 if (t == "boolean" || t == "number" || (t == "string" && val)
                     || (t == "object" && !isFunction(val) && val && val.toString))
                 {
-                    var title = (t == "object")
+                    let title = (t == "object")
                         ? Firebug.getRep(val).getTitle(val)
                         : val+"";
 
@@ -575,13 +575,13 @@ this.Arr = domplate(Firebug.Rep,
 
     arrayIterator: function(array)
     {
-        var items = [];
-        for (var i = 0; i < array.length; ++i)
+        let items = [];
+        for (let i = 0; i < array.length; ++i)
         {
-            var value = array[i];
-            var rep = Firebug.getRep(value);
-            var tag = rep.shortTag ? rep.shortTag : rep.tag;
-            var delim = (i == array.length-1 ? "" : ", ");
+            let value = array[i];
+            let rep = Firebug.getRep(value);
+            let tag = rep.shortTag ? rep.shortTag : rep.tag;
+            let delim = (i == array.length-1 ? "" : ", ");
 
             items.push({object: value, tag: tag, delim: delim});
         }
@@ -591,13 +591,13 @@ this.Arr = domplate(Firebug.Rep,
 
     shortArrayIterator: function(array)
     {
-        var items = [];
-        for (var i = 0; i < array.length && i < 3; ++i)
+        let items = [];
+        for (let i = 0; i < array.length && i < 3; ++i)
         {
-            var value = array[i];
-            var rep = Firebug.getRep(value);
-            var tag = rep.shortTag ? rep.shortTag : rep.tag;
-            var delim = (i == array.length-1 ? "" : ", ");
+            let value = array[i];
+            let rep = Firebug.getRep(value);
+            let tag = rep.shortTag ? rep.shortTag : rep.tag;
+            let delim = (i == array.length-1 ? "" : ", ");
 
             items.push({object: value, tag: tag, delim: delim});
         }
@@ -612,7 +612,7 @@ this.Arr = domplate(Firebug.Rep,
 
     getItemIndex: function(child)
     {
-        var arrayIndex = 0;
+        let arrayIndex = 0;
         for (child = child.previousSibling; child; child = child.previousSibling)
         {
             if (child.repObject)
@@ -775,7 +775,7 @@ this.Element = domplate(Firebug.Rep,
      {
          // TODO: xxxpedro
          return "";
-        //  var value;
+        //  let value;
         //  if (elt instanceof HTMLImageElement)
         //      value = getFileName(elt.src);
         //  else if (elt instanceof HTMLAnchorElement)
@@ -792,13 +792,13 @@ this.Element = domplate(Firebug.Rep,
 
      attrIterator: function(elt)
      {
-         var attrs = [];
-         var idAttr, classAttr;
+         let attrs = [];
+         let idAttr, classAttr;
          if (elt.attributes)
          {
-             for (var i = 0; i < elt.attributes.length; ++i)
+             for (let i = 0; i < elt.attributes.length; ++i)
              {
-                 var attr = elt.attributes[i];
+                 let attr = elt.attributes[i];
                  if (attr.nodeName && attr.nodeName.indexOf("firebug-") != -1)
                     continue;
                  else if (attr.nodeName == "id")
@@ -819,12 +819,12 @@ this.Element = domplate(Firebug.Rep,
 
      shortAttrIterator: function(elt)
      {
-         var attrs = [];
+         let attrs = [];
          if (elt.attributes)
          {
-             for (var i = 0; i < elt.attributes.length; ++i)
+             for (let i = 0; i < elt.attributes.length; ++i)
              {
-                 var attr = elt.attributes[i];
+                 let attr = elt.attributes[i];
                  if (attr.nodeName == "id" || attr.nodeName == "class")
                      attrs.push(attr);
              }
@@ -846,7 +846,7 @@ this.Element = domplate(Firebug.Rep,
      // TODO: xxxpedro remove this?
      getNodeText: function(element)
      {
-         var text = element.textContent;
+         let text = element.textContent;
          if (Firebug.showFullTextNodes)
             return text;
         else
@@ -856,13 +856,13 @@ this.Element = domplate(Firebug.Rep,
 
      getNodeTextGroups: function(element)
      {
-         var text =  element.textContent;
+         let text =  element.textContent;
          if (!Firebug.showFullTextNodes)
          {
              text=cropString(text,50);
          }
 
-         var escapeGroups=[];
+         let escapeGroups=[];
 
          if (Firebug.showTextNodesWithWhitespace)
              escapeGroups.push({
@@ -891,7 +891,7 @@ this.Element = domplate(Firebug.Rep,
 
     copyHTML: function(elt)
     {
-        var html = getElementXML(elt);
+        let html = getElementXML(elt);
         copyToClipboard(html);
     },
 
@@ -902,13 +902,13 @@ this.Element = domplate(Firebug.Rep,
 
     copyXPath: function(elt)
     {
-        var xpath = getElementXPath(elt);
+        let xpath = getElementXPath(elt);
         copyToClipboard(xpath);
     },
 
     persistor: function(context, xpath)
     {
-        var elts = xpath
+        let elts = xpath
             ? getElementsByXPath(context.window.document, xpath)
             : null;
 
@@ -927,7 +927,7 @@ this.Element = domplate(Firebug.Rep,
 
     browseObject: function(elt, context)
     {
-        var tag = elt.nodeName.toLowerCase();
+        let tag = elt.nodeName.toLowerCase();
         if (tag == "script")
             openNewTab(elt.src);
         else if (tag == "link")
@@ -942,7 +942,7 @@ this.Element = domplate(Firebug.Rep,
 
     persistObject: function(elt, context)
     {
-        var xpath = getElementXPath(elt);
+        let xpath = getElementXPath(elt);
 
         return bind(this.persistor, top, xpath);
     },
@@ -959,7 +959,7 @@ this.Element = domplate(Firebug.Rep,
 
     getContextMenuItems: function(elt, target, context)
     {
-        var monitored = areEventsMonitored(elt, null, context);
+        let monitored = areEventsMonitored(elt, null, context);
 
         return [
             {label: "CopyHTML", command: bindFixed(this.copyHTML, this, elt) },
@@ -1178,9 +1178,9 @@ this.Event = domplate(Firebug.Rep,
 
     summarizeEvent: function(event)
     {
-        var info = [event.type, ' '];
+        let info = [event.type, ' '];
 
-        var eventFamily = getEventFamily(event.type);
+        let eventFamily = getEventFamily(event.type);
         if (eventFamily == "mouse")
             info.push("clientX=", event.clientX, ", clientY=", event.clientY);
         else if (eventFamily == "key")
@@ -1229,7 +1229,7 @@ this.SourceLink = domplate(Firebug.Rep,
 
         try
         {
-            var fileName = getFileName(sourceLink.href);
+            let fileName = getFileName(sourceLink.href);
             fileName = decodeURIComponent(fileName);
             fileName = cropString(fileName, 17);
         }
@@ -1275,7 +1275,7 @@ this.SourceLink = domplate(Firebug.Rep,
     {
         if (sourceLink.type == "js")
         {
-            var scriptFile = getSourceFileByHref(sourceLink.href, context);
+            let scriptFile = getSourceFileByHref(sourceLink.href, context);
             if (scriptFile)
                 return Firebug.chrome.select(sourceLink);
         }
@@ -1288,17 +1288,17 @@ this.SourceLink = domplate(Firebug.Rep,
                 return;
             }
 
-            var stylesheet = getStyleSheetByHref(sourceLink.href, context);
+            let stylesheet = getStyleSheetByHref(sourceLink.href, context);
             if (stylesheet)
             {
-                var ownerNode = stylesheet.ownerNode;
+                let ownerNode = stylesheet.ownerNode;
                 if (ownerNode)
                 {
                     Firebug.chrome.select(sourceLink, "html");
                     return;
                 }
 
-                var panel = context.getPanel("stylesheet");
+                let panel = context.getPanel("stylesheet");
                 if (panel && panel.getRuleByLine(stylesheet, sourceLink.line))
                     return Firebug.chrome.select(sourceLink);
             }
@@ -1387,10 +1387,10 @@ this.StackFrame = domplate(Firebug.Rep,  // XXXjjb Since the repObject is fn the
     getSourceLinkTitle: function(frame)
     {
         //TODO: xxxpedro reps StackFrame
-        var fileName = cropString(getFileName(frame.href), 20);
+        let fileName = cropString(getFileName(frame.href), 20);
         return fileName + (frame.lineNo ? " (line " + frame.lineNo + ")" : "");
         
-        // var fileName = cropString(getFileName(frame.href), 17);
+        // let fileName = cropString(getFileName(frame.href), 17);
         // return $STRF("Line", [fileName, frame.lineNo]);
     },
 
@@ -1399,19 +1399,19 @@ this.StackFrame = domplate(Firebug.Rep,  // XXXjjb Since the repObject is fn the
         if (!frame.args)
             return [];
 
-        var items = [];
+        let items = [];
 
-        for (var i = 0; i < frame.args.length; ++i)
+        for (let i = 0; i < frame.args.length; ++i)
         {
-            var arg = frame.args[i];
+            let arg = frame.args[i];
 
             if (!arg)
                 break;
 
-            var rep = Firebug.getRep(arg.value);
-            var tag = rep.shortTag ? rep.shortTag : rep.tag;
+            let rep = Firebug.getRep(arg.value);
+            let tag = rep.shortTag ? rep.shortTag : rep.tag;
 
-            var delim = (i == frame.args.length-1 ? "" : ", ");
+            let delim = (i == frame.args.length-1 ? "" : ", ");
 
             items.push({name: arg.name, value: arg.value, tag: tag, delim: delim});
         }
@@ -1430,7 +1430,7 @@ this.StackFrame = domplate(Firebug.Rep,  // XXXjjb Since the repObject is fn the
 
     inspectObject: function(stackFrame, context)
     {
-        var sourceLink = new SourceLink(stackFrame.href, stackFrame.lineNo, "js");
+        let sourceLink = new SourceLink(stackFrame.href, stackFrame.lineNo, "js");
         Firebug.chrome.select(sourceLink);
     },
 
@@ -1480,7 +1480,7 @@ this.jsdStackFrame = domplate(Firebug.Rep,
     getTooltip: function(frame, context)
     {
         if (!frame.isValid) return "(invalid frame)";  // XXXjjb avoid frame.script == null
-        var sourceInfo = FBL.getSourceFileAndLineByScript(context, frame.script, frame);
+        let sourceInfo = FBL.getSourceFileAndLineByScript(context, frame.script, frame);
         if (sourceInfo)
             return $STRF("Line", [sourceInfo.sourceFile.href, sourceInfo.lineNo]);
         else
@@ -1489,7 +1489,7 @@ this.jsdStackFrame = domplate(Firebug.Rep,
 
     getContextMenuItems: function(frame, target, context)
     {
-        var fn = frame.script.functionObject.getWrappedValue();
+        let fn = frame.script.functionObject.getWrappedValue();
         return FirebugReps.Func.getContextMenuItems(fn, target, context, frame.script);
     }
 });
@@ -1525,8 +1525,8 @@ this.ErrorMessage = domplate(Firebug.Rep,
 
     hasStackTrace: function(error)
     {
-        var url = error.href.toString();
-        var fromCommandLine = (url.indexOf("XPCSafeJSObjectWrapper") != -1);
+        let url = error.href.toString();
+        let fromCommandLine = (url.indexOf("XPCSafeJSObjectWrapper") != -1);
         return !fromCommandLine && error.trace;
     },
 
@@ -1542,8 +1542,8 @@ this.ErrorMessage = domplate(Firebug.Rep,
 
     getMessage: function(message)
     {
-        var re = /\[Exception... "(.*?)" nsresult:/;
-        var m = re.exec(message);
+        let re = /\[Exception... "(.*?)" nsresult:/;
+        let m = re.exec(message);
         return m ? m[1] : message;
     },
 
@@ -1560,7 +1560,7 @@ this.ErrorMessage = domplate(Firebug.Rep,
 
     getSourceLink: function(error)
     {
-        var ext = error.category == "css" ? "css" : "js";
+        let ext = error.category == "css" ? "css" : "js";
         return error.lineNo ? new SourceLink(error.href, error.lineNo, ext) : null;
     },
 
@@ -1582,28 +1582,29 @@ this.ErrorMessage = domplate(Firebug.Rep,
 
     onToggleError: function(event)
     {
-        var target = event.currentTarget;
+        let target = event.currentTarget;
         if (hasClass(event.target, "errorBreak"))
         {
             this.breakOnThisError(target.repObject);
         }
         else if (hasClass(event.target, "errorSource"))
         {
-            var panel = Firebug.getElementPanel(event.target);
+            let panel = Firebug.getElementPanel(event.target);
             this.inspectObject(target.repObject, panel.context);
         }
         else if (hasClass(event.target, "errorTitle"))
         {
-            var traceBox = target.childNodes[1];
+            let traceBox = target.childNodes[1];
             toggleClass(target, "opened");
             event.target.setAttribute('aria-checked', hasClass(target, "opened"));
             if (hasClass(target, "opened"))
             {
+                let node, panel;
                 if (target.stackTrace)
-                    var node = FirebugReps.StackTrace.tag.append({object: target.stackTrace}, traceBox);
+                    node = FirebugReps.StackTrace.tag.append({object: target.stackTrace}, traceBox);
                 if (Firebug.A11yModel.enabled)
                 {
-                    var panel = Firebug.getElementPanel(event.target);
+                    panel = Firebug.getElementPanel(event.target);
                     dispatch([Firebug.A11yModel], "onLogRowContentCreated", [panel , traceBox]);
                 }
             }
@@ -1616,7 +1617,7 @@ this.ErrorMessage = domplate(Firebug.Rep,
 
     copyError: function(error)
     {
-        var message = [
+        let message = [
             this.getMessage(error.message),
             error.href,
             "Line " +  error.lineNo
@@ -1644,15 +1645,15 @@ this.ErrorMessage = domplate(Firebug.Rep,
 
     inspectObject: function(error, context)
     {
-        var sourceLink = this.getSourceLink(error);
+        let sourceLink = this.getSourceLink(error);
         FirebugReps.SourceLink.inspectObject(sourceLink, context);
     },
 
     getContextMenuItems: function(error, target, context)
     {
-        var breakOnThisError = this.hasErrorBreak(error);
+        let breakOnThisError = this.hasErrorBreak(error);
 
-        var items = [
+        let items = [
             {label: "CopyError", command: bindFixed(this.copyError, this, error) }
         ];
 
@@ -1687,13 +1688,13 @@ this.Assert = domplate(Firebug.Rep,
 
     inspectObject: function(error, context)
     {
-        var sourceLink = this.getSourceLink(error);
+        let sourceLink = this.getSourceLink(error);
         Firebug.chrome.select(sourceLink);
     },
 
     getContextMenuItems: function(error, target, context)
     {
-        var breakOnThisError = this.hasErrorBreak(error);
+        let breakOnThisError = this.hasErrorBreak(error);
 
         return [
             {label: "CopyError", command: bindFixed(this.copyError, this, error) },
@@ -1722,13 +1723,13 @@ this.SourceText = domplate(Firebug.Rep,
 
     lineIterator: function(sourceText)
     {
-        var maxLineNoChars = (sourceText.lines.length + "").length;
-        var list = [];
+        let maxLineNoChars = (sourceText.lines.length + "").length;
+        let list = [];
 
-        for (var i = 0; i < sourceText.lines.length; ++i)
+        for (let i = 0; i < sourceText.lines.length; ++i)
         {
             // Make sure all line numbers are the same width (with a fixed-width font)
-            var lineNo = (i+1) + "";
+            let lineNo = (i+1) + "";
             while (lineNo.length < maxLineNoChars)
                 lineNo = " " + lineNo;
 
@@ -1757,7 +1758,7 @@ this.nsIDOMHistory = domplate(Firebug.Rep,
     {
         try
         {
-            var items = history.length;
+            let items = history.length;
             return items + " history entries";
         }
         catch(exc)
@@ -1770,7 +1771,7 @@ this.nsIDOMHistory = domplate(Firebug.Rep,
     {
         try
         {
-            var items = history.length;  // if this throws, then unsupported
+            let items = history.length;  // if this throws, then unsupported
             Firebug.chrome.select(history);
         }
         catch (exc)

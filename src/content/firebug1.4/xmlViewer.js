@@ -6,7 +6,7 @@ FBL.ns(function() { with (FBL) {
 // Constants
 
 // List of XML related content types.
-var xmlContentTypes =
+let xmlContentTypes =
 [
     "text/xml",
     "application/xml",
@@ -71,7 +71,7 @@ Firebug.XMLViewerModel = extend(Firebug.Module,
             return false;
 
         // Look if the response is XML based.
-        for (var i=0; i<xmlContentTypes.length; i++)
+        for (let i=0; i<xmlContentTypes.length; i++)
         {
             if (contentType.indexOf(xmlContentTypes[i]) == 0)
                 return true;
@@ -85,9 +85,9 @@ Firebug.XMLViewerModel = extend(Firebug.Module,
      */
     updateTabBody: function(infoBox, file, context)
     {
-        var tab = infoBox.selectedTab;
-        ///var tabBody = infoBox.getElementsByClassName("netInfoXMLText").item(0);
-        var tabBody = $$(".netInfoXMLText", infoBox)[0];
+        let tab = infoBox.selectedTab;
+        ///let tabBody = infoBox.getElementsByClassName("netInfoXMLText").item(0);
+        let tabBody = $$(".netInfoXMLText", infoBox)[0];
         if (!hasClass(tab, "netInfoXMLTab") || tabBody.updated)
             return;
 
@@ -98,20 +98,20 @@ Firebug.XMLViewerModel = extend(Firebug.Module,
 
     insertXML: function(parentNode, text)
     {
-        var xmlText = text.replace(/^\s*<?.+?>\s*/, "");
+        let xmlText = text.replace(/^\s*<?.+?>\s*/, "");
         
-        var div = parentNode.ownerDocument.createElement("div");
+        let div = parentNode.ownerDocument.createElement("div");
         div.innerHTML = xmlText;
         
-        var root = div.getElementsByTagName("*")[0];
+        let root = div.getElementsByTagName("*")[0];
     
         /***
-        var parser = CCIN("@mozilla.org/xmlextras/domparser;1", "nsIDOMParser");
-        var doc = parser.parseFromString(text, "text/xml");
-        var root = doc.documentElement;
+        let parser = CCIN("@mozilla.org/xmlextras/domparser;1", "nsIDOMParser");
+        let doc = parser.parseFromString(text, "text/xml");
+        let root = doc.documentElement;
 
         // Error handling
-        var nsURI = "http://www.mozilla.org/newlayout/xml/parsererror.xml";
+        let nsURI = "http://www.mozilla.org/newlayout/xml/parsererror.xml";
         if (root.namespaceURI == nsURI && root.nodeName == "parsererror")
         {
             this.ParseError.tag.replace({error: {
@@ -128,7 +128,7 @@ Firebug.XMLViewerModel = extend(Firebug.Module,
         // Override getHidden in these templates. The parsed XML documen is
         // hidden, but we want to display it using 'visible' styling.
         /*
-        var templates = [
+        let templates = [
             Firebug.HTMLPanel.CompleteElement,
             Firebug.HTMLPanel.Element,
             Firebug.HTMLPanel.TextElement,
@@ -136,8 +136,8 @@ Firebug.XMLViewerModel = extend(Firebug.Module,
             Firebug.HTMLPanel.XEmptyElement,
         ];
 
-        var originals = [];
-        for (var i=0; i<templates.length; i++)
+        let originals = [];
+        for (let i=0; i<templates.length; i++)
         {
             originals[i] = templates[i].getHidden;
             templates[i].getHidden = function() {
@@ -151,13 +151,13 @@ Firebug.XMLViewerModel = extend(Firebug.Module,
         
         // TODO: xxxpedro html3
         ///Firebug.HTMLPanel.CompleteElement.tag.replace({object: root}, parentNode);
-        var html = [];
+        let html = [];
         Firebug.Reps.appendNode(root, html);
         parentNode.innerHTML = html.join("");
         
 
         /*
-        for (var i=0; i<originals.length; i++)
+        for (let i=0; i<originals.length; i++)
             templates[i].getHidden = originals[i];/**/
     }
 });
@@ -179,12 +179,12 @@ Firebug.XMLViewerModel.ParseError = domplate(Firebug.Rep,
 
     getSource: function(error)
     {
-        var parts = error.source.split("\n");
+        let parts = error.source.split("\n");
         if (parts.length != 2)
             return error.source;
 
-        var limit = 50;
-        var column = parts[1].length;
+        let limit = 50;
+        let column = parts[1].length;
         if (column >= limit) {
             parts[0] = "..." + parts[0].substr(column - limit);
             parts[1] = "..." + parts[1].substr(column - limit);

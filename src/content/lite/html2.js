@@ -13,7 +13,7 @@ const ADDITION = MutationEvent.ADDITION;
 const REMOVAL = MutationEvent.REMOVAL;
 /**/
 
-var AttrTag =
+let AttrTag =
     SPAN({"class": "nodeAttr editGroup"},
         "&nbsp;", SPAN({"class": "nodeName editable"}, "$attr.nodeName"), "=&quot;",
         SPAN({"class": "nodeValue editable"}, "$attr.nodeValue"), "&quot;"
@@ -56,8 +56,8 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
     selectNext: function()
     {
-        var objectBox = this.ioBox.createObjectBox(this.selection);
-        var next = this.ioBox.getNextObjectBox(objectBox);
+        let objectBox = this.ioBox.createObjectBox(this.selection);
+        let next = this.ioBox.getNextObjectBox(objectBox);
         if (next)
         {
             this.select(next.repObject);
@@ -70,8 +70,8 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
     selectPrevious: function()
     {
-        var objectBox = this.ioBox.createObjectBox(this.selection);
-        var previous = this.ioBox.getPreviousObjectBox(objectBox);
+        let objectBox = this.ioBox.createObjectBox(this.selection);
+        let previous = this.ioBox.getPreviousObjectBox(objectBox);
         if (previous)
         {
             this.select(previous.repObject);
@@ -89,7 +89,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
             this.selectNext();
         else if (dir == "left")
         {
-            var box = this.ioBox.createObjectBox(this.selection);
+            let box = this.ioBox.createObjectBox(this.selection);
             if (!hasClass(box, "open"))
                 this.select(this.ioBox.getParentObjectBox(box).repObject);
             else
@@ -103,25 +103,25 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
     editNewAttribute: function(elt)
     {
-        var objectNodeBox = this.ioBox.findObjectBox(elt);
+        let objectNodeBox = this.ioBox.findObjectBox(elt);
         if (objectNodeBox)
         {
-            var labelBox = objectNodeBox.firstChild.lastChild;
-            var bracketBox = getChildByClass(labelBox, "nodeBracket");
+            let labelBox = objectNodeBox.firstChild.lastChild;
+            let bracketBox = getChildByClass(labelBox, "nodeBracket");
             Firebug.Editor.insertRow(bracketBox, "before");
         }
     },
 
     editAttribute: function(elt, attrName)
     {
-        var objectNodeBox = this.ioBox.findObjectBox(elt);
+        let objectNodeBox = this.ioBox.findObjectBox(elt);
         if (objectNodeBox)
         {
-            var attrBox = findNodeAttrBox(objectNodeBox, attrName);
+            let attrBox = findNodeAttrBox(objectNodeBox, attrName);
             if (attrBox)
             {
-                var attrValueBox = attrBox.childNodes[3];
-                var value = elt.getAttribute(attrName);
+                let attrValueBox = attrBox.childNodes[3];
+                let value = elt.getAttribute(attrName);
                 Firebug.Editor.startEditing(attrValueBox, value);
             }
         }
@@ -137,7 +137,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
         if ( nonEditableTags.hasOwnProperty(node.localName) )
             return;
 
-        var objectNodeBox = this.ioBox.findObjectBox(node);
+        let objectNodeBox = this.ioBox.findObjectBox(node);
         if (objectNodeBox)
         {
             if (!this.htmlEditor)
@@ -145,7 +145,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
             this.htmlEditor.innerEditMode = node.localName in innerEditableTags;
 
-            var html = this.htmlEditor.innerEditMode ? node.innerHTML : getElementHTML(node);
+            let html = this.htmlEditor.innerEditMode ? node.innerHTML : getElementHTML(node);
             Firebug.Editor.startEditing(objectNodeBox, html, this.htmlEditor);
         }
     },
@@ -161,23 +161,23 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
     {
         if (this.sourceElements)
         {
-            var index = this.sourceElementNodes.indexOf(node);
+            let index = this.sourceElementNodes.indexOf(node);
             if (index != -1)
                 return this.sourceElements[index];
         }
 
-        var lines;
+        let lines;
 
-        var url = getSourceHref(node);
+        let url = getSourceHref(node);
         if (url)
             lines = this.context.sourceCache.load(url);
         else
         {
-            var text = getSourceText(node);
+            let text = getSourceText(node);
             lines = splitLines(text);
         }
 
-        var sourceElt = new SourceText(lines, node);
+        let sourceElt = new SourceText(lines, node);
 
         if (!this.sourceElements)
         {
@@ -206,7 +206,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
         this.markChange();
 
-        var objectNodeBox = Firebug.scrollToMutations || Firebug.expandMutations
+        let objectNodeBox = Firebug.scrollToMutations || Firebug.expandMutations
             ? this.ioBox.createObjectBox(target)
             : this.ioBox.findObjectBox(target);
 
@@ -220,13 +220,13 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
         if (attrChange == MODIFICATION || attrChange == ADDITION)
         {
-            var nodeAttr = findNodeAttrBox(objectNodeBox, attrName);
+            let nodeAttr = findNodeAttrBox(objectNodeBox, attrName);
             if (FBTrace.DBG_HTML)
                 FBTrace.sysout("mutateAttr "+attrChange+" "+attrName+"="+attrValue+" node: "+nodeAttr, nodeAttr);
             if (nodeAttr && nodeAttr.childNodes.length > 3)
             {
-                var attrValueBox = nodeAttr.childNodes[3];
-                var attrValueText = nodeAttr.childNodes[3].firstChild;
+                let attrValueBox = nodeAttr.childNodes[3];
+                let attrValueText = nodeAttr.childNodes[3].firstChild;
                 if (attrValueText)
                     attrValueText.nodeValue = attrValue;
 
@@ -234,16 +234,16 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
             }
             else
             {
-                var attr = target.getAttributeNode(attrName);
+                let attr = target.getAttributeNode(attrName);
                 if (FBTrace.DBG_HTML)
                     FBTrace.sysout("mutateAttr getAttributeNode "+attrChange+" "+attrName+"="+attrValue+" node: "+attr, attr);
                 if (attr)
                 {
-                    var nodeAttr = Firebug.HTMLPanel.AttrNode.tag.replace({attr: attr},
+                    let nodeAttr = Firebug.HTMLPanel.AttrNode.tag.replace({attr: attr},
                             this.document);
 
-                    var labelBox = objectNodeBox.firstChild.lastChild;
-                    var bracketBox = getChildByClass(labelBox, "nodeBracket");
+                    let labelBox = objectNodeBox.firstChild.lastChild;
+                    let bracketBox = getChildByClass(labelBox, "nodeBracket");
                     labelBox.insertBefore(nodeAttr, bracketBox);
 
                     this.highlightMutation(nodeAttr, objectNodeBox, "mutated");
@@ -252,7 +252,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
         }
         else if (attrChange == REMOVAL)
         {
-            var nodeAttr = findNodeAttrBox(objectNodeBox, attrName);
+            let nodeAttr = findNodeAttrBox(objectNodeBox, attrName);
             if (nodeAttr)
             {
                 nodeAttr.parentNode.removeChild(nodeAttr);
@@ -266,7 +266,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
     {
         this.markChange();
 
-        var parentNodeBox = Firebug.scrollToMutations || Firebug.expandMutations
+        let parentNodeBox = Firebug.scrollToMutations || Firebug.expandMutations
             ? this.ioBox.createObjectBox(parent)
             : this.ioBox.findObjectBox(parent);
 
@@ -276,10 +276,10 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
         if (!Firebug.showFullTextNodes)
             textValue = cropMultipleLines(textValue, 50);
 
-        var parentTag = getNodeBoxTag(parentNodeBox);
+        let parentTag = getNodeBoxTag(parentNodeBox);
         if (parentTag == Firebug.HTMLPanel.TextElement.tag)
         {
-            var nodeText = getTextElementTextBox(parentNodeBox);
+            let nodeText = getTextElementTextBox(parentNodeBox);
             if (!nodeText.firstChild)
                 return;
 
@@ -289,11 +289,11 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
         }
         else
         {
-            var childBox = this.ioBox.getChildObjectBox(parentNodeBox);
+            let childBox = this.ioBox.getChildObjectBox(parentNodeBox);
             if (!childBox)
                 return;
 
-            var textNodeBox = this.ioBox.findChildObjectBox(childBox, target);
+            let textNodeBox = this.ioBox.findChildObjectBox(childBox, target);
             if (textNodeBox)
             {
                 textNodeBox.firstChild.lastChild.nodeValue = textValue;
@@ -310,7 +310,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
         this.markChange();  // This invalidates the panels for every mutate
 
-        var parentNodeBox = Firebug.scrollToMutations || Firebug.expandMutations
+        let parentNodeBox = Firebug.scrollToMutations || Firebug.expandMutations
             ? this.ioBox.createObjectBox(parent)
             : this.ioBox.findObjectBox(parent);
 
@@ -325,8 +325,8 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
         // target is only whitespace
 
-        var newParentTag = getNodeTag(parent);
-        var oldParentTag = getNodeBoxTag(parentNodeBox);
+        let newParentTag = getNodeTag(parent);
+        let oldParentTag = getNodeBoxTag(parentNodeBox);
 
         if (newParentTag == oldParentTag)
         {
@@ -340,7 +340,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
                 }
                 else
                 {
-                    var objectBox = nextSibling
+                    let objectBox = nextSibling
                         ? this.ioBox.insertChildBoxBefore(parentNodeBox, target, nextSibling)
                         : this.ioBox.appendChildBox(parentNodeBox, target);
 
@@ -349,21 +349,21 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
             }
             else
             {
-                var newParentNodeBox = newParentTag.replace({object: parent}, this.document);
+                let newParentNodeBox = newParentTag.replace({object: parent}, this.document);
                 parentNodeBox.parentNode.replaceChild(newParentNodeBox, parentNodeBox);
 
                 this.highlightMutation(newParentNodeBox, newParentNodeBox, "mutated");
 
                 if (Firebug.scrollToMutations || Firebug.expandMutations)
                 {
-                    var objectBox = this.ioBox.createObjectBox(target);
+                    let objectBox = this.ioBox.createObjectBox(target);
                     this.highlightMutation(objectBox, objectBox, "mutated");
                 }
             }
         }
         else
         {
-            var newParentNodeBox = newParentTag.replace({object: parent}, this.document);
+            let newParentNodeBox = newParentTag.replace({object: parent}, this.document);
             if (parentNodeBox.parentNode)
                 parentNodeBox.parentNode.replaceChild(newParentNodeBox, parentNodeBox);
 
@@ -390,8 +390,8 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
                 delete this.context.mutationTimeout;
             }
 
-            var ioBox = this.ioBox;
-            var panelNode = this.panelNode;
+            let ioBox = this.ioBox;
+            let panelNode = this.panelNode;
 
             this.context.mutationTimeout = this.context.setTimeout(function()
             {
@@ -412,7 +412,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
     createObjectBox: function(object, isRoot)
     {
         if (FBTrace.DBG_HTML) FBTrace.sysout("html.createObjectBox("+(object.tagName?object.tagName:object)+", isRoot:"+(isRoot?"true":"false")+")\n");
-        var tag = getNodeTag(object);
+        let tag = getNodeTag(object);
         if (tag)
             return tag.replace({object: object}, this.document);
     },
@@ -425,7 +425,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
         if (this.rootElement && node == this.rootElement)  // this.rootElement is never set
             return null;
 
-        var parentNode = node ? node.parentNode : null;
+        let parentNode = node ? node.parentNode : null;
         if (parentNode)
             if (parentNode.nodeType == 9)
             {
@@ -444,7 +444,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
         else
             if (node && node.nodeType == 9) // document type
             {
-                var embeddingFrame = node.defaultView.frameElement;
+                let embeddingFrame = node.defaultView.frameElement;
                 if (embeddingFrame)
                     return embeddingFrame.parentNode;
                 else
@@ -472,8 +472,8 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
                 return node.childNodes[index];
             else
             {
-                var childIndex = 0;
-                for (var child = node.firstChild; child; child = child.nextSibling)
+                let childIndex = 0;
+                for (let child = node.firstChild; child; child = child.nextSibling)
                 {
                     if (!this.isWhitespaceText(child) && childIndex++ == index)
                         return child;
@@ -497,7 +497,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
             return node.nextSibling;
         else
         {
-            for (var child = node.nextSibling; child; child = child.nextSibling)
+            for (let child = node.nextSibling; child; child = child.nextSibling)
             {
                 if (!this.isWhitespaceText(child))
                     return child;
@@ -507,7 +507,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
     isSourceElement: function(element)
     {
-        var tag = element.localName.toLowerCase();
+        let tag = element.localName.toLowerCase();
         return tag == "script" || tag == "link" || tag == "style"
             || (tag == "link" && element.getAttribute("rel") == "stylesheet");
     },
@@ -517,13 +517,13 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
     onMutateAttr: function(event)
     {
-        var target = event.target;
+        let target = event.target;
         if (target.firebugIgnore)
             return;
 
-        var attrChange = event.attrChange;
-        var attrName = event.attrName;
-        var newValue = event.newValue;
+        let attrChange = event.attrChange;
+        let attrName = event.attrName;
+        let newValue = event.newValue;
 
         this.context.delay(function()
         {
@@ -533,10 +533,10 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
     onMutateText: function(event)
     {
-        var target = event.target;
-        var parent = target.parentNode;
+        let target = event.target;
+        let parent = target.parentNode;
 
-        var newValue = event.newValue;
+        let newValue = event.newValue;
 
         this.context.delay(function()
         {
@@ -546,13 +546,13 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
     onMutateNode: function(event)
     {
-        var target = event.target;
+        let target = event.target;
         if (target.firebugIgnore)
             return;
 
-        var parent = event.relatedNode;
-        var removal = event.type == "DOMNodeRemoved";
-        var nextSibling = removal ? null : this.findNextSibling(target);
+        let parent = event.relatedNode;
+        let removal = event.type == "DOMNodeRemoved";
+        let nextSibling = removal ? null : this.findNextSibling(target);
 
         this.context.delay(function()
         {
@@ -574,7 +574,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
         {
             if (getAncestorByClass(event.target, "nodeTag"))
             {
-                var node = Firebug.getRepObject(event.target);
+                let node = Firebug.getRepObject(event.target);
                 this.editNode(node);
             }
         }
@@ -587,11 +587,11 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
         if (getAncestorByClass(event.target, "nodeTag"))
         {
-            var node = Firebug.getRepObject(event.target);
+            let node = Firebug.getRepObject(event.target);
             this.noScrollIntoView = true;
             this.select(node);
             delete this.noScrollIntoView;
-            var box = this.ioBox.createObjectBox(node);
+            let box = this.ioBox.createObjectBox(node);
             if (!hasClass(box, "open"))
                 this.ioBox.expandObject(node);
             else
@@ -629,7 +629,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
     create: function(){
         Firebug.Panel.create.apply(this, arguments);
         
-        var style = this.panelNode.style;
+        let style = this.panelNode.style;
         style.fontFamily = "Monaco,monospace";        
         style.padding = "0 1px";
         
@@ -637,7 +637,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
         this.onMouseDown = bind(this.onMouseDown, this);
         this.onKeyPress = bind(this.onKeyPress, this);        
         
-        //var object = Firebug.browser.document.documentElement;
+        //let object = Firebug.browser.document.documentElement;
         //Firebug.HTMLPanel.Element.tag.replace({object: object}, this.panelNode);
     },
     
@@ -649,7 +649,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
         if (!this.ioBox)
             this.ioBox = new InsideOutBox(this, this.panelNode);
         
-        var object = Firebug.browser.document.documentElement;
+        let object = Firebug.browser.document.documentElement;
         this.select(object);
         
         addEvent(this.panelNode, "click", this.onClick);
@@ -720,7 +720,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
                 iterateWindows(this.context.window, bind(function(win)
                 {
-                    var doc = win.document;
+                    let doc = win.document;
                     doc.addEventListener("DOMAttrModified", this.onMutateAttr, false);
                     doc.addEventListener("DOMCharacterDataModified", this.onMutateText, false);
                     doc.addEventListener("DOMNodeInserted", this.onMutateNode, false);
@@ -743,7 +743,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
     {
         if (this.context.window && this.context.window != win) // then I guess we are an embedded window
         {
-            var htmlPanel = this;
+            let htmlPanel = this;
             iterateWindows(this.context.window, function(subwin)
             {
                 if (win == subwin)
@@ -757,7 +757,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
         }
         if (this.context.attachedMutation)
         {
-            var doc = win.document;
+            let doc = win.document;
             doc.addEventListener("DOMAttrModified", this.onMutateAttr, false);
             doc.addEventListener("DOMCharacterDataModified", this.onMutateText, false);
             doc.addEventListener("DOMNodeInserted", this.onMutateNode, false);
@@ -769,7 +769,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
     {
         if (this.context.window && this.context.window != win) // then I guess we are an embedded window
         {
-            var htmlPanel = this;
+            let htmlPanel = this;
             iterateWindows(this.context.window, function(subwin)
             {
                 if (win == subwin)
@@ -781,7 +781,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
             });
 
         }
-        var doc = win.document;
+        let doc = win.document;
         doc.removeEventListener("DOMAttrModified", this.onMutateAttr, false);
         doc.removeEventListener("DOMCharacterDataModified", this.onMutateText, false);
         doc.removeEventListener("DOMNodeInserted", this.onMutateNode, false);
@@ -792,9 +792,9 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
     mutateDocumentEmbedded: function(win, remove)
     {
         // document.documentElement    Returns the Element that is a direct child of document. For HTML documents, this normally the HTML element.
-        var target = win.document.documentElement;
-        var parent = win.frameElement;
-        var nextSibling = this.findNextSibling(target);
+        let target = win.document.documentElement;
+        let parent = win.frameElement;
+        let nextSibling = this.findNextSibling(target);
         this.mutateNode(target, parent, nextSibling, remove);
     },
 
@@ -810,7 +810,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
     updateOption: function(name, value)
     {
-        var viewOptionNames = {showCommentNodes:1, showWhitespaceNodes:1 , showFullTextNodes:1};
+        let viewOptionNames = {showCommentNodes:1, showWhitespaceNodes:1 , showFullTextNodes:1};
         if (name in viewOptionNames)
         {
             this.resetSearch();
@@ -832,22 +832,22 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
         if (object instanceof SourceLink) // && object.type == "css" and !reCSS(object.href) by supports
          {
-             var sourceLink = object;
-             var stylesheet = getStyleSheetByHref(sourceLink.href, this.context);
+             let sourceLink = object;
+             let stylesheet = getStyleSheetByHref(sourceLink.href, this.context);
              if (stylesheet)
              {
-                var ownerNode = stylesheet.ownerNode;
+                let ownerNode = stylesheet.ownerNode;
                 if (FBTrace.DBG_CSS)
                         FBTrace.sysout("html panel updateSelection stylesheet.ownerNode="+stylesheet.ownerNode
                                           +" href:"+sourceLink.href+"\n");
                 if (ownerNode)
                 {
-                    var objectbox = this.ioBox.select(ownerNode, true, true, this.noScrollIntoView);
+                    let objectbox = this.ioBox.select(ownerNode, true, true, this.noScrollIntoView);
 
                     // XXXjjb seems like this could be bad for errors at the end of long files
                     //
-                    var sourceRow = FBL.getElementByClass(objectbox, "sourceRow"); // first source row in style
-                    for (var lineNo = 1; lineNo < sourceLink.line; lineNo++)
+                    let sourceRow = FBL.getElementByClass(objectbox, "sourceRow"); // first source row in style
+                    for (let lineNo = 1; lineNo < sourceLink.line; lineNo++)
                     {
                         if (!sourceRow) break;
                         sourceRow = FBL.getNextByClass(sourceRow,  "sourceRow");
@@ -904,19 +904,19 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
         if (!text)
             return;
 
-        var search;
+        let search;
         if (text == this.searchText && this.lastSearch)
             search = this.lastSearch;
         else
         {
-            var doc = this.context.window.document;
+            let doc = this.context.window.document;
             if (Firebug.searchSelector)
                 search = this.lastSearch = new SelectorSearch(text, doc, this.panelNode, this.ioBox);
             else
                 search = this.lastSearch = new NodeSearch(text, doc, this.panelNode, this.ioBox);
         }
 
-        var loopAround = search.find(reverse, Firebug.searchCaseSensitive);
+        let loopAround = search.find(reverse, Firebug.searchCaseSensitive);
         if (loopAround)
         {
             this.resetSearch();
@@ -937,7 +937,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
     {
         try
         {
-            var doc = this.context.window.document;
+            let doc = this.context.window.document;
             return doc.body ? doc.body : getPreviousElement(doc.documentElement.lastChild);
         }
         catch (exc)
@@ -948,7 +948,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
 
     getObjectPath: function(element)
     {
-        var path = [];
+        let path = [];
         for (; element; element = this.getParentObject(element))
             path.push(element);
 
@@ -983,7 +983,7 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
         if (!node)
             return null;
 
-        var items = [];
+        let items = [];
 
         if (node && node.nodeType == 1)
         {
@@ -992,10 +992,10 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
                 {label: "NewAttribute", command: bindFixed(this.editNewAttribute, this, node) }
             );
 
-            var attrBox = getAncestorByClass(target, "nodeAttr");
+            let attrBox = getAncestorByClass(target, "nodeAttr");
             if (getAncestorByClass(target, "nodeAttr"))
             {
-                var attrName = attrBox.childNodes[1].textContent;
+                let attrName = attrBox.childNodes[1].textContent;
 
                 items.push(
                     {label: $STRF("EditAttribute", [attrName]), nol10n: true,
@@ -1032,10 +1032,10 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
         if (!hasClass(target, "nodeValue"))
             return;
 
-        var targetNode = Firebug.getRepObject(target);
+        let targetNode = Firebug.getRepObject(target);
         if (targetNode && targetNode.nodeType == 1 && targetNode.localName.toUpperCase() == "IMG")
         {
-            var url = targetNode.src;
+            let url = targetNode.src;
             if (url == this.infoTipURL) // This state cleared in hide()
                 return true;
 
@@ -1063,13 +1063,13 @@ Firebug.HTMLPanel.prototype = extend(Firebug.Panel,
         }
     },
 
-    getInspectorVars: function()
+    getInspectorlets: function()
     {
-        var vars = {};
-        for (var i=0; i<2; i++)
-            vars["$"+i] = this.inspectorHistory[i];
+        let lets = {};
+        for (let i=0; i<2; i++)
+            lets["$"+i] = this.inspectorHistory[i];
 
-        return vars;
+        return lets;
     }
 });
 
@@ -1113,8 +1113,8 @@ Firebug.HTMLPanel.CompleteElement = domplate(FirebugReps.Element,
             return cloneArray(node.childNodes);
         else
         {
-            var nodes = [];
-            for (var child = node.firstChild; child; child = child.nextSibling)
+            let nodes = [];
+            for (let child = node.firstChild; child; child = child.nextSibling)
             {
                 if (child.nodeType != 3 || !isWhitespaceText(child))
                     nodes.push(child);
@@ -1133,11 +1133,11 @@ Firebug.HTMLPanel.SoloElement = domplate(Firebug.HTMLPanel.CompleteElement,
 
     onMouseDown: function(event)
     {
-        for (var child = event.target; child; child = child.parentNode)
+        for (let child = event.target; child; child = child.parentNode)
         {
             if (child.repObject)
             {
-                var panel = Firebug.getElementPanel(child);
+                let panel = Firebug.getElementPanel(child);
                 Firebug.chrome.select(child.repObject);
                 break;
             }
@@ -1241,12 +1241,12 @@ Firebug.HTMLPanel.WhitespaceNode = domplate(FirebugReps.Element,
         ),
     charIterator: function(node)
     {
-        var str = node.nodeValue;
-        var arr = [];
-        for(var i = 0; i < str.length; i++)
+        let str = node.nodeValue;
+        let arr = [];
+        for(let i = 0; i < str.length; i++)
         {
             // http://www.w3.org/TR/html401/struct/text.html
-            var char = str[i];
+            let char = str[i];
             switch(char)
             {
             case ' ': arr[i] = ' ';break;
@@ -1292,7 +1292,7 @@ AttributeEditor.prototype = domplate(Firebug.InlineEditor.prototype,
 {
     saveEdit: function(target, value, previousValue)
     {
-        var element = Firebug.getRepObject(target);
+        let element = Firebug.getRepObject(target);
         if (!element)
             return;
 
@@ -1305,7 +1305,7 @@ AttributeEditor.prototype = domplate(Firebug.InlineEditor.prototype,
 
             if (value)
             {
-                var attrValue = getNextByClass(target, "nodeValue").textContent;
+                let attrValue = getNextByClass(target, "nodeValue").textContent;
                 element.setAttribute(value, attrValue);
             }
             else
@@ -1313,7 +1313,7 @@ AttributeEditor.prototype = domplate(Firebug.InlineEditor.prototype,
         }
         else if (hasClass(target, "nodeValue"))
         {
-            var attrName = getPreviousByClass(target, "nodeName").textContent;
+            let attrName = getPreviousByClass(target, "nodeName").textContent;
             element.setAttribute(attrName, value);
         }
         else if (hasClass(target, "nodeText"))
@@ -1335,8 +1335,8 @@ AttributeEditor.prototype = domplate(Firebug.InlineEditor.prototype,
 
     insertNewRow: function(target, insertWhere)
     {
-        var emptyAttr = {nodeName: "", nodeValue: ""};
-        var sibling = insertWhere == "before" ? target.previousSibling : target;
+        let emptyAttr = {nodeName: "", nodeValue: ""};
+        let sibling = insertWhere == "before" ? target.previousSibling : target;
 
         return AttrTag.insertAfter({attr: emptyAttr}, sibling);
     },
@@ -1392,13 +1392,13 @@ HTMLEditor.prototype = domplate(Firebug.BaseEditor,
         this.input.value = value;
         this.input.focus();
 
-        var command = Firebug.chrome.$("cmd_toggleHTMLEditing");
+        let command = Firebug.chrome.$("cmd_toggleHTMLEditing");
         command.setAttribute("checked", true);
     },
 
     hide: function()
     {
-        var command = Firebug.chrome.$("cmd_toggleHTMLEditing");
+        let command = Firebug.chrome.$("cmd_toggleHTMLEditing");
         command.setAttribute("checked", false);
 
         this.panel.panelNode.removeChild(this.box);
@@ -1412,12 +1412,12 @@ HTMLEditor.prototype = domplate(Firebug.BaseEditor,
     {
         // Remove all of the nodes in the last range we created, except for
         // the first one, because setOuterHTML will replace it
-        var first = this.editingElements[0], last = this.editingElements[1];
+        let first = this.editingElements[0], last = this.editingElements[1];
         if (last && last != first)
         {
-            for (var child = first.nextSibling; child;)
+            for (let child = first.nextSibling; child;)
             {
-                var next = child.nextSibling;
+                let next = child.nextSibling;
                 child.parentNode.removeChild(child);
                 if (child == last)
                     break;
@@ -1493,12 +1493,12 @@ function getNodeTag(node, expandAll)
 
 function getNodeBoxTag(nodeBox)
 {
-    var re = /([^\s]+)NodeBox/;
-    var m = re.exec(nodeBox.className);
+    let re = /([^\s]+)NodeBox/;
+    let m = re.exec(nodeBox.className);
     if (!m)
         return null;
 
-    var nodeBoxType = m[1];
+    let nodeBoxType = m[1];
     if (nodeBoxType == "container")
         return Firebug.HTMLPanel.Element.tag;
     else if (nodeBoxType == "text")
@@ -1509,7 +1509,7 @@ function getNodeBoxTag(nodeBox)
 
 function getSourceHref(element)
 {
-    var tag = element.localName.toLowerCase();
+    let tag = element.localName.toLowerCase();
     if (tag == "script" && element.src)
         return element.src;
     else if (tag == "link")
@@ -1520,7 +1520,7 @@ function getSourceHref(element)
 
 function getSourceText(element)
 {
-    var tag = element.localName.toLowerCase();
+    let tag = element.localName.toLowerCase();
     if (tag == "script" && !element.src)
         return element.textContent;
     else if (tag == "style")
@@ -1531,7 +1531,7 @@ function getSourceText(element)
 
 function isContainerElement(element)
 {
-    var tag = element.localName.toLowerCase();
+    let tag = element.localName.toLowerCase();
     switch (tag)
     {
         case "script":
@@ -1547,7 +1547,7 @@ function isContainerElement(element)
     return false;
 }
 
-var hasNoElementChildren = function hasNoElementChildren(element)
+let hasNoElementChildren = function hasNoElementChildren(element)
 {
     if (element.childElementCount != 0)  // FF 3.5+
         return false;
@@ -1557,10 +1557,10 @@ var hasNoElementChildren = function hasNoElementChildren(element)
     /*
     if (element.ownerDocument instanceof Ci.nsIDOMDocumentXBL)
     {
-        var anonChildren = element.ownerDocument.getAnonymousNodes(element);
+        let anonChildren = element.ownerDocument.getAnonymousNodes(element);
         if (anonChildren)
         {
-            for (var i = 0; i < anonChildren.length; i++)
+            for (let i = 0; i < anonChildren.length; i++)
             {
                 if (anonChildren[i].nodeType == 1)
                     return false;
@@ -1574,7 +1574,7 @@ var hasNoElementChildren = function hasNoElementChildren(element)
 }
 
 // Duplicate of HTMLPanel.prototype isWhitespaceText
-var isWhitespaceText = function isWhitespaceText(node)
+let isWhitespaceText = function isWhitespaceText(node)
 {
     if (node instanceof HTMLAppletElement)
         return false;
@@ -1585,7 +1585,7 @@ var isWhitespaceText = function isWhitespaceText(node)
 // they can be called outside of this file.
 function isSourceElement(element)
 {
-    var tag = element.localName.toLowerCase();
+    let tag = element.localName.toLowerCase();
     return tag == "script" || tag == "link" || tag == "style"
         || (tag == "link" && element.getAttribute("rel") == "stylesheet");
 }
@@ -1603,7 +1603,7 @@ function isEmptyElement(element)
     }
     else
     {
-        for (var child = element.firstChild; child; child = child.nextSibling)
+        for (let child = element.firstChild; child; child = child.nextSibling)
         {
             if (!isWhitespaceText(child))
                 return false;
@@ -1619,7 +1619,7 @@ function findNextSibling(node)
     else
     {
         // only return a non-whitespace node
-        for (var child = node.nextSibling; child; child = child.nextSibling)
+        for (let child = node.nextSibling; child; child = child.nextSibling)
         {
             if (!isWhitespaceText(child))
                 return child;
@@ -1629,7 +1629,7 @@ function findNextSibling(node)
 
 function findNodeAttrBox(objectNodeBox, attrName)
 {
-    var child = objectNodeBox.firstChild.lastChild.firstChild;
+    let child = objectNodeBox.firstChild.lastChild.firstChild;
     for (; child; child = child.nextSibling)
     {
         if (hasClass(child, "nodeAttr") && child.childNodes[1].firstChild
@@ -1642,7 +1642,7 @@ function findNodeAttrBox(objectNodeBox, attrName)
 
 function getTextElementTextBox(nodeBox)
 {
-    var nodeLabelBox = nodeBox.firstChild.lastChild;
+    let nodeLabelBox = nodeBox.firstChild.lastChild;
     return getChildByClass(nodeLabelBox, "nodeText");
 }
 
@@ -1655,20 +1655,20 @@ function findElementNameBox(objectNodeBox)
 
 function NodeSearch(text, doc, panelNode, ioBox)
 {
-    var walker = new DOMWalker(doc, doc.documentElement);
-    var re = new ReversibleRegExp(text, "m");
-    var matchCount = 0;
+    let walker = new DOMWalker(doc, doc.documentElement);
+    let re = new ReversibleRegExp(text, "m");
+    let matchCount = 0;
 
     this.find = function(reverse, caseSensitive)
     {
-        var match = this.findNextMatch(reverse, caseSensitive);
+        let match = this.findNextMatch(reverse, caseSensitive);
         if (match)
         {
             this.lastMatch = match;
             ++matchCount;
 
-            var node = match.node;
-            var nodeBox = this.openToNode(node, match.isValue);
+            let node = match.node;
+            let nodeBox = this.openToNode(node, match.isValue);
 
             this.selectMatched(nodeBox, node, match, reverse);
         }
@@ -1690,7 +1690,7 @@ function NodeSearch(text, doc, panelNode, ioBox)
     this.findNextMatch = function(reverse, caseSensitive)
     {
 
-        var innerMatch = this.findNextInnerMatch(reverse, caseSensitive);
+        let innerMatch = this.findNextInnerMatch(reverse, caseSensitive);
         if (innerMatch)
             return innerMatch;
         else
@@ -1698,7 +1698,7 @@ function NodeSearch(text, doc, panelNode, ioBox)
 
         function walkNode() { return reverse ? walker.previousNode() : walker.nextNode(); }
 
-        var node;
+        let node;
         while (node = walkNode())
         {
             if (node.nodeType == Node.TEXT_NODE)
@@ -1707,7 +1707,7 @@ function NodeSearch(text, doc, panelNode, ioBox)
                     continue;
             }
 
-            var m = this.checkNode(node, reverse, caseSensitive);
+            let m = this.checkNode(node, reverse, caseSensitive);
             if (m)
                 return m;
         }
@@ -1717,9 +1717,9 @@ function NodeSearch(text, doc, panelNode, ioBox)
     {
         if (this.lastRange)
         {
-            var lastMatchNode = this.lastMatch.node;
-            var lastReMatch = this.lastMatch.match;
-            var m = re.exec(lastReMatch.input, reverse, lastReMatch.caseSensitive, lastReMatch);
+            let lastMatchNode = this.lastMatch.node;
+            let lastReMatch = this.lastMatch.match;
+            let m = re.exec(lastReMatch.input, reverse, lastReMatch.caseSensitive, lastReMatch);
             if (m)
             {
                 return {
@@ -1740,11 +1740,11 @@ function NodeSearch(text, doc, panelNode, ioBox)
 
     this.checkNode = function(node, reverse, caseSensitive, firstStep)
     {
-        var checkOrder;
+        let checkOrder;
         if (node.nodeType != Node.TEXT_NODE)
         {
-            var nameCheck = { name: "nodeName", isValue: false, caseSensitive: false };
-            var valueCheck = { name: "nodeValue", isValue: true, caseSensitive: caseSensitive };
+            let nameCheck = { name: "nodeName", isValue: false, caseSensitive: false };
+            let valueCheck = { name: "nodeValue", isValue: true, caseSensitive: caseSensitive };
             checkOrder = reverse ? [ valueCheck, nameCheck ] : [ nameCheck, valueCheck ];
         }
         else
@@ -1752,8 +1752,8 @@ function NodeSearch(text, doc, panelNode, ioBox)
             checkOrder = [{name: "nodeValue", isValue: false, caseSensitive: caseSensitive }];
         }
 
-        for (var i = firstStep || 0; i < checkOrder.length; i++) {
-            var m = re.exec(node[checkOrder[i].name], reverse, checkOrder[i].caseSensitive);
+        for (let i = firstStep || 0; i < checkOrder.length; i++) {
+            let m = re.exec(node[checkOrder[i].name], reverse, checkOrder[i].caseSensitive);
             if (m)
                 return {
                     node: node,
@@ -1767,15 +1767,15 @@ function NodeSearch(text, doc, panelNode, ioBox)
     {
         if (node.nodeType == Node.ELEMENT_NODE)
         {
-            var nodeBox = ioBox.openToObject(node);
+            let nodeBox = ioBox.openToObject(node);
             return findElementNameBox(nodeBox);
         }
         else if (node.nodeType == Node.ATTRIBUTE_NODE)
         {
-            var nodeBox = ioBox.openToObject(node.ownerElement);
+            let nodeBox = ioBox.openToObject(node.ownerElement);
             if (nodeBox)
             {
-                var attrNodeBox = findNodeAttrBox(nodeBox, node.nodeName);
+                let attrNodeBox = findNodeAttrBox(nodeBox, node.nodeName);
                 if (isValue)
                     return getChildByClass(attrNodeBox, "nodeValue");
                 else
@@ -1784,12 +1784,12 @@ function NodeSearch(text, doc, panelNode, ioBox)
         }
         else if (node.nodeType == Node.TEXT_NODE)
         {
-            var nodeBox = ioBox.openToObject(node);
+            let nodeBox = ioBox.openToObject(node);
             if (nodeBox)
                 return nodeBox;
             else
             {
-                var nodeBox = ioBox.openToObject(node.parentNode);
+                let nodeBox = ioBox.openToObject(node.parentNode);
                 if (hasClass(nodeBox, "textNodeBox"))
                     nodeBox = getTextElementTextBox(nodeBox);
                 return nodeBox;
@@ -1801,7 +1801,7 @@ function NodeSearch(text, doc, panelNode, ioBox)
     {
         setTimeout(bindFixed(function()
         {
-            var reMatch = match.match;
+            let reMatch = match.match;
             this.selectNodeText(nodeBox, node, reMatch[0], reMatch.index, reverse, reMatch.caseSensitive);
             dispatch([Firebug.A11yModel], 'onHTMLSearchMatchFound', [panelNode.ownerPanel, match]);
         }, this));
@@ -1809,13 +1809,13 @@ function NodeSearch(text, doc, panelNode, ioBox)
 
     this.selectNodeText = function(nodeBox, node, text, index, reverse, caseSensitive)
     {
-        var row, range;
+        let row, range;
 
         // If we are still inside the same node as the last search, advance the range
         // to the next substring within that node
         if (nodeBox == this.lastNodeBox)
         {
-            var target = this.lastRange.startContainer;
+            let target = this.lastRange.startContainer;
             range = this.lastRange = panelNode.ownerDocument.createRange();
             range.setStart(target, index);
             range.setEnd(target, index+text.length);
@@ -1827,7 +1827,7 @@ function NodeSearch(text, doc, panelNode, ioBox)
         {
             // Search for the first instance of the string inside the node
             function findRow(node) { return node.nodeType == 1 ? node : node.parentNode; }
-            var search = new TextSearch(nodeBox, findRow);
+            let search = new TextSearch(nodeBox, findRow);
             row = this.lastRow = search.find(text, reverse, caseSensitive);
             range = this.lastRange = search.range;
             this.lastNodeBox = nodeBox;
@@ -1835,7 +1835,7 @@ function NodeSearch(text, doc, panelNode, ioBox)
 
         if (row)
         {
-            var sel = panelNode.ownerDocument.defaultView.getSelection();
+            let sel = panelNode.ownerDocument.defaultView.getSelection();
             sel.removeAllRanges();
             sel.addRange(range);
 

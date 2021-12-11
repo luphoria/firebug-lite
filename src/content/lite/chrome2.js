@@ -1,6 +1,6 @@
 /* See license.txt for terms of usage */
 
-var Firebug = null;
+let Firebug = null;
 
 /* The 'context' in this file is always 'Firebug.currentContext' */
 
@@ -24,26 +24,26 @@ var Firebug = null;
 
 ///const panelURL = "chrome://firebug/content/panel.html";
 
-var statusCropSize = 20;
+let statusCropSize = 20;
 
-var positiveZoomFactors = [1, 1.1, 1.2, 1.3, 1.5, 2, 3];
-var negativeZoomFactors = [1, 0.95, 0.8, 0.7, 0.5, 0.2, 0.1];
+let positiveZoomFactors = [1, 1.1, 1.2, 1.3, 1.5, 2, 3];
+let negativeZoomFactors = [1, 0.95, 0.8, 0.7, 0.5, 0.2, 0.1];
 
 // ************************************************************************************************
 // Globals
 
-var panelBox, panelSplitter, sidePanelDeck, panelBar1, panelBar2, locationList, locationButtons,
+let panelBox, panelSplitter, sidePanelDeck, panelBar1, panelBar2, locationList, locationButtons,
     panelStatus, panelStatusSeparator, cmdPreview, cmdPreviewBrowser;
 
-var waitingPanelBarCount = 2;
+let waitingPanelBarCount = 2;
 
-var inDetachedScope = (window.location == "chrome://firebug/content/firebug.xul");
+let inDetachedScope = (window.location == "chrome://firebug/content/firebug.xul");
 
-var disabledHead = null;
-var disabledCaption = null;
-var enableSiteLink = null;
-var enableSystemPagesLink = null;
-var enableAlwaysLink = null;
+let disabledHead = null;
+let disabledCaption = null;
+let enableSiteLink = null;
+let enableSystemPagesLink = null;
+let enableAlwaysLink = null;
 
 // ************************************************************************************************
 
@@ -92,7 +92,7 @@ top.FirebugChrome =
         cmdPreviewBrowser = $("fbCommandPreviewBrowser");
 
         if (window.arguments)
-            var detachArgs = window.arguments[0];
+            let detachArgs = window.arguments[0];
 
         if (FBTrace.DBG_INITIALIZE)
             FBTrace.sysout("chrome.initialize w/detachArgs=", detachArgs);
@@ -117,14 +117,14 @@ top.FirebugChrome =
 
         Firebug.internationalizeUI(window.document);
 
-        var browser1 = panelBar1.browser;
+        let browser1 = panelBar1.browser;
         browser1.addEventListener("load", browser1Loaded, true);
         browser1.droppedLinkHandler = function()
         {
             return false;
         };
 
-        var browser2 = panelBar2.browser;
+        let browser2 = panelBar2.browser;
         browser2.addEventListener("load", browser2Loaded, true);
         browser2.droppedLinkHandler = function()
         {
@@ -134,7 +134,7 @@ top.FirebugChrome =
         window.addEventListener("blur", onBlur, true);
 
         // Initialize Firebug Tools & Firebug Icon menus.
-        var firebugMenuPopup = $("fbFirebugMenuPopup");
+        let firebugMenuPopup = $("fbFirebugMenuPopup");
         this.initializeMenu($("menu_firebug"), firebugMenuPopup);
         this.initializeMenu($("fbFirebugMenu"), firebugMenuPopup);
 
@@ -165,31 +165,31 @@ top.FirebugChrome =
         try
         {
             if (window.arguments)
-                var detachArgs = window.arguments[0];
+                let detachArgs = window.arguments[0];
 
             this.applyTextSize(Firebug.textSize);
 
-            var doc1 = panelBar1.browser.contentDocument;
+            let doc1 = panelBar1.browser.contentDocument;
             doc1.addEventListener("mouseover", onPanelMouseOver, false);
             doc1.addEventListener("mouseout", onPanelMouseOut, false);
             doc1.addEventListener("mousedown", onPanelMouseDown, false);
             doc1.addEventListener("click", onPanelClick, false);
             panelBar1.addEventListener("selectingPanel", onSelectingPanel, false);
 
-            var doc2 = panelBar2.browser.contentDocument;
+            let doc2 = panelBar2.browser.contentDocument;
             doc2.addEventListener("mouseover", onPanelMouseOver, false);
             doc2.addEventListener("mouseout", onPanelMouseOut, false);
             doc2.addEventListener("click", onPanelClick, false);
             doc2.addEventListener("mousedown", onPanelMouseDown, false);
             panelBar2.addEventListener("selectPanel", onSelectedSidePanel, false);
 
-            var doc3 = cmdPreviewBrowser.contentDocument;
+            let doc3 = cmdPreviewBrowser.contentDocument;
             doc3.addEventListener("mouseover", onPanelMouseOver, false);
             doc3.addEventListener("mouseout", onPanelMouseOut, false);
             doc3.addEventListener("mousedown", onPanelMouseDown, false);
             doc3.addEventListener("click", onPanelClick, false);
 
-            var mainTabBox = panelBar1.ownerDocument.getElementById("fbPanelBar1-tabBox");
+            let mainTabBox = panelBar1.ownerDocument.getElementById("fbPanelBar1-tabBox");
             mainTabBox.addEventListener("mousedown", onMainTabBoxMouseDown, false);
 
             // The side panel bar doesn't care about this event.  It must, however,
@@ -208,7 +208,7 @@ top.FirebugChrome =
                 Firebug.initializeUI(detachArgs);
 
             // Append all registered styleesheets into Firebug UI.
-            for (var uri in Firebug.stylesheets)
+            for (let uri in Firebug.stylesheets)
             {
                 FBL.appendStylesheet(doc1, Firebug.stylesheets[uri]);
                 FBL.appendStylesheet(doc2, Firebug.stylesheets[uri]);
@@ -228,25 +228,25 @@ top.FirebugChrome =
         if (FBTrace.DBG_INITIALIZE || !panelBar1)
             FBTrace.sysout("chrome.shutdown entered for "+window.location+"\n");
 
-        var doc1 = panelBar1.browser.contentDocument;
+        let doc1 = panelBar1.browser.contentDocument;
         doc1.removeEventListener("mouseover", onPanelMouseOver, false);
         doc1.removeEventListener("mouseout", onPanelMouseOut, false);
         doc1.removeEventListener("mousedown", onPanelMouseDown, false);
         doc1.removeEventListener("click", onPanelClick, false);
 
-        var doc2 = panelBar2.browser.contentDocument;
+        let doc2 = panelBar2.browser.contentDocument;
         doc2.removeEventListener("mouseover", onPanelMouseOver, false);
         doc2.removeEventListener("mouseout", onPanelMouseOut, false);
         doc2.removeEventListener("mousedown", onPanelMouseDown, false);
         doc2.removeEventListener("click", onPanelClick, false);
 
-        var doc3 = cmdPreviewBrowser.contentDocument;
+        let doc3 = cmdPreviewBrowser.contentDocument;
         doc3.removeEventListener("mouseover", onPanelMouseOver, false);
         doc3.removeEventListener("mouseout", onPanelMouseOut, false);
         doc3.removeEventListener("mousedown", onPanelMouseDown, false);
         doc3.removeEventListener("click", onPanelClick, false);
 
-        var mainTabBox = panelBar1.ownerDocument.getElementById("fbPanelBar1-tabBox");
+        let mainTabBox = panelBar1.ownerDocument.getElementById("fbPanelBar1-tabBox");
         mainTabBox.removeEventListener("mousedown", onMainTabBoxMouseDown, false);
 
         locationList.removeEventListener("selectObject", onSelectLocation, false);
@@ -297,7 +297,7 @@ top.FirebugChrome =
 
     undetach: function()
     {
-        var detachedChrome = Firebug.chrome;
+        let detachedChrome = Firebug.chrome;
         Firebug.setChrome(Firebug.originalChrome, "minimized");
 
         Firebug.showBar(false);
@@ -341,7 +341,7 @@ top.FirebugChrome =
         // Console panel can be displayed for all the other panels
         // (except of the console panel itself)
         // XXXjjb, xxxHonza: this should be somehow betterm, more generic and extensible...
-        var consolePanelType = Firebug.getPanelType("console");
+        let consolePanelType = Firebug.getPanelType("console");
         if (consolePanelType == panelType)
         {
             if (!FBL.isCollapsed(cmdPreview))
@@ -365,7 +365,7 @@ top.FirebugChrome =
 
     savePanels: function()
     {
-        var path = this.writePanels(panelBar1.browser.contentDocument);
+        let path = this.writePanels(panelBar1.browser.contentDocument);
         $("fbStatusText").setAttribute("value", path);
         if (FBTrace.DBG_PANELS)
             FBTrace.sysout("Wrote panels to "+path+"\n");
@@ -373,10 +373,10 @@ top.FirebugChrome =
 
     writePanels: function(doc)
     {
-        var serializer = new XMLSerializer();
-        var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
+        let serializer = new XMLSerializer();
+        let foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
                .createInstance(Components.interfaces.nsIFileOutputStream);
-        var file = Components.classes["@mozilla.org/file/directory_service;1"]
+        let file = Components.classes["@mozilla.org/file/directory_service;1"]
            .getService(Components.interfaces.nsIProperties)
            .get("TmpD", Components.interfaces.nsIFile);
 
@@ -391,10 +391,10 @@ top.FirebugChrome =
 
     updatePanelBar1: function(panelTypes)  // part of initializeUI
     {
-        var mainPanelTypes = [];
-        for (var i = 0; i < panelTypes.length; ++i)
+        let mainPanelTypes = [];
+        for (let i = 0; i < panelTypes.length; ++i)
         {
-            var panelType = panelTypes[i];
+            let panelType = panelTypes[i];
             if (!panelType.prototype.parentPanel && !panelType.hidden)
                 mainPanelTypes.push(panelType);
         }
@@ -435,7 +435,7 @@ top.FirebugChrome =
 
         Firebug.chrome.selectPanel("script");
 
-        var watchPanel = context.getPanel("watches", true);
+        let watchPanel = context.getPanel("watches", true);
         if (watchPanel)
         {
             Firebug.CommandLine.isReadyElsePreparing(context);
@@ -450,12 +450,12 @@ top.FirebugChrome =
 
     reload: function(skipCache)
     {
-        var reloadFlags = skipCache
+        let reloadFlags = skipCache
             ? LOAD_FLAGS_BYPASS_PROXY | LOAD_FLAGS_BYPASS_CACHE
             : LOAD_FLAGS_NONE;
 
         // Make sure the selected tab in the attached browser window is refreshed.
-        var browser = Firebug.chrome.getCurrentBrowser();
+        let browser = Firebug.chrome.getCurrentBrowser();
         browser.firebugReload = true;
         browser.webNavigation.reload(reloadFlags);
 
@@ -473,8 +473,8 @@ top.FirebugChrome =
     {
         if ($('fbContentBox').collapsed)
             return;
-        var i, currentIndex = newIndex = -1, currentPanel = this.getSelectedPanel(), newPanel;
-        var panelTypes = Firebug.getMainPanelTypes(Firebug.currentContext);
+        let i, currentIndex = newIndex = -1, currentPanel = this.getSelectedPanel(), newPanel;
+        let panelTypes = Firebug.getMainPanelTypes(Firebug.currentContext);
 
         /*get current panel's index (is there a simpler way for this?*/
         for (i = 0; i < panelTypes.length; i++)
@@ -499,10 +499,10 @@ top.FirebugChrome =
 
     getNextObject: function(reverse)
     {
-        var panel = Firebug.currentContext.getPanel(Firebug.currentContext.panelName);
+        let panel = Firebug.currentContext.getPanel(Firebug.currentContext.panelName);
         if (panel)
         {
-            var item = panelStatus.getItemByObject(panel.selection);
+            let item = panelStatus.getItemByObject(panel.selection);
             if (item)
             {
                 if (reverse)
@@ -518,7 +518,7 @@ top.FirebugChrome =
 
     gotoNextObject: function(reverse)
     {
-        var nextObject = this.getNextObject(reverse);
+        let nextObject = this.getNextObject(reverse);
         if (nextObject)
             this.select(nextObject);
         else
@@ -538,7 +538,7 @@ top.FirebugChrome =
      */
     navigate: function(object, panelName, sidePanelName)
     {
-        var panel;
+        let panel;
         if (panelName || sidePanelName)
             panel = this.selectPanel(panelName, sidePanelName);
         else
@@ -559,8 +559,8 @@ top.FirebugChrome =
     {
         if (FBTrace.DBG_PANELS)
             FBTrace.sysout("chrome.select object:"+object+" panelName:"+panelName+" sidePanelName:"+sidePanelName+" forceUpdate:"+forceUpdate+"\n");
-        var bestPanelName = getBestPanelName(object, Firebug.currentContext, panelName);
-        var panel = this.selectPanel(bestPanelName, sidePanelName, true);
+        let bestPanelName = getBestPanelName(object, Firebug.currentContext, panelName);
+        let panel = this.selectPanel(bestPanelName, sidePanelName, true);
         if (panel)
             panel.select(object, forceUpdate);
     },
@@ -580,8 +580,8 @@ top.FirebugChrome =
 
     selectSupportingPanel: function(object, context, forceUpdate)
     {
-        var bestPanelName = getBestPanelSupportingObject(object, context);
-        var panel = this.selectPanel(bestPanelName, false, true);
+        let bestPanelName = getBestPanelSupportingObject(object, context);
+        let panel = this.selectPanel(bestPanelName, false, true);
         if (panel)
             panel.select(object, forceUpdate);
     },
@@ -611,7 +611,7 @@ top.FirebugChrome =
         this.previouslyCollapsed = $("fbContentBox").collapsed;
         this.previouslyFocused = Firebug.isDetached() && this.isFocused();  // TODO previouslyMinimized
 
-        var switchPanel = this.selectPanel(switchToPanelName);
+        let switchPanel = this.selectPanel(switchToPanelName);
         if (switchPanel)
             this.previousObject = switchPanel.selection;
 
@@ -620,7 +620,7 @@ top.FirebugChrome =
 
     unswitchToPanel: function(context, switchToPanelName, cancelled)
     {
-        var switchToPanel = context.getPanel(switchToPanelName);
+        let switchToPanel = context.getPanel(switchToPanelName);
 
         if (this.previouslyFocused)
             this.focus();
@@ -688,7 +688,7 @@ top.FirebugChrome =
 
     syncPanel: function(panelName)
     {
-        var context = Firebug.currentContext;
+        let context = Firebug.currentContext;
 
         if (FBTrace.DBG_PANELS)
             FBTrace.sysout("chrome.syncPanel Firebug.currentContext=" +
@@ -720,7 +720,7 @@ top.FirebugChrome =
 
     syncMainPanels: function()
     {
-        var panelTypes = Firebug.getMainPanelTypes(Firebug.currentContext);
+        let panelTypes = Firebug.getMainPanelTypes(Firebug.currentContext);
         panelBar1.updatePanels(panelTypes);
     },
 
@@ -731,14 +731,14 @@ top.FirebugChrome =
         if (!panelBar1.selectedPanel)
             return;
 
-        var panelTypes = Firebug.getSidePanelTypes(Firebug.currentContext, panelBar1.selectedPanel);
+        let panelTypes = Firebug.getSidePanelTypes(Firebug.currentContext, panelBar1.selectedPanel);
         panelBar2.updatePanels(panelTypes);
 
         if (Firebug.currentContext && Firebug.currentContext.sidePanelNames)
         {
             if ( !panelBar2.selectedPanel || (panelBar2.selectedPanel.parentPanel !== panelBar1.selectedPanel.name) )
             {
-                var sidePanelName = Firebug.currentContext.sidePanelNames[Firebug.currentContext.panelName];
+                let sidePanelName = Firebug.currentContext.sidePanelNames[Firebug.currentContext.panelName];
                 sidePanelName = getBestSidePanelName(sidePanelName, panelTypes);
                 panelBar2.selectPanel(sidePanelName, true);
             }
@@ -760,7 +760,7 @@ top.FirebugChrome =
     {
         if (Firebug.currentContext)
         {
-            var title = Firebug.currentContext.getTitle();
+            let title = Firebug.currentContext.getTitle();
             window.document.title = FBL.$STRF("WindowTitle", [title]);
         }
         else
@@ -774,7 +774,7 @@ top.FirebugChrome =
 
     syncLocationList: function()
     {
-        var panel = panelBar1.selectedPanel;
+        let panel = panelBar1.selectedPanel;
         if (panel && panel.location)
         {
             locationList.location = panel.location;
@@ -793,14 +793,14 @@ top.FirebugChrome =
 
     syncStatusPath: function()
     {
-        var panel = panelBar1.selectedPanel;
+        let panel = panelBar1.selectedPanel;
         if (!panel || (panel && !panel.selection))
         {
             panelStatus.clear();
         }
         else
         {
-            var path = panel.getObjectPath(panel.selection);
+            let path = panel.getObjectPath(panel.selection);
             if (!path || !path.length)
             {
                 FBL.hide(panelStatusSeparator, true);
@@ -812,8 +812,8 @@ top.FirebugChrome =
                 // is displayed only if there are some other buttons on the left side.
                 // Before showing the status separator let's see whethere there are any other
                 // button on the left.
-                var hide = true;
-                var sibling = panelStatusSeparator.parentNode.previousSibling;
+                let hide = true;
+                let sibling = panelStatusSeparator.parentNode.previousSibling;
                 while (sibling)
                 {
                     if (!FBL.isCollapsed(sibling))
@@ -831,22 +831,22 @@ top.FirebugChrome =
                 panelStatus.lastPanelName = panel.name;
 
                 // If the object already exists in the list, just select it and keep the path
-                var selection = panel.selection;
-                var existingItem = panelStatus.getItemByObject(panel.selection);
+                let selection = panel.selection;
+                let existingItem = panelStatus.getItemByObject(panel.selection);
                 if (existingItem)
                     panelStatus.selectItem(existingItem);
                 else
                 {
                     panelStatus.clear();
 
-                    for (var i = 0; i < path.length; ++i)
+                    for (let i = 0; i < path.length; ++i)
                     {
-                        var object = path[i];
+                        let object = path[i];
 
-                        var rep = Firebug.getRep(object, Firebug.currentContext);
-                        var objectTitle = rep.getTitle(object, Firebug.currentContext);
+                        let rep = Firebug.getRep(object, Firebug.currentContext);
+                        let objectTitle = rep.getTitle(object, Firebug.currentContext);
 
-                        var title = FBL.cropMultipleLines(objectTitle, statusCropSize);
+                        let title = FBL.cropMultipleLines(objectTitle, statusCropSize);
                         panelStatus.addItem(title, object, rep, panel.statusSeparator);
                     }
 
@@ -860,10 +860,10 @@ top.FirebugChrome =
 
     toggleOrient: function()
     {
-        var panelPane = $("fbPanelPane");
+        let panelPane = $("fbPanelPane");
         panelSplitter.orient = panelPane.orient
             = panelPane.orient == "vertical" ? "horizontal" : "vertical";
-        var option = $('menu_toggleOrient').getAttribute("option");
+        let option = $('menu_toggleOrient').getAttribute("option");
         Firebug.setPref(Firebug.prefDomain, option, panelPane.orient != "vertical");
     },
 
@@ -876,7 +876,7 @@ top.FirebugChrome =
         {
             if (parentPanel)
             {
-                var currentPanel = this.getSelectedPanel();
+                let currentPanel = this.getSelectedPanel();
                 if (currentPanel && parentPanel == currentPanel.name)
                     this.syncSidePanels();
             }
@@ -896,13 +896,13 @@ top.FirebugChrome =
 
     getGlobalAttribute: function(id, name)
     {
-        var elt = $(id);
+        let elt = $(id);
         return elt.getAttribute(name);
     },
 
     setGlobalAttribute: function(id, name, value)
     {
-        var elt = $(id);
+        let elt = $(id);
         if (elt)
         {
             if (value == null)
@@ -919,7 +919,7 @@ top.FirebugChrome =
     setChromeDocumentAttribute: function(id, name, value)
     {
         // Call as  Firebug.chrome.setChromeDocumentAttribute() to set attributes in another window.
-        var elt = $(id);
+        let elt = $(id);
         if (elt)
             elt.setAttribute(name, value);
     },
@@ -929,7 +929,7 @@ top.FirebugChrome =
         if (!filter)
             filter = FBL.noKeyModifiers;
 
-        var keyCode = KeyEvent["DOM_VK_"+key];
+        let keyCode = KeyEvent["DOM_VK_"+key];
 
         function fn(event)
         {
@@ -950,7 +950,7 @@ top.FirebugChrome =
         if (!filter)
             filter = FBL.noKeyModifiers;
 
-        var charCode = ch.charCodeAt(0);
+        let charCode = ch.charCodeAt(0);
 
         function fn(event)
         {
@@ -980,19 +980,19 @@ top.FirebugChrome =
 
     applyTextSize: function(value)
     {
-        var zoom = value >= 0 ? positiveZoomFactors[value] : negativeZoomFactors[Math.abs(value)];
+        let zoom = value >= 0 ? positiveZoomFactors[value] : negativeZoomFactors[Math.abs(value)];
 
         panelBar1.browser.markupDocumentViewer.textZoom = zoom;
         panelBar2.browser.markupDocumentViewer.textZoom = zoom;
 
 
-        var aNode = panelBar1.selectedPanel ? panelBar1.selectedPanel.panelNode : null ;
+        let aNode = panelBar1.selectedPanel ? panelBar1.selectedPanel.panelNode : null ;
         if (aNode)
         {
             Firebug.MeasureBox.startMeasuring(aNode);
-            var size = Firebug.MeasureBox.measureText();
+            let size = Firebug.MeasureBox.measureText();
             Firebug.MeasureBox.stopMeasuring();
-            var box = $("fbCommandBox");
+            let box = $("fbCommandBox");
             box.style.height = size.height;
             box.style.fontSize = (zoom * 100)+"%";
         }
@@ -1026,7 +1026,7 @@ top.FirebugChrome =
         {
             this.syncStatusPath();
 
-            var sidePanel = panelBar2.selectedPanel;
+            let sidePanel = panelBar2.selectedPanel;
             if (sidePanel)
                 sidePanel.select(object);
         }
@@ -1052,7 +1052,7 @@ top.FirebugChrome =
 
     onMenuShowing: function(popup)
     {
-        var detachFirebug = FBL.getElementsByAttribute(popup, "id", "menu_detachFirebug")[0];
+        let detachFirebug = FBL.getElementsByAttribute(popup, "id", "menu_detachFirebug")[0];
         if (detachFirebug)
         {
             detachFirebug.setAttribute("label", (Firebug.isDetached() ?
@@ -1062,14 +1062,14 @@ top.FirebugChrome =
 
     onOptionsShowing: function(popup)
     {
-        for (var child = popup.firstChild; child; child = child.nextSibling)
+        for (let child = popup.firstChild; child; child = child.nextSibling)
         {
             if (child.localName == "menuitem")
             {
-                var option = child.getAttribute("option");
+                let option = child.getAttribute("option");
                 if (option)
                 {
-                    var checked = false;
+                    let checked = false;
                     if (option == "profiling")
                         checked = fbs.profiling;
                     else
@@ -1083,8 +1083,8 @@ top.FirebugChrome =
 
     onToggleOption: function(menuitem)
     {
-        var option = menuitem.getAttribute("option");
-        var checked = menuitem.getAttribute("checked") == "true";
+        let option = menuitem.getAttribute("option");
+        let checked = menuitem.getAttribute("checked") == "true";
 
         Firebug.setPref(Firebug.prefDomain, option, checked);
     },
@@ -1096,9 +1096,9 @@ top.FirebugChrome =
         //if (!panelBar1.selectedPanel)
         //    return false;
 
-        var popup = $("fbContextMenu");
-        var target = document.popupNode;
-        var panel = target ? Firebug.getElementPanel(target) : null;
+        let popup = $("fbContextMenu");
+        let target = document.popupNode;
+        let panel = target ? Firebug.getElementPanel(target) : null;
 
         if (!panel)
             panel = panelBar1 ? panelBar1.selectedPanel : null; // the event must be on our chrome not inside the panel
@@ -1107,14 +1107,14 @@ top.FirebugChrome =
 
         // Make sure the Copy action is only available if there is actually someting
         // selected in the panel.
-        var sel = target.ownerDocument.defaultView.getSelection();
+        let sel = target.ownerDocument.defaultView.getSelection();
         if (!this.contextMenuObject && !$("cmd_copy").getAttribute("disabled") && !sel.isCollapsed)
         {
-            var menuitem = FBL.createMenuItem(popup, {label: "Copy"});
+            let menuitem = FBL.createMenuItem(popup, {label: "Copy"});
             menuitem.setAttribute("command", "cmd_copy");
         }
 
-        var object;
+        let object;
         if (this.contextMenuObject)
             object = this.contextMenuObject;
         else if (target && target.ownerDocument == document)
@@ -1126,9 +1126,9 @@ top.FirebugChrome =
 
         this.contextMenuObject = null;
 
-        var rep = Firebug.getRep(object, Firebug.currentContext);
-        var realObject = rep ? rep.getRealObject(object, Firebug.currentContext) : null;
-        var realRep = realObject ? Firebug.getRep(realObject, Firebug.currentContext) : null;
+        let rep = Firebug.getRep(object, Firebug.currentContext);
+        let realObject = rep ? rep.getRealObject(object, Firebug.currentContext) : null;
+        let realRep = realObject ? Firebug.getRep(realObject, Firebug.currentContext) : null;
 
         if (FBTrace.DBG_OPTIONS)
             FBTrace.sysout("chrome.onContextShowing object:"+object+" rep: "+rep+" realObject: "+realObject+" realRep:"+realRep+"\n");
@@ -1136,10 +1136,10 @@ top.FirebugChrome =
         if (realObject && realRep)
         {
             // 1. Add the custom menu items from the realRep
-            var menu = realRep.getContextMenuItems(realObject, target, Firebug.currentContext);
+            let menu = realRep.getContextMenuItems(realObject, target, Firebug.currentContext);
             if (menu)
             {
-                for (var i = 0; i < menu.length; ++i)
+                for (let i = 0; i < menu.length; ++i)
                     FBL.createMenuItem(popup, menu[i]);
             }
         }
@@ -1147,10 +1147,10 @@ top.FirebugChrome =
         if (object && rep && rep != realRep)
         {
             // 1. Add the custom menu items from the original rep
-            var items = rep.getContextMenuItems(object, target, Firebug.currentContext);
+            let items = rep.getContextMenuItems(object, target, Firebug.currentContext);
             if (items)
             {
-                for (var i = 0; i < items.length; ++i)
+                for (let i = 0; i < items.length; ++i)
                     FBL.createMenuItem(popup, items[i]);
             }
         }
@@ -1158,10 +1158,10 @@ top.FirebugChrome =
         // 1. Add the custom menu items from the panel
         if (panel)
         {
-            var items = panel.getContextMenuItems(realObject, target);
+            let items = panel.getContextMenuItems(realObject, target);
             if (items)
             {
-                for (var i = 0; i < items.length; ++i)
+                for (let i = 0; i < items.length; ++i)
                     FBL.createMenuItem(popup, items[i]);
             }
         }
@@ -1169,10 +1169,10 @@ top.FirebugChrome =
         // 2. Add the inspect menu items
         if (realObject && rep && rep.inspectable)
         {
-            var separator = null;
+            let separator = null;
 
-            var items = this.getInspectMenuItems(realObject);
-            for (var i = 0; i < items.length; ++i)
+            let items = this.getInspectMenuItems(realObject);
+            for (let i = 0; i < items.length; ++i)
             {
                 if (popup.firstChild && !separator)
                     separator = FBL.createMenuSeparator(popup);
@@ -1187,22 +1187,22 @@ top.FirebugChrome =
 
     onEditorsShowing: function(popup)  // TODO move to Firebug.Editors module in editors.js
     {
-        var editors = Firebug.registeredEditors;
+        let editors = Firebug.registeredEditors;
         if ( editors.length > 0 )
         {
-            var lastChild = popup.lastChild;
+            let lastChild = popup.lastChild;
             FBL.eraseNode(popup);
-            var disabled = (!Firebug.currentContext);
-            for( var i = 0; i < editors.length; ++i )
+            let disabled = (!Firebug.currentContext);
+            for( let i = 0; i < editors.length; ++i )
             {
                 if (editors[i] == "-")
                 {
                     FBL.createMenuItem(popup, "-");
                     continue;
                 }
-                var item = {label: editors[i].label, image: editors[i].image,
+                let item = {label: editors[i].label, image: editors[i].image,
                                 nol10n: true, disabled: disabled };
-                var menuitem = FBL.createMenuItem(popup, item);
+                let menuitem = FBL.createMenuItem(popup, item);
                 menuitem.setAttribute("command", "cmd_openInEditor");
                 menuitem.value = editors[i].id;
             }
@@ -1213,26 +1213,26 @@ top.FirebugChrome =
 
     getInspectMenuItems: function(object)
     {
-        var items = [];
+        let items = [];
 
         // Domplate (+ support for context menus) can be used even in separate
         // windows when Firebug.currentContext doesn't have to be defined.
         if (!Firebug.currentContext)
             return items;
 
-        for (var i = 0; i < Firebug.panelTypes.length; ++i)
+        for (let i = 0; i < Firebug.panelTypes.length; ++i)
         {
-            var panelType = Firebug.panelTypes[i];
+            let panelType = Firebug.panelTypes[i];
             if (!panelType.prototype.parentPanel
                 && panelType.prototype.name != Firebug.currentContext.panelName
                 && panelSupportsObject(panelType, object, Firebug.currentContext))
             {
-                var panelName = panelType.prototype.name;
+                let panelName = panelType.prototype.name;
 
-                var title = Firebug.getPanelTitle(panelType);
-                var label = FBL.$STRF("InspectInTab", [title]);
+                let title = Firebug.getPanelTitle(panelType);
+                let label = FBL.$STRF("InspectInTab", [title]);
 
-                var command = bindFixed(this.select, this, object, panelName);
+                let command = bindFixed(this.select, this, object, panelName);
                 items.push({label: label, command: command, nol10n: true});
             }
         }
@@ -1247,12 +1247,12 @@ top.FirebugChrome =
         //if (!panelBar1.selectedPanel)
         //    return false;
 
-        var tooltip = $("fbTooltip");
-        var target = document.tooltipNode;
+        let tooltip = $("fbTooltip");
+        let target = document.tooltipNode;
 
-        var panel = target ? Firebug.getElementPanel(target) : null;
+        let panel = target ? Firebug.getElementPanel(target) : null;
 
-        var object;
+        let object;
         /* XXXjjb This causes the Script panel to show the function body over and over. We need to clear it at least,
          * but really we need to understand why the tooltip should show the context menu object at all.
          * One thing the contextMenuObject supports is peeking at function bodies when stopped a breakpoint.
@@ -1270,13 +1270,13 @@ top.FirebugChrome =
         else if (panel)
             object = panel.getTooltipObject(target);
 
-        var rep = object ? Firebug.getRep(object, Firebug.currentContext) : null;
+        let rep = object ? Firebug.getRep(object, Firebug.currentContext) : null;
         object = rep ? rep.getRealObject(object, Firebug.currentContext) : null;
         rep = object ? Firebug.getRep(object) : null;
 
         if (object && rep)
         {
-            var label = rep.getTooltip(object, Firebug.currentContext);
+            let label = rep.getTooltip(object, Firebug.currentContext);
             if (label)
             {
                 tooltip.setAttribute("label", label);
@@ -1322,7 +1322,7 @@ top.FirebugChrome =
         }
         else
         {
-            var extensionManager = FBL.CCSV("@mozilla.org/extensions/manager;1",
+            let extensionManager = FBL.CCSV("@mozilla.org/extensions/manager;1",
                 "nsIExtensionManager");
 
             openDialog("chrome://mozapps/content/extensions/about.xul", "",
@@ -1344,7 +1344,7 @@ top.FirebugChrome =
             return;
         }
 
-        var panel = panelBar1.selectedPanel;
+        let panel = panelBar1.selectedPanel;
 
         if (FBTrace.DBG_BP)
             FBTrace.sysout("Firebug chrome: breakOnNext for panel " +
@@ -1358,7 +1358,7 @@ top.FirebugChrome =
 // ************************************************************************************************
 // Welcome Page (first run)
 
-var FirstRunPage =
+let FirstRunPage =
 {
     initializeUI: function()
     {
@@ -1389,7 +1389,7 @@ var FirstRunPage =
             if (FBL.checkFirebugVersion(Firebug.currentVersion) > 0)
             {
                 // Don't forget to update the preference so, the page is not displayed again
-                var version = Firebug.getVersion();
+                let version = Firebug.getVersion();
                 Firebug.setPref(Firebug.prefDomain, "currentVersion", version);
                 version = version.replace('X', '', "g");
 
@@ -1436,15 +1436,15 @@ function getBestPanelName(object, context, panelName)
 
 function getBestPanelSupportingObject(object, context)
 {
-    var bestLevel = 0;
-    var bestPanel = null;
+    let bestLevel = 0;
+    let bestPanel = null;
 
-    for (var i = 0; i < Firebug.panelTypes.length; ++i)
+    for (let i = 0; i < Firebug.panelTypes.length; ++i)
     {
-        var panelType = Firebug.panelTypes[i];
+        let panelType = Firebug.panelTypes[i];
         if (!panelType.prototype.parentPanel)
         {
-            var level = panelSupportsObject(panelType, object, context);
+            let level = panelSupportsObject(panelType, object, context);
             if (!bestLevel || (level && (level > bestLevel) ))
             {
                 bestLevel = level;
@@ -1463,7 +1463,7 @@ function getBestSidePanelName(sidePanelName, panelTypes)
     if (sidePanelName)
     {
         // Verify that the suggested panel name is in the acceptable list
-        for (var i = 0; i < panelTypes.length; ++i)
+        for (let i = 0; i < panelTypes.length; ++i)
         {
             if (panelTypes[i].prototype.name == sidePanelName)
                 return sidePanelName;
@@ -1481,7 +1481,7 @@ function browser1Loaded()
 {
     if (FBTrace.DBG_INITIALIZE)
         FBTrace.sysout("browse1Loaded\n");
-    var browser1 = panelBar1.browser;
+    let browser1 = panelBar1.browser;
     browser1.removeEventListener("load", browser1Loaded, true);
 
     browser1.contentDocument.title = "Firebug Main Panel";
@@ -1495,7 +1495,7 @@ function browser2Loaded()
 {
     if (FBTrace.DBG_INITIALIZE)
         FBTrace.sysout("browse2Loaded\n");
-    var browser2 = panelBar2.browser;
+    let browser2 = panelBar2.browser;
     browser2.removeEventListener("load", browser2Loaded, true);
 
     browser2.contentDocument.title = "Firebug Side Panel";
@@ -1517,14 +1517,14 @@ function onBlur(event)
 
 function onSelectLocation(event)
 {
-    var location = locationList.repObject;
+    let location = locationList.repObject;
     FirebugChrome.navigate(location);
 }
 
 function onSelectingPanel(event)
 {
-    var panel = panelBar1.selectedPanel;
-    var panelName = panel ? panel.name : null;
+    let panel = panelBar1.selectedPanel;
+    let panelName = panel ? panel.name : null;
 
     if (FBTrace.DBG_PANELS)
         FBTrace.sysout("chrome.onSelectingPanel="+panelName+" Firebug.currentContext=" +
@@ -1548,8 +1548,8 @@ function onSelectingPanel(event)
     // those toolbars that are necessary. This avoids the situation when naughty panel
     // doesn't clean up its toolbars. This must be done before showPanel where visibility
     // of the BON buttons is managed.
-    var toolbar = $("fbToolbarInner");
-    var child = toolbar.firstChild;
+    let toolbar = $("fbToolbarInner");
+    let child = toolbar.firstChild;
     while (child)
     {
         FBL.collapse(child, true);
@@ -1557,7 +1557,7 @@ function onSelectingPanel(event)
     }
 
     // Calling Firebug.showPanel causes dispatching "showPanel" to all modules.
-    var browser = panel ? panel.context.browser : FirebugChrome.getCurrentBrowser();
+    let browser = panel ? panel.context.browser : FirebugChrome.getCurrentBrowser();
     Firebug.showPanel(browser, panel);
 
     // Synchronize UI around panels. Execute the sync after showPanel so the logic
@@ -1572,13 +1572,13 @@ function onSelectingPanel(event)
 
 function onSelectedSidePanel(event)
 {
-    var sidePanel = panelBar2.selectedPanel;
+    let sidePanel = panelBar2.selectedPanel;
     if (Firebug.currentContext)
     {
-        var panelName = Firebug.currentContext.panelName;
+        let panelName = Firebug.currentContext.panelName;
         if (panelName)
         {
-            var sidePanelName = sidePanel ? sidePanel.name : null;
+            let sidePanelName = sidePanel ? sidePanel.name : null;
             Firebug.currentContext.sidePanelNames[panelName] = sidePanelName;
         }
     }
@@ -1586,45 +1586,45 @@ function onSelectedSidePanel(event)
     if (FBTrace.DBG_PANELS)
         FBTrace.sysout("chrome.onSelectedSidePanel name="+(sidePanel?sidePanel.name:"undefined")+"\n");
 
-    var panel = panelBar1.selectedPanel;
+    let panel = panelBar1.selectedPanel;
     if (panel && sidePanel)
         sidePanel.select(panel.selection);
 
-    var browser = sidePanel ? sidePanel.context.browser : FirebugChrome.getCurrentBrowser();
+    let browser = sidePanel ? sidePanel.context.browser : FirebugChrome.getCurrentBrowser();
     Firebug.showSidePanel(browser, sidePanel);  // dispatch to modules
 }
 
 function onPanelMouseOver(event)
 {
-    var object = Firebug.getRepObject(event.target);
+    let object = Firebug.getRepObject(event.target);
     if(!object)
         return;
 
-    var rep = Firebug.getRep(object, Firebug.currentContext);
+    let rep = Firebug.getRep(object, Firebug.currentContext);
     if(rep)
         rep.highlightObject(object, Firebug.currentContext);
 }
 
 function onPanelMouseOut(event)
 {
-    var object = Firebug.getRepObject(event.target);
+    let object = Firebug.getRepObject(event.target);
     if(!object)
         return;
 
-    var rep = Firebug.getRep(object, Firebug.currentContext);
+    let rep = Firebug.getRep(object, Firebug.currentContext);
     if(rep)
         rep.unhighlightObject(object, Firebug.currentContext);
 }
 
 function onPanelClick(event)
 {
-    var repNode = Firebug.getRepNode(event.target);
+    let repNode = Firebug.getRepNode(event.target);
     if (repNode)
     {
-        var object = repNode.repObject;
-        var rep = Firebug.getRep(object, Firebug.currentContext);
-        var realObject = rep ? rep.getRealObject(object, Firebug.currentContext) : null;
-        var realRep = realObject ? Firebug.getRep(realObject, Firebug.currentContext) : rep;
+        let object = repNode.repObject;
+        let rep = Firebug.getRep(object, Firebug.currentContext);
+        let realObject = rep ? rep.getRealObject(object, Firebug.currentContext) : null;
+        let realRep = realObject ? Firebug.getRep(realObject, Firebug.currentContext) : rep;
         if (!realObject)
             realObject = object;
 
@@ -1645,7 +1645,7 @@ function onPanelClick(event)
             {
                 if (rep && !(rep != realRep && rep.browseObject(object, Firebug.currentContext)))
                 {
-                    var panel = Firebug.getElementPanel(event.target);
+                    let panel = Firebug.getElementPanel(event.target);
                     if (!panel || !panel.browseObject(realObject))
                         return;
                 }
@@ -1659,7 +1659,7 @@ function onPanelMouseDown(event)
 {
     if (FBL.isLeftClick(event))
     {
-        var editable = FBL.getAncestorByClass(event.target, "editable");
+        let editable = FBL.getAncestorByClass(event.target, "editable");
         if (editable)
         {
             Firebug.Editor.startEditing(editable);
@@ -1677,15 +1677,15 @@ function onMainTabBoxMouseDown(event)
 {
     if (Firebug.isInBrowser())
     {
-        var contentSplitter = Firebug.chrome.$("fbContentSplitter");
+        let contentSplitter = Firebug.chrome.$("fbContentSplitter");
         // TODO: grab the splitter here.
     }
 }
 
 function getRealObject(object)
 {
-    var rep = Firebug.getRep(object, Firebug.currentContext);
-    var realObject = rep ? rep.getRealObject(object, Firebug.currentContext) : null;
+    let rep = Firebug.getRep(object, Firebug.currentContext);
+    let realObject = rep ? rep.getRealObject(object, Firebug.currentContext) : null;
     return realObject ? realObject : object;
 }
 
@@ -1702,9 +1702,9 @@ function $(id, doc)
 
 function cloneArray(array, fn)
 {
-   var newArray = [];
+   let newArray = [];
 
-   for (var i = 0; i < array.length; ++i)
+   for (let i = 0; i < array.length; ++i)
        newArray.push(array[i]);
 
    return newArray;
@@ -1712,7 +1712,7 @@ function cloneArray(array, fn)
 
 function bindFixed()
 {
-    var args = cloneArray(arguments), fn = args.shift(), object = args.shift();
+    let args = cloneArray(arguments), fn = args.shift(), object = args.shift();
     return function() { return fn.apply(object, args); };
 }
 
@@ -1727,10 +1727,10 @@ function bindFixed()
 // XXXrobc Do we still need this? Does this extension even exist anymore?
 if (top.hasOwnProperty('TidyBrowser'))
 {
-    var prev = TidyBrowser.prototype.updateStatusBar;
+    let prev = TidyBrowser.prototype.updateStatusBar;
     TidyBrowser.prototype.updateStatusBar = function()
     {
-        var self = this, args = arguments;
+        let self = this, args = arguments;
         setTimeout(function()
         {
             prev.apply(self, args);

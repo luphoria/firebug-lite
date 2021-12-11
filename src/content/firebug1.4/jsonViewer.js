@@ -5,7 +5,7 @@ FBL.ns(function() { with (FBL) {
 // ************************************************************************************************
 
 // List of JSON content types.
-var contentTypes =
+let contentTypes =
 {
     "text/plain": 1,
     "text/javascript": 1,
@@ -76,10 +76,10 @@ Firebug.JSONViewerModel = extend(Firebug.Module,
         // which represents a little overhead, but this happens only if the request
         // is actually expanded by the user in the UI (Net & Console panels).
         
-        ///var responseText = data ? trimLeft(data) : null;
+        ///let responseText = data ? trimLeft(data) : null;
         ///if (responseText && responseText.indexOf("{") == 0)
         ///    return true;
-        var responseText = data ? trim(data) : null;
+        let responseText = data ? trim(data) : null;
         if (responseText && responseText.indexOf("{") == 0)
             return true;
 
@@ -94,9 +94,9 @@ Firebug.JSONViewerModel = extend(Firebug.Module,
     // Update listener for TabView
     updateTabBody: function(infoBox, file, context)
     {
-        var tab = infoBox.selectedTab;
-        ///var tabBody = infoBox.getElementsByClassName("netInfoJSONText").item(0);
-        var tabBody = $$(".netInfoJSONText", infoBox)[0];
+        let tab = infoBox.selectedTab;
+        ///let tabBody = infoBox.getElementsByClassName("netInfoJSONText").item(0);
+        let tabBody = $$(".netInfoJSONText", infoBox)[0];
         if (!hasClass(tab, "netInfoJSONTab") || tabBody.updated)
             return;
 
@@ -110,7 +110,7 @@ Firebug.JSONViewerModel = extend(Firebug.Module,
 
     parseJSON: function(file)
     {
-        var jsonString = new String(file.responseText);
+        let jsonString = new String(file.responseText);
         ///return parseJSONString(jsonString, "http://" + file.request.originalURI.host);
         return parseJSONString(jsonString);
     }

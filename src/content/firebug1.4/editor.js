@@ -5,27 +5,27 @@ FBL.ns(function() { with (FBL) {
 // ************************************************************************************************
 // Constants
 
-var saveTimeout = 400;
-var pageAmount = 10;
+let saveTimeout = 400;
+let pageAmount = 10;
 
 // ************************************************************************************************
 // Globals
 
-var currentTarget = null;
-var currentGroup = null;
-var currentPanel = null;
-var currentEditor = null;
+let currentTarget = null;
+let currentGroup = null;
+let currentPanel = null;
+let currentEditor = null;
 
-var defaultEditor = null;
+let defaultEditor = null;
 
-var originalClassName = null;
+let originalClassName = null;
 
-var originalValue = null;
-var defaultValue = null;
-var previousValue = null;
+let originalValue = null;
+let defaultValue = null;
+let previousValue = null;
 
-var invalidEditor = false;
-var ignoreNextInput = false;
+let invalidEditor = false;
+let ignoreNextInput = false;
 
 // ************************************************************************************************
 
@@ -43,7 +43,7 @@ Firebug.Editor = extend(Firebug.Module,
         if (hasClass(target, "insertBefore") || hasClass(target, "insertAfter"))
             return;
 
-        var panel = Firebug.getElementPanel(target);
+        let panel = Firebug.getElementPanel(target);
         if (!panel.editable)
             return;
 
@@ -53,7 +53,7 @@ Firebug.Editor = extend(Firebug.Module,
         defaultValue = target.getAttribute("defaultValue");
         if (value == undefined)
         {
-            var textContent = isIE ? "innerText" : "textContent";
+            let textContent = isIE ? "innerText" : "textContent";
             value = target[textContent];
             if (value == defaultValue)
                 value = "";
@@ -68,13 +68,13 @@ Firebug.Editor = extend(Firebug.Module,
 
         currentPanel.editing = true;
 
-        var panelEditor = currentPanel.getEditor(target, value);
+        let panelEditor = currentPanel.getEditor(target, value);
         currentEditor = editor ? editor : panelEditor;
         if (!currentEditor)
             currentEditor = getDefaultEditor(currentPanel);
 
-        var inlineParent = getInlineParent(target);
-        var targetSize = getOffsetSize(inlineParent);
+        let inlineParent = getInlineParent(target);
+        let targetSize = getOffsetSize(inlineParent);
 
         setClass(panel.panelNode, "editing");
         setClass(target, "editing");
@@ -107,11 +107,11 @@ Firebug.Editor = extend(Firebug.Module,
         if (currentGroup)
             removeClass(currentGroup, "editing");
 
-        var value = currentEditor.getValue();
+        let value = currentEditor.getValue();
         if (value == defaultValue)
             value = "";
 
-        var removeGroup = currentEditor.endEditing(currentTarget, value, cancel);
+        let removeGroup = currentEditor.endEditing(currentTarget, value, cancel);
 
         try
         {
@@ -175,7 +175,7 @@ Firebug.Editor = extend(Firebug.Module,
             this.save();
         else
         {
-            var context = currentPanel.context;
+            let context = currentPanel.context;
             this.saveTimeout = context.setTimeout(bindFixed(this.save, this), saveTimeout);
             if (FBTrace.DBG_EDITOR)
                 FBTrace.sysout("editor.update saveTimeout: "+this.saveTimeout);
@@ -231,8 +231,8 @@ Firebug.Editor = extend(Firebug.Module,
         if (!currentTarget)
             return;
 
-        var value = currentEditor.getValue();
-        var nextEditable = currentTarget;
+        let value = currentEditor.getValue();
+        let nextEditable = currentTarget;
         do
         {
             nextEditable = !value && currentGroup
@@ -249,8 +249,8 @@ Firebug.Editor = extend(Firebug.Module,
         if (!currentTarget)
             return;
 
-        var value = currentEditor.getValue();
-        var prevEditable = currentTarget;
+        let value = currentEditor.getValue();
+        let prevEditable = currentTarget;
         do
         {
             prevEditable = !value && currentGroup
@@ -264,9 +264,9 @@ Firebug.Editor = extend(Firebug.Module,
 
     insertRow: function(relative, insertWhere)
     {
-        var group =
+        let group =
             relative || getAncestorByClass(currentTarget, "editGroup") || currentTarget;
-        var value = this.stopEditing();
+        let value = this.stopEditing();
 
         currentPanel = Firebug.getElementPanel(group);
 
@@ -278,7 +278,7 @@ Firebug.Editor = extend(Firebug.Module,
         if (!currentGroup)
             return;
 
-        var editable = hasClass(currentGroup, "editable")
+        let editable = hasClass(currentGroup, "editable")
             ? currentGroup
             : getNextByClass(currentGroup, "editable");
 
@@ -288,7 +288,7 @@ Firebug.Editor = extend(Firebug.Module,
 
     insertRowForObject: function(relative)
     {
-        var container = getAncestorByClass(relative, "insertInto");
+        let container = getAncestorByClass(relative, "insertInto");
         if (container)
         {
             relative = getChildByClass(container, "insertBefore");
@@ -301,14 +301,14 @@ Firebug.Editor = extend(Firebug.Module,
 
     attachListeners: function(editor, context)
     {
-        var win = isIE ?
+        let win = isIE ?
                 currentTarget.ownerDocument.parentWindow :
                 currentTarget.ownerDocument.defaultView;
         
         addEvent(win, "resize", this.onResize);
         addEvent(win, "blur", this.onBlur);
 
-        var chrome = Firebug.chrome;
+        let chrome = Firebug.chrome;
 
         this.listeners = [
             chrome.keyCodeListen("ESCAPE", null, bind(this.cancelEditing, this))
@@ -360,17 +360,17 @@ Firebug.Editor = extend(Firebug.Module,
         if (!this.listeners)
             return;
 
-        var win = isIE ?
+        let win = isIE ?
                 currentTarget.ownerDocument.parentWindow :
                 currentTarget.ownerDocument.defaultView;
         
         removeEvent(win, "resize", this.onResize);
         removeEvent(win, "blur", this.onBlur);
 
-        var chrome = Firebug.chrome;
+        let chrome = Firebug.chrome;
         if (chrome)
         {
-            for (var i = 0; i < this.listeners.length; ++i)
+            for (let i = 0; i < this.listeners.length; ++i)
                 chrome.keyIgnore(this.listeners[i]);
         }
 
@@ -445,7 +445,7 @@ Firebug.BaseEditor = extend(Firebug.MeasureBox,
 
     getContextMenuItems: function(target)
     {
-        var items = [];
+        let items = [];
         items.push({label: "Cut", commandID: "cmd_cut"});
         items.push({label: "Copy", commandID: "cmd_copy"});
         items.push({label: "Paste", commandID: "cmd_paste"});
@@ -479,7 +479,7 @@ Firebug.BaseEditor = extend(Firebug.MeasureBox,
 // InlineEditor
 
 // basic inline editor attributes
-var inlineEditorAttributes = {
+let inlineEditorAttributes = {
     "class": "textEditorInner",
     
     type: "text", 
@@ -611,8 +611,8 @@ Firebug.InlineEditor.prototype = domplate(Firebug.BaseEditor,
         // offset values of invisible elements, or empty elements. So, in order to get the 
         // correct values, we temporary inject a character in the innerHTML of the empty element, 
         // then we get the offset values, and next, we restore the original innerHTML value.
-        var innerHTML = target.innerHTML;
-        var isEmptyElement = !innerHTML;
+        let innerHTML = target.innerHTML;
+        let isEmptyElement = !innerHTML;
         if (isEmptyElement)
             target.innerHTML = ".";
         
@@ -629,8 +629,8 @@ Firebug.InlineEditor.prototype = domplate(Firebug.BaseEditor,
         
         this.originalClassName = this.box.className;
 
-        var classNames = target.className.split(" ");
-        for (var i = 0; i < classNames.length; ++i)
+        let classNames = target.className.split(" ");
+        for (let i = 0; i < classNames.length; ++i)
             setClass(this.box, "editor-" + classNames[i]);
 
         // Make the editor match the target's font style
@@ -646,10 +646,10 @@ Firebug.InlineEditor.prototype = domplate(Firebug.BaseEditor,
             this.textSize = this.measureInputText(value);
 
             // Correct the height of the box to make the funky CSS drop-shadow line up
-            var parent = this.input.parentNode;
+            let parent = this.input.parentNode;
             if (hasClass(parent, "textEditorInner2"))
             {
-                var yDiff = this.textSize.height - this.shadowExpand;
+                let yDiff = this.textSize.height - this.shadowExpand;
                 
                 // IE6 height offset
                 if (isIE6)
@@ -697,7 +697,7 @@ Firebug.InlineEditor.prototype = domplate(Firebug.BaseEditor,
         
         // we need to call input.focus() and input.select() with a timeout, 
         // otherwise it won't work on all browsers due to timing issues 
-        var self = this;
+        let self = this;
         setTimeout(function(){
             self.input.focus();
             self.input.select();
@@ -794,7 +794,7 @@ Firebug.InlineEditor.prototype = domplate(Firebug.BaseEditor,
     {
         //console.log("completeValue");
         
-        var selectRangeCallback = this.getAutoCompleter().complete(currentPanel.context, this.input, true, amt < 0); 
+        let selectRangeCallback = this.getAutoCompleter().complete(currentPanel.context, this.input, true, amt < 0); 
         
         if (selectRangeCallback)
         {
@@ -813,31 +813,27 @@ Firebug.InlineEditor.prototype = domplate(Firebug.BaseEditor,
 
     incrementValue: function(amt)
     {
-        var value = this.input.value;
+        let value = this.input.value;
         
-        // TODO: xxxpedro editor
-        if (isIE)
-            var start = getInputSelectionStart(this.input), end = start;
-        else
-            var start = this.input.selectionStart, end = this.input.selectionEnd;
+        let start = this.input.selectionStart, end = this.input.selectionEnd;
 
         //debugger;
-        var range = this.getAutoCompleteRange(value, start);
+        let range = this.getAutoCompleteRange(value, start);
         if (!range || range.type != "int")
             range = {start: 0, end: value.length-1};
 
-        var expr = value.substr(range.start, range.end-range.start+1);
+        let expr = value.substr(range.start, range.end-range.start+1);
         preExpr = value.substr(0, range.start);
         postExpr = value.substr(range.end+1);
 
         // See if the value is an integer, and if so increment it
-        var intValue = parseInt(expr);
+        let intValue = parseInt(expr);
         if (!!intValue || intValue == 0)
         {
-            var m = /\d+/.exec(expr);
-            var digitPost = expr.substr(m.index+m[0].length);
+            let m = /\d+/.exec(expr);
+            let digitPost = expr.substr(m.index+m[0].length);
 
-            var completion = intValue-amt;
+            let completion = intValue-amt;
             this.input.value = preExpr + completion + digitPost + postExpr;
             
             setSelectionRange(this.input, start, end);
@@ -857,7 +853,7 @@ Firebug.InlineEditor.prototype = domplate(Firebug.BaseEditor,
         //console.log("onKeyPress", event);
         if (event.keyCode == 27 && !this.completeAsYouType)
         {
-            var reverted = this.getAutoCompleter().revert(this.input);
+            let reverted = this.getAutoCompleter().revert(this.input);
             if (reverted)
                 cancelEvent(event);
         }
@@ -909,7 +905,7 @@ Firebug.InlineEditor.prototype = domplate(Firebug.BaseEditor,
         //console.log("onInput", event);
         //console.trace();
         
-        var selectRangeCallback;
+        let selectRangeCallback;
         
         if (this.ignoreNextInput)
         {
@@ -938,14 +934,14 @@ Firebug.InlineEditor.prototype = domplate(Firebug.BaseEditor,
     {
         cancelEvent(event);
 
-        var popup = $("fbInlineEditorPopup");
+        let popup = $("fbInlineEditorPopup");
         FBL.eraseNode(popup);
 
-        var target = event.target || event.srcElement;
-        var menu = this.getContextMenuItems(target);
+        let target = event.target || event.srcElement;
+        let menu = this.getContextMenuItems(target);
         if (menu)
         {
-            for (var i = 0; i < menu.length; ++i)
+            for (let i = 0; i < menu.length; ++i)
                 FBL.createMenuItem(popup, menu[i]);
         }
 
@@ -965,8 +961,8 @@ Firebug.InlineEditor.prototype = domplate(Firebug.BaseEditor,
             this.box.style.left = (this.targetOffset.x) + "px";
             this.box.style.top = (this.targetOffset.y) + "px";
 
-            var w = this.target.offsetWidth;
-            var h = this.target.offsetHeight;
+            let w = this.target.offsetWidth;
+            let h = this.target.offsetHeight;
             this.input.style.width = w + "px";
             this.input.style.height = (h-3) + "px";
         }
@@ -978,17 +974,17 @@ Firebug.InlineEditor.prototype = domplate(Firebug.BaseEditor,
                 this.box.style.top = this.targetOffset.y + "px";
             }
 
-            var approxTextWidth = this.textSize.width;
-            var maxWidth = (currentPanel.panelNode.scrollWidth - this.targetOffset.x)
+            let approxTextWidth = this.textSize.width;
+            let maxWidth = (currentPanel.panelNode.scrollWidth - this.targetOffset.x)
                 - this.outerMargin;
 
-            var wrapped = initial
+            let wrapped = initial
                 ? this.noWrap && this.targetSize.height > this.textSize.height+3
                 : this.noWrap && approxTextWidth > maxWidth;
 
             if (wrapped)
             {
-                var style = isIE ?
+                let style = isIE ?
                         this.target.currentStyle :
                         this.target.ownerDocument.defaultView.getComputedStyle(this.target, "");
                 
@@ -1004,21 +1000,21 @@ Firebug.InlineEditor.prototype = domplate(Firebug.BaseEditor,
             {
                 // Make the input one character wider than the text value so that
                 // typing does not ever cause the textbox to scroll
-                var charWidth = this.measureInputText('m').width;
+                let charWidth = this.measureInputText('m').width;
 
                 // Sometimes we need to make the editor a little wider, specifically when
                 // an overflow happens, otherwise it will scroll off some text on the left
                 if (extraWidth)
                     charWidth *= extraWidth;
 
-                var inputWidth = approxTextWidth + charWidth;
+                let inputWidth = approxTextWidth + charWidth;
 
                 if (initial)
                 {
                     if (isIE)
                     {
                         // TODO: xxxpedro
-                        var xDiff = 13;
+                        let xDiff = 13;
                         this.box.style.width = (inputWidth + xDiff) + "px";
                     }
                     else
@@ -1027,7 +1023,7 @@ Firebug.InlineEditor.prototype = domplate(Firebug.BaseEditor,
                 else
                 {
                     // TODO: xxxpedro
-                    var xDiff = isIE ? 13: this.box.scrollWidth - this.input.offsetWidth;
+                    let xDiff = isIE ? 13: this.box.scrollWidth - this.input.offsetWidth;
                     this.box.style.width = (inputWidth + xDiff) + "px";
                 }
 
@@ -1048,16 +1044,16 @@ Firebug.InlineEditor.prototype = domplate(Firebug.BaseEditor,
 
 Firebug.AutoCompleter = function(getExprOffset, getRange, evaluator, selectMode, caseSensitive)
 {
-    var candidates = null;
-    var originalValue = null;
-    var originalOffset = -1;
-    var lastExpr = null;
-    var lastOffset = -1;
-    var exprOffset = 0;
-    var lastIndex = 0;
-    var preParsed = null;
-    var preExpr = null;
-    var postExpr = null;
+    let candidates = null;
+    let originalValue = null;
+    let originalOffset = -1;
+    let lastExpr = null;
+    let lastOffset = -1;
+    let exprOffset = 0;
+    let lastIndex = 0;
+    let preParsed = null;
+    let preExpr = null;
+    let postExpr = null;
 
     this.revert = function(textBox)
     {
@@ -1090,12 +1086,12 @@ Firebug.AutoCompleter = function(getExprOffset, getRange, evaluator, selectMode,
     this.complete = function(context, textBox, cycle, reverse)
     {
         //console.log("complete", context, textBox, cycle, reverse);
-        // TODO: xxxpedro important port to firebug (variable leak)
-        //var value = lastValue = textBox.value;
-        var value = textBox.value;
+        // TODO: xxxpedro important port to firebug (letiable leak)
+        //let value = lastValue = textBox.value;
+        let value = textBox.value;
         
-        //var offset = textBox.selectionStart;
-        var offset = getInputSelectionStart(textBox);
+        //let offset = textBox.selectionStart;
+        let offset = getInputSelectionStart(textBox);
         
         // The result of selectionStart() in Safari/Chrome is 1 unit less than the result
         // in Firefox. Therefore, we need to manually adjust the value here.
@@ -1110,16 +1106,16 @@ Firebug.AutoCompleter = function(getExprOffset, getRange, evaluator, selectMode,
             originalValue = value;
 
             // Find the part of the string that will be parsed
-            var parseStart = getExprOffset ? getExprOffset(value, offset, context) : 0;
+            let parseStart = getExprOffset ? getExprOffset(value, offset, context) : 0;
             preParsed = value.substr(0, parseStart);
-            var parsed = value.substr(parseStart);
+            let parsed = value.substr(parseStart);
 
             // Find the part of the string that is being completed
-            var range = getRange ? getRange(parsed, offset-parseStart, context) : null;
+            let range = getRange ? getRange(parsed, offset-parseStart, context) : null;
             if (!range)
                 range = {start: 0, end: parsed.length-1 };
 
-            var expr = parsed.substr(range.start, range.end-range.start+1);
+            let expr = parsed.substr(range.start, range.end-range.start+1);
             preExpr = parsed.substr(0, range.start);
             postExpr = parsed.substr(range.end+1);
             exprOffset = parseStart + range.start;
@@ -1143,7 +1139,7 @@ Firebug.AutoCompleter = function(getExprOffset, getRange, evaluator, selectMode,
             lastExpr = expr;
             lastOffset = offset;
 
-            var searchExpr;
+            let searchExpr;
 
             // Check if the cursor is at the very right edge of the expression, or
             // somewhere in the middle of it
@@ -1165,7 +1161,7 @@ Firebug.AutoCompleter = function(getExprOffset, getRange, evaluator, selectMode,
                 }
             }
 
-            var values = evaluator(preExpr, expr, postExpr, context);
+            let values = evaluator(preExpr, expr, postExpr, context);
             if (!values)
                 return;
 
@@ -1177,19 +1173,19 @@ Firebug.AutoCompleter = function(getExprOffset, getRange, evaluator, selectMode,
 
                 if (caseSensitive)
                 {
-                    for (var i = 0; i < values.length; ++i)
+                    for (let i = 0; i < values.length; ++i)
                     {
-                        var name = values[i];
+                        let name = values[i];
                         if (name.indexOf && name.indexOf(expr) == 0)
                             candidates.push(name);
                     }
                 }
                 else
                 {
-                    var lowerExpr = caseSensitive ? expr : expr.toLowerCase();
-                    for (var i = 0; i < values.length; ++i)
+                    let lowerExpr = caseSensitive ? expr : expr.toLowerCase();
+                    for (let i = 0; i < values.length; ++i)
                     {
-                        var name = values[i];
+                        let name = values[i];
                         if (name.indexOf && name.toLowerCase().indexOf(lowerExpr) == 0)
                             candidates.push(name);
                     }
@@ -1199,7 +1195,7 @@ Firebug.AutoCompleter = function(getExprOffset, getRange, evaluator, selectMode,
             }
             else if (searchExpr)
             {
-                var searchIndex = -1;
+                let searchIndex = -1;
 
                 // Find the first instance of searchExpr in the values list. We
                 // will then complete the string that is found
@@ -1209,10 +1205,10 @@ Firebug.AutoCompleter = function(getExprOffset, getRange, evaluator, selectMode,
                 }
                 else
                 {
-                    var lowerExpr = searchExpr.toLowerCase();
-                    for (var i = 0; i < values.length; ++i)
+                    let lowerExpr = searchExpr.toLowerCase();
+                    for (let i = 0; i < values.length; ++i)
                     {
-                        var name = values[i];
+                        let name = values[i];
                         if (name && name.toLowerCase().indexOf(lowerExpr) == 0)
                         {
                             searchIndex = i;
@@ -1233,7 +1229,7 @@ Firebug.AutoCompleter = function(getExprOffset, getRange, evaluator, selectMode,
             {
                 expr = "";
                 candidates = [];
-                for (var i = 0; i < values.length; ++i)
+                for (let i = 0; i < values.length; ++i)
                 {
                     if (values[i].substr)
                         candidates.push(values[i]);
@@ -1256,12 +1252,12 @@ Firebug.AutoCompleter = function(getExprOffset, getRange, evaluator, selectMode,
         else if (lastIndex < 0)
             lastIndex = candidates.length-1;
 
-        var completion = candidates[lastIndex];
-        var preCompletion = expr.substr(0, offset-exprOffset);
-        var postCompletion = completion.substr(offset-exprOffset);
+        let completion = candidates[lastIndex];
+        let preCompletion = expr.substr(0, offset-exprOffset);
+        let postCompletion = completion.substr(offset-exprOffset);
 
         textBox.value = preParsed + preExpr + preCompletion + postCompletion + postExpr;
-        var offsetEnd = preParsed.length + preExpr.length + completion.length;
+        let offsetEnd = preParsed.length + preExpr.length + completion.length;
         
         // TODO: xxxpedro remove the following commented code, if the lib.setSelectionRange()
         // is working well.
@@ -1316,11 +1312,11 @@ Firebug.AutoCompleter = function(getExprOffset, getRange, evaluator, selectMode,
 // ************************************************************************************************
 // Local Helpers
 
-var getDefaultEditor = function getDefaultEditor(panel)
+let getDefaultEditor = function getDefaultEditor(panel)
 {
     if (!defaultEditor)
     {
-        var doc = panel.document;
+        let doc = panel.document;
         defaultEditor = new Firebug.InlineEditor(doc);
     }
 
@@ -1334,10 +1330,10 @@ var getDefaultEditor = function getDefaultEditor(panel)
  * of group, relative to group's parent editGroup. This allows for the proper insertion
  * rows when groups are nested.
  */
-var getOutsider = function getOutsider(element, group, stepper)
+let getOutsider = function getOutsider(element, group, stepper)
 {
-    var parentGroup = getAncestorByClass(group.parentNode, "editGroup");
-    var next;
+    let parentGroup = getAncestorByClass(group.parentNode, "editGroup");
+    let next;
     do
     {
         next = stepper(next || element);
@@ -1347,29 +1343,29 @@ var getOutsider = function getOutsider(element, group, stepper)
     return next;
 }
 
-var isGroupInsert = function isGroupInsert(next, group)
+let isGroupInsert = function isGroupInsert(next, group)
 {
     return (!group || isAncestor(next, group))
         && (hasClass(next, "insertBefore") || hasClass(next, "insertAfter"));
 }
 
-var getNextOutsider = function getNextOutsider(element, group)
+let getNextOutsider = function getNextOutsider(element, group)
 {
     return getOutsider(element, group, bind(getNextByClass, FBL, "editable"));
 }
 
-var getPreviousOutsider = function getPreviousOutsider(element, group)
+let getPreviousOutsider = function getPreviousOutsider(element, group)
 {
     return getOutsider(element, group, bind(getPreviousByClass, FBL, "editable"));
 }
 
-var getInlineParent = function getInlineParent(element)
+let getInlineParent = function getInlineParent(element)
 {
-    var lastInline = element;
+    let lastInline = element;
     for (; element; element = element.parentNode)
     {
-        //var s = element.ownerDocument.defaultView.getComputedStyle(element, "");
-        var s = isIE ?
+        //let s = element.ownerDocument.defaultView.getComputedStyle(element, "");
+        let s = isIE ?
                 element.currentStyle :
                 element.ownerDocument.defaultView.getComputedStyle(element, "");
         
@@ -1381,7 +1377,7 @@ var getInlineParent = function getInlineParent(element)
     return null;
 }
 
-var insertTab = function insertTab()
+let insertTab = function insertTab()
 {
     insertTextIntoElement(currentEditor.input, Firebug.Editor.tabCharacter);
 }

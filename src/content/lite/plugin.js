@@ -6,15 +6,15 @@ FBL.ns(function() { with (FBL) {
 // ************************************************************************************************
 // Globals
 
-var modules = [];
-var panelTypes = [];
-var panelTypeMap = {};
+let modules = [];
+let panelTypes = [];
+let panelTypeMap = {};
 
-var parentPanelMap = {};
+let parentPanelMap = {};
 
 
-var registerModule = Firebug.registerModule;
-var registerPanel = Firebug.registerPanel;
+let registerModule = Firebug.registerModule;
+let registerPanel = Firebug.registerPanel;
 
 // ************************************************************************************************
 append(Firebug,
@@ -23,7 +23,7 @@ append(Firebug,
     {
         if (Firebug.chrome && Firebug.chrome.addPanel)
         {
-            var namespace = ns(fn);
+            let namespace = ns(fn);
             fn.call(namespace, FBL);
         }
         else
@@ -52,26 +52,26 @@ append(Firebug,
         
         panelTypes.push.apply(panelTypes, arguments);
 
-        for (var i = 0, panelType; panelType = arguments[i]; ++i)
+        for (let i = 0, panelType; panelType = arguments[i]; ++i)
         {
             // TODO: xxxpedro investigate why Dev Panel throws an error
             if (panelType.prototype.name == "Dev") continue;
             
             panelTypeMap[panelType.prototype.name] = arguments[i];
             
-            var parentPanelName = panelType.prototype.parentPanel;
+            let parentPanelName = panelType.prototype.parentPanel;
             if (parentPanelName)
             {
                 parentPanelMap[parentPanelName] = 1;
             }
             else
             {
-                var panelName = panelType.prototype.name;
-                var chrome = Firebug.chrome;
+                let panelName = panelType.prototype.name;
+                let chrome = Firebug.chrome;
                 chrome.addPanel(panelName);
                 
                 // tab click handler
-                var onTabClick = function onTabClick()
+                let onTabClick = function onTabClick()
                 { 
                     chrome.selectPanel(panelName);
                     return false;
@@ -82,7 +82,7 @@ append(Firebug,
         }
         
         if (FBTrace.DBG_INITIALIZE)
-            for (var i = 0; i < arguments.length; ++i)
+            for (let i = 0; i < arguments.length; ++i)
                 FBTrace.sysout("Firebug.registerPanel", arguments[i].prototype.name);
     }
 

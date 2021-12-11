@@ -9,7 +9,7 @@ if (Env.Options.disableXHRListener)
 // ************************************************************************************************
 // XHRSpy
     
-var XHRSpy = function()
+let XHRSpy = function()
 {
     this.requestHeaders = [];
     this.responseHeaders = [];
@@ -45,12 +45,12 @@ XHRSpy.prototype =
 // ************************************************************************************************
 // XMLHttpRequestWrapper
 
-var XMLHttpRequestWrapper = function(activeXObject)
+let XMLHttpRequestWrapper = function(activeXObject)
 {
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    // XMLHttpRequestWrapper internal variables
+    // XMLHttpRequestWrapper internal letiables
     
-    var xhrRequest = typeof activeXObject != "undefined" ?
+    let xhrRequest = typeof activeXObject != "undefined" ?
                 activeXObject :
                 new _XMLHttpRequest(),
         
@@ -65,7 +65,7 @@ var XMLHttpRequestWrapper = function(activeXObject)
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     // XMLHttpRequestWrapper internal methods
     
-    var updateSelfPropertiesIgnore = {
+    let updateSelfPropertiesIgnore = {
         abort: 1,
         channel: 1,
         getAllResponseHeaders: 1,
@@ -79,18 +79,18 @@ var XMLHttpRequestWrapper = function(activeXObject)
         setRequestHeader: 1
     };
     
-    var updateSelfProperties = function()
+    let updateSelfProperties = function()
     {
         if (supportsXHRIterator)
         {
-            for (var propName in xhrRequest)
+            for (let propName in xhrRequest)
             {
                 if (propName in updateSelfPropertiesIgnore)
                     continue;
                 
                 try
                 {
-                    var propValue = xhrRequest[propName];
+                    let propValue = xhrRequest[propName];
                     
                     if (propValue && !isFunction(propValue))
                         self[propName] = propValue;
@@ -114,7 +114,7 @@ var XMLHttpRequestWrapper = function(activeXObject)
         }
     };
     
-    var updateXHRPropertiesIgnore = {
+    let updateXHRPropertiesIgnore = {
         channel: 1,
         onreadystatechange: 1,
         readyState: 1,
@@ -126,16 +126,16 @@ var XMLHttpRequestWrapper = function(activeXObject)
         upload: 1
     };
     
-    var updateXHRProperties = function()
+    let updateXHRProperties = function()
     {
-        for (var propName in self)
+        for (let propName in self)
         {
             if (propName in updateXHRPropertiesIgnore)
                 continue;
             
             try
             {
-                var propValue = self[propName];
+                let propValue = self[propName];
                 
                 if (propValue && !xhrRequest[propName])
                 {
@@ -149,9 +149,9 @@ var XMLHttpRequestWrapper = function(activeXObject)
         }
     };
     
-    var logXHR = function() 
+    let logXHR = function() 
     {
-        var row = Firebug.Console.log(spy, null, "spy", Firebug.Spy.XHR);
+        let row = Firebug.Console.log(spy, null, "spy", Firebug.Spy.XHR);
         
         if (row)
         {
@@ -160,24 +160,24 @@ var XMLHttpRequestWrapper = function(activeXObject)
         }
     };
     
-    var finishXHR = function() 
+    let finishXHR = function() 
     {
-        var duration = new Date().getTime() - reqStartTS;
-        var success = xhrRequest.status == 200;
+        let duration = new Date().getTime() - reqStartTS;
+        let success = xhrRequest.status == 200;
         
-        var responseHeadersText = xhrRequest.getAllResponseHeaders();
-        var responses = responseHeadersText ? responseHeadersText.split(/[\n\r]/) : [];
-        var reHeader = /^(\S+):\s*(.*)/;
+        let responseHeadersText = xhrRequest.getAllResponseHeaders();
+        let responses = responseHeadersText ? responseHeadersText.split(/[\n\r]/) : [];
+        let reHeader = /^(\S+):\s*(.*)/;
         
-        for (var i=0, l=responses.length; i<l; i++)
+        for (let i=0, l=responses.length; i<l; i++)
         {
-            var text = responses[i];
-            var match = text.match(reHeader);
+            let text = responses[i];
+            let match = text.match(reHeader);
             
             if (match)
             {
-                var name = match[1];
-                var value = match[2];
+                let name = match[1];
+                let value = match[2];
                 
                 // update the spy mimeType property so we can detect when to show 
                 // custom response viewers (such as HTML, XML or JSON viewer)
@@ -241,7 +241,7 @@ var XMLHttpRequestWrapper = function(activeXObject)
         updateSelfProperties();
     };
     
-    var handleStateChange = function()
+    let handleStateChange = function()
     {
         //Firebug.Console.log(["onreadystatechange", xhrRequest.readyState, xhrRequest.readyState == 4 && xhrRequest.status]);
         
@@ -260,20 +260,20 @@ var XMLHttpRequestWrapper = function(activeXObject)
     };
     
     // update the XHR representation data
-    var handleRequestStatus = function(success, status, time)
+    let handleRequestStatus = function(success, status, time)
     {
-        var row = spy.logRow;
+        let row = spy.logRow;
         FBL.removeClass(row, "loading");
         
         if (!success)
             FBL.setClass(row, "error");
         
-        var item = FBL.$$(".spyStatus", row)[0];
+        let item = FBL.$$(".spyStatus", row)[0];
         item.innerHTML = status;
         
         if (time)
         {
-            var item = FBL.$$(".spyTime", row)[0];
+            let item = FBL.$$(".spyTime", row)[0];
             item.innerHTML = time + "ms";
         }
     };
@@ -399,13 +399,13 @@ var XMLHttpRequestWrapper = function(activeXObject)
 
     // xhrRequest.open.apply not available in IE and will throw an error in 
     // IE6 by simply reading xhrRequest.open so we must sniff it
-    var supportsApply = !isIE6 &&
+    let supportsApply = !isIE6 &&
             xhrRequest && 
             xhrRequest.open && 
             typeof xhrRequest.open.apply != "undefined";
     
-    var numberOfXHRProperties = 0;
-    for (var propName in xhrRequest)
+    let numberOfXHRProperties = 0;
+    for (let propName in xhrRequest)
     {
         numberOfXHRProperties++;
         
@@ -414,7 +414,7 @@ var XMLHttpRequestWrapper = function(activeXObject)
         
         try
         {
-            var propValue = xhrRequest[propName];
+            let propValue = xhrRequest[propName];
             
             if (isFunction(propValue))
             {
@@ -446,8 +446,8 @@ var XMLHttpRequestWrapper = function(activeXObject)
         }
     }
     
-    // IE6 does not support for (var prop in XHR)
-    var supportsXHRIterator = numberOfXHRProperties > 0;
+    // IE6 does not support for (let prop in XHR)
+    let supportsXHRIterator = numberOfXHRProperties > 0;
     
     /**/
     
@@ -457,22 +457,22 @@ var XMLHttpRequestWrapper = function(activeXObject)
 // ************************************************************************************************
 // ActiveXObject Wrapper (IE6 only)
 
-var _ActiveXObject;
-var isIE6 =  /msie 6/i.test(navigator.appVersion);
+let _ActiveXObject;
+let isIE6 =  /msie 6/i.test(navigator.appVersion);
 
 if (isIE6)
 {
     _ActiveXObject = window.ActiveXObject;
     
-    var xhrObjects = " MSXML2.XMLHTTP.5.0 MSXML2.XMLHTTP.4.0 MSXML2.XMLHTTP.3.0 MSXML2.XMLHTTP Microsoft.XMLHTTP ";
+    let xhrObjects = " MSXML2.XMLHTTP.5.0 MSXML2.XMLHTTP.4.0 MSXML2.XMLHTTP.3.0 MSXML2.XMLHTTP Microsoft.XMLHTTP ";
     
     window.ActiveXObject = function(name)
     {
-        var error = null;
+        let error = null;
         
         try
         {
-            var activeXObject = new _ActiveXObject(name);
+            let activeXObject = new _ActiveXObject(name);
         }
         catch(e)
         {
@@ -498,7 +498,7 @@ if (isIE6)
 // Register the XMLHttpRequestWrapper for non-IE6 browsers
 if (!isIE6)
 {
-    var _XMLHttpRequest = XMLHttpRequest;
+    let _XMLHttpRequest = XMLHttpRequest;
     window.XMLHttpRequest = function()
     {
         return new XMLHttpRequestWrapper();

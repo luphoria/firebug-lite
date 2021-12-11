@@ -12,14 +12,14 @@ const edgeSize = 2;
 const defaultPrimaryPanel = "html";
 const defaultSecondaryPanel = "dom";
 
-var highlightCSS = "chrome://firebug/content/highlighter.css";
+let highlightCSS = "chrome://firebug/content/highlighter.css";
 
 // ************************************************************************************************
 // Globals
 
-var boxModelHighlighter = null;
-var frameHighlighter = null;
-var popupHighlighter = null;
+let boxModelHighlighter = null;
+let frameHighlighter = null;
+let popupHighlighter = null;
 
 // ************************************************************************************************
 
@@ -38,9 +38,9 @@ Firebug.Inspector = extend(Firebug.Module,
             delete context.highlightTimeout;
         }
 
-        var highlighter = highlightType ? getHighlighter(highlightType) : this.defaultHighlighter;
+        let highlighter = highlightType ? getHighlighter(highlightType) : this.defaultHighlighter;
 
-        var oldContext = this.highlightedContext;
+        let oldContext = this.highlightedContext;
         if (oldContext && highlighter != this.highlighter)
         {
             if (oldContext.window)
@@ -92,7 +92,7 @@ Firebug.Inspector = extend(Firebug.Module,
         this.previouslyCollapsed = $("fbContentBox").collapsed;
         this.previouslyFocused = context.detached && context.chrome.isFocused();
 
-        var htmlPanel = context.chrome.selectPanel("html");
+        let htmlPanel = context.chrome.selectPanel("html");
         this.previousObject = htmlPanel.selection;
 
         if (context.detached)
@@ -115,7 +115,7 @@ Firebug.Inspector = extend(Firebug.Module,
         if (node && node.firebugIgnore)
             return;
 
-        var context = this.inspectingContext;
+        let context = this.inspectingContext;
 
         if (this.inspectTimeout)
         {
@@ -143,7 +143,7 @@ Firebug.Inspector = extend(Firebug.Module,
         if (!this.inspecting)
             return;
 
-        var context = this.inspectingContext;
+        let context = this.inspectingContext;
 
         if (this.inspectTimeout)
         {
@@ -159,7 +159,7 @@ Firebug.Inspector = extend(Firebug.Module,
 
         this.inspecting = false;
 
-        var htmlPanel = context.getPanel("html");
+        let htmlPanel = context.getPanel("html");
 
         if (this.previouslyFocused)
             context.chrome.focus();
@@ -192,8 +192,8 @@ Firebug.Inspector = extend(Firebug.Module,
 
     inspectNodeBy: function(dir)
     {
-        var target;
-        var node = this.inspectingNode;
+        let target;
+        let node = this.inspectingNode;
 
         if (dir == "up")
             target = this.inspectingContext.chrome.getNextObject();
@@ -219,11 +219,11 @@ Firebug.Inspector = extend(Firebug.Module,
 
     attachInspectListeners: function(context)
     {
-        var win = context.window;
+        let win = context.window;
         if (!win || !win.document)
             return;
 
-        var chrome = context.chrome;
+        let chrome = context.chrome;
         if (!chrome)
             chrome = FirebugChrome;
 
@@ -245,17 +245,17 @@ Firebug.Inspector = extend(Firebug.Module,
 
     detachInspectListeners: function(context)
     {
-        var win = context.window;
+        let win = context.window;
         if (!win || !win.document)
             return;
 
-        var chrome = context.chrome;
+        let chrome = context.chrome;
         if (!chrome)
             chrome = FirebugChrome;
 
         if (this.keyListeners)  // XXXjjb for some reason this is null some times.
         {
-            for (var i = 0; i < this.keyListeners.length; ++i)
+            for (let i = 0; i < this.keyListeners.length; ++i)
                 chrome.keyIgnore(this.keyListeners[i]);
             delete this.keyListeners;
         }
@@ -299,7 +299,7 @@ Firebug.Inspector = extend(Firebug.Module,
     {
         if (FBTrace.DBG_INSPECT)
             FBTrace.dumpEvent("onInspecting event", event);
-        var win = event.currentTarget.defaultView;
+        let win = event.currentTarget.defaultView;
         if (win)
         {
             win = getRootWindow(win);
@@ -361,15 +361,15 @@ Firebug.Inspector = extend(Firebug.Module,
 
         if (browser)
         {
-            var disabled = !context || !context.loaded;
+            let disabled = !context || !context.loaded;
             browser.chrome.setGlobalAttribute("menu_firebugInspect", "disabled", disabled);
         }
     },
 
     showPanel: function(browser, panel)
     {
-        var chrome = browser.chrome;
-        var disabled = !panel || !panel.context.loaded;
+        let chrome = browser.chrome;
+        let disabled = !panel || !panel.context.loaded;
         chrome.setGlobalAttribute("cmd_toggleInspecting", "disabled", disabled);
         chrome.setGlobalAttribute("menu_firebugInspect", "disabled", disabled);
     },
@@ -391,13 +391,13 @@ Firebug.Inspector = extend(Firebug.Module,
 
     getObjectByURL: function(context, url)
     {
-        var styleSheet = getStyleSheetByHref(url, context);
+        let styleSheet = getStyleSheetByHref(url, context);
         if (styleSheet)
             return styleSheet;
 
-        /*var path = getURLPath(url);
-        var xpath = "//*[contains(@src, '" + path + "')]";
-        var elements = getElementsByXPath(context.window.document, xpath);
+        /*let path = getURLPath(url);
+        let xpath = "//*[contains(@src, '" + path + "')]";
+        let elements = getElementsByXPath(context.window.document, xpath);
         if (elements.length)
             return elements[0];*/
     }
@@ -450,19 +450,19 @@ FrameHighlighter.prototype =
         // TODO: xxxpedro
         //if (element instanceof XULElement)
         //    return;
-        var offset = getViewOffset(element, true);
-        var x = offset.x, y = offset.y;
-        var w = element.offsetWidth, h = element.offsetHeight;
+        let offset = getViewOffset(element, true);
+        let x = offset.x, y = offset.y;
+        let w = element.offsetWidth, h = element.offsetHeight;
         if (FBTrace.DBG_INSPECT)
                 FBTrace.sysout("FrameHighlighter HTML tag:"+element.tagName,"x:"+x+" y:"+y+" w:"+w+" h:"+h);
 
-        var wacked = isNaN(x) || isNaN(y) || isNaN(w) || isNaN(h);
+        let wacked = isNaN(x) || isNaN(y) || isNaN(w) || isNaN(h);
         if (FBTrace.DBG_INSPECT && wacked)
             FBTrace.sysout("FrameHighlighter.highlight has bad boxObject for ", element.tagName);
         if (wacked)
             return;
 
-        var nodes = this.getNodes(context, element);
+        let nodes = this.getNodes(context, element);
 
         move(nodes.top, x, y-edgeSize);
         resize(nodes.top, w, edgeSize);
@@ -477,17 +477,17 @@ FrameHighlighter.prototype =
         resize(nodes.left, edgeSize, h+edgeSize*2);
         if (FBTrace.DBG_INSPECT)																			/*@explore*/
             FBTrace.sysout("FrameHighlighter ", element.tagName);											/*@explore*/
-        var body = getNonFrameBody(element);
+        let body = getNonFrameBody(element);
         if (!body)
             return this.unhighlight(context);
 
-        var needsAppend = !nodes.top.parentNode || nodes.top.ownerDocument != body.ownerDocument;
+        let needsAppend = !nodes.top.parentNode || nodes.top.ownerDocument != body.ownerDocument;
         if (needsAppend)
         {
             if (FBTrace.DBG_INSPECT)																		/*@explore*/
                 FBTrace.sysout("FrameHighlighter needsAppend", nodes.top.ownerDocument.documentURI+" !?= "+body.ownerDocument.documentURI); /*@explore*/
             attachStyles(context, body);
-            for (var edge in nodes)
+            for (let edge in nodes)
             {
                 try
                 {
@@ -506,11 +506,11 @@ FrameHighlighter.prototype =
     {
         if (FBTrace.DBG_INSPECT)
             FBTrace.sysout("FrameHighlighter unhightlight", context.window.location);
-        var nodes = this.getNodes(context);
-        var body = nodes.top.parentNode;
+        let nodes = this.getNodes(context);
+        let body = nodes.top.parentNode;
         if (body)
         {
-            for (var edge in nodes)
+            for (let edge in nodes)
                 body.removeChild(nodes[edge]);
         }
     },
@@ -519,11 +519,11 @@ FrameHighlighter.prototype =
     {
         if (!context.frameHighlighter)
         {
-            var doc = context.window.document;
+            let doc = context.window.document;
 
             function createEdge(name)
             {
-                var div = doc.createElementNS("http://www.w3.org/1999/xhtml", "div");
+                let div = doc.createElementNS("http://www.w3.org/1999/xhtml", "div");
                 div.firebugIgnore = true;
                 div.className = "firebugHighlight";
                 return div;
@@ -551,8 +551,8 @@ PopupHighlighter.prototype =
 {
     highlight: function(context, element)
     {
-        var doc = context.window.document;
-        var popup = doc.getElementById("inspectorPopup");
+        let doc = context.window.document;
+        let popup = doc.getElementById("inspectorPopup");
         popup.style.width = "200px";
         popup.style.height = "100px";
         popup.showPopup(element, element.boxObject.screenX,
@@ -578,8 +578,8 @@ BoxModelHighlighter.prototype =
 {
     highlight: function(context, element, boxFrame)
     {
-        var nodes = this.getNodes(context);
-        var highlightFrame = boxFrame ? nodes[boxFrame] : null;
+        let nodes = this.getNodes(context);
+        let highlightFrame = boxFrame ? nodes[boxFrame] : null;
 
         if (context.highlightFrame)
             removeClass(context.highlightFrame, "firebugHighlightBox");
@@ -594,30 +594,30 @@ BoxModelHighlighter.prototype =
         else
             removeClass(nodes.offset, "firebugHighlightGroup");
 
-        var win = element.ownerDocument.defaultView;
+        let win = element.ownerDocument.defaultView;
         if (!win)
             return;
 
-        var offsetParent = element.offsetParent;
+        let offsetParent = element.offsetParent;
         if (!offsetParent)
             return;
 
-        var parentStyle = win.getComputedStyle(offsetParent, "");
-        var parentOffset = getViewOffset(offsetParent, true);
-        var parentX = parentOffset.x + parseInt(parentStyle.borderLeftWidth);
-        var parentY = parentOffset.y + parseInt(parentStyle.borderTopWidth);
-        var parentW = offsetParent.offsetWidth-1;
-        var parentH = offsetParent.offsetHeight-1;
+        let parentStyle = win.getComputedStyle(offsetParent, "");
+        let parentOffset = getViewOffset(offsetParent, true);
+        let parentX = parentOffset.x + parseInt(parentStyle.borderLeftWidth);
+        let parentY = parentOffset.y + parseInt(parentStyle.borderTopWidth);
+        let parentW = offsetParent.offsetWidth-1;
+        let parentH = offsetParent.offsetHeight-1;
 
-        var style = win.getComputedStyle(element, "");
-        var styles = readBoxStyles(style);
+        let style = win.getComputedStyle(element, "");
+        let styles = readBoxStyles(style);
 
-        var offset = getViewOffset(element, true);
-        var x = offset.x - Math.abs(styles.marginLeft);
-        var y = offset.y - Math.abs(styles.marginTop);
-        var w = element.offsetWidth - (styles.paddingLeft + styles.paddingRight
+        let offset = getViewOffset(element, true);
+        let x = offset.x - Math.abs(styles.marginLeft);
+        let y = offset.y - Math.abs(styles.marginTop);
+        let w = element.offsetWidth - (styles.paddingLeft + styles.paddingRight
                 + styles.borderLeft + styles.borderRight);
-        var h = element.offsetHeight - (styles.paddingTop + styles.paddingBottom
+        let h = element.offsetHeight - (styles.paddingTop + styles.paddingBottom
                 + styles.borderTop + styles.borderBottom);
 
         move(nodes.offset, x, y);
@@ -629,7 +629,7 @@ BoxModelHighlighter.prototype =
                 styles.paddingLeft);
         resize(nodes.content, w, h);
 
-        var showLines = Firebug.showRulers && boxFrame;
+        let showLines = Firebug.showRulers && boxFrame;
         if (showLines)
         {
             move(nodes.parent, parentX, parentY);
@@ -645,10 +645,10 @@ BoxModelHighlighter.prototype =
             else
                 removeClass(nodes.parent, "overflowRulerY");
 
-            var left = x;
-            var top = y;
-            var width = w-1;
-            var height = h-1;
+            let left = x;
+            let top = y;
+            let width = w-1;
+            let height = h-1;
 
             if (boxFrame == "content")
             {
@@ -689,11 +689,11 @@ BoxModelHighlighter.prototype =
             move(nodes.lines.left, left, 0)
         }
 
-        var body = getNonFrameBody(element);
+        let body = getNonFrameBody(element);
         if (!body)
             return this.unhighlight(context);
 
-        var needsAppend = !nodes.offset.parentNode
+        let needsAppend = !nodes.offset.parentNode
             || nodes.offset.parentNode.ownerDocument != body.ownerDocument;
 
         if (needsAppend)
@@ -708,7 +708,7 @@ BoxModelHighlighter.prototype =
             {
                 body.appendChild(nodes.parent);
 
-                for (var line in nodes.lines)
+                for (let line in nodes.lines)
                     body.appendChild(nodes.lines[line]);
             }
         }
@@ -716,24 +716,24 @@ BoxModelHighlighter.prototype =
         {
             body.removeChild(nodes.parent);
 
-            for (var line in nodes.lines)
+            for (let line in nodes.lines)
                 body.removeChild(nodes.lines[line]);
         }
     },
 
     unhighlight: function(context)
     {
-        var nodes = this.getNodes(context);
+        let nodes = this.getNodes(context);
         if (nodes.offset.parentNode)
         {
-            var body = nodes.offset.parentNode;
+            let body = nodes.offset.parentNode;
             body.removeChild(nodes.offset);
 
             if (nodes.lines.top.parentNode)
             {
                 body.removeChild(nodes.parent);
 
-                for (var line in nodes.lines)
+                for (let line in nodes.lines)
                     body.removeChild(nodes.lines[line]);
             }
         }
@@ -743,12 +743,12 @@ BoxModelHighlighter.prototype =
     {
         if (!context.boxModelHighlighter)
         {
-            var doc = context.window.document;
+            let doc = context.window.document;
             if (FBTrace.DBG_ERRORS && !doc) FBTrace.dumpStack("inspector getNodes no document for window:"+window.location);
 
             function createRuler(name)
             {
-                var div = doc.createElementNS("http://www.w3.org/1999/xhtml", "div");
+                let div = doc.createElementNS("http://www.w3.org/1999/xhtml", "div");
                 div.firebugIgnore = true;
                 div.className = "firebugRuler firebugRuler"+name;
                 return div;
@@ -756,7 +756,7 @@ BoxModelHighlighter.prototype =
 
             function createBox(name)
             {
-                var div = doc.createElementNS("http://www.w3.org/1999/xhtml", "div");
+                let div = doc.createElementNS("http://www.w3.org/1999/xhtml", "div");
                 div.firebugIgnore = true;
                 div.className = "firebugLayoutBox firebugLayoutBox"+name;
                 return div;
@@ -764,13 +764,13 @@ BoxModelHighlighter.prototype =
 
             function createLine(name)
             {
-                var div = doc.createElementNS("http://www.w3.org/1999/xhtml", "div");
+                let div = doc.createElementNS("http://www.w3.org/1999/xhtml", "div");
                 div.firebugIgnore = true;
                 div.className = "firebugLayoutLine firebugLayoutLine"+name;
                 return div;
             }
 
-            var nodes = context.boxModelHighlighter =
+            let nodes = context.boxModelHighlighter =
             {
                 parent: createBox("Parent"),
                 rulerH: createRuler("H"),
@@ -800,15 +800,15 @@ BoxModelHighlighter.prototype =
     }
 };
 
-var getNonFrameBody = function getNonFrameBody(elt)
+let getNonFrameBody = function getNonFrameBody(elt)
 {
-    var body = getBody(elt.ownerDocument);
+    let body = getBody(elt.ownerDocument);
     return body.localName.toUpperCase() == "FRAMESET" ? null : body;
 }
 
-var attachStyles = function attachStyles(context, body)
+let attachStyles = function attachStyles(context, body)
 {
-    var doc = body.ownerDocument;
+    let doc = body.ownerDocument;
     if (!context.highlightStyle)
         context.highlightStyle = createStyleSheet(doc, highlightCSS);
 

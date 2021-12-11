@@ -64,25 +64,25 @@ InsideOutBox.prototype =
 
     highlight: function(object)
     {
-        var objectBox = this.createObjectBox(object);
+        let objectBox = this.createObjectBox(object);
         this.highlightObjectBox(objectBox);
         return objectBox;
     },
 
     openObject: function(object)
     {
-        var firstChild = this.view.getChildObject(object, 0);
+        let firstChild = this.view.getChildObject(object, 0);
         if (firstChild)
             object = firstChild;
 
-        var objectBox = this.createObjectBox(object);
+        let objectBox = this.createObjectBox(object);
         this.openObjectBox(objectBox);
         return objectBox;
     },
 
     openToObject: function(object)
     {
-        var objectBox = this.createObjectBox(object);
+        let objectBox = this.createObjectBox(object);
         this.openObjectBox(objectBox);
         return objectBox;
     },
@@ -91,7 +91,7 @@ InsideOutBox.prototype =
     {
         if (FBTrace.DBG_HTML)
             FBTrace.sysout("insideOutBox.select object:", object);
-        var objectBox = this.createObjectBox(object);
+        let objectBox = this.createObjectBox(object);
         this.selectObjectBox(objectBox, forceOpen);
         if (makeBoxVisible)
         {
@@ -104,14 +104,14 @@ InsideOutBox.prototype =
 
     expandObject: function(object)
     {
-        var objectBox = this.createObjectBox(object);
+        let objectBox = this.createObjectBox(object);
         if (objectBox)
             this.expandObjectBox(objectBox);
     },
 
     contractObject: function(object)
     {
-        var objectBox = this.createObjectBox(object);
+        let objectBox = this.createObjectBox(object);
         if (objectBox)
             this.contractObjectBox(objectBox);
     },
@@ -122,7 +122,7 @@ InsideOutBox.prototype =
         {
             removeClass(this.highlightedObjectBox, "highlighted");
 
-            var highlightedBox = this.getParentObjectBox(this.highlightedObjectBox);
+            let highlightedBox = this.getParentObjectBox(this.highlightedObjectBox);
             for (; highlightedBox; highlightedBox = this.getParentObjectBox(highlightedBox))
                 removeClass(highlightedBox, "highlightOpen");
         }
@@ -133,7 +133,7 @@ InsideOutBox.prototype =
         {
             setClass(objectBox, "highlighted");
 
-            var highlightedBox = this.getParentObjectBox(objectBox);
+            let highlightedBox = this.getParentObjectBox(objectBox);
             for (; highlightedBox; highlightedBox = this.getParentObjectBox(highlightedBox))
                 setClass(highlightedBox, "highlightOpen");
 
@@ -143,7 +143,7 @@ InsideOutBox.prototype =
 
     selectObjectBox: function(objectBox, forceOpen)
     {
-        var isSelected = this.selectedObjectBox && objectBox == this.selectedObjectBox;
+        let isSelected = this.selectedObjectBox && objectBox == this.selectedObjectBox;
         if (!isSelected)
         {
             removeClass(this.selectedObjectBox, "selected");
@@ -167,8 +167,8 @@ InsideOutBox.prototype =
         if (objectBox)
         {
             // Set all of the node's ancestors to be permanently open
-            var parentBox = this.getParentObjectBox(objectBox);
-            var labelBox;
+            let parentBox = this.getParentObjectBox(objectBox);
+            let labelBox;
             for (; parentBox; parentBox = this.getParentObjectBox(parentBox))
             {
                 setClass(parentBox, "open");
@@ -181,16 +181,16 @@ InsideOutBox.prototype =
 
     expandObjectBox: function(objectBox)
     {
-        var nodeChildBox = this.getChildObjectBox(objectBox);
+        let nodeChildBox = this.getChildObjectBox(objectBox);
         if (!nodeChildBox)
             return;
 
         if (!objectBox.populated)
         {
-            var firstChild = this.view.getChildObject(objectBox.repObject, 0);
+            let firstChild = this.view.getChildObject(objectBox.repObject, 0);
             this.populateChildBox(firstChild, nodeChildBox);
         }
-        var labelBox = getElementByClass(objectBox, 'nodeLabelBox');
+        let labelBox = getElementByClass(objectBox, 'nodeLabelBox');
         if (labelBox)
             labelBox.setAttribute('aria-expanded', 'true');
         setClass(objectBox, "open");
@@ -199,17 +199,17 @@ InsideOutBox.prototype =
     contractObjectBox: function(objectBox)
     {
         removeClass(objectBox, "open");
-        var nodeLabel = getElementByClass(objectBox, "nodeLabel");
-        var labelBox = getElementByClass(nodeLabel, 'nodeLabelBox');
+        let nodeLabel = getElementByClass(objectBox, "nodeLabel");
+        let labelBox = getElementByClass(nodeLabel, 'nodeLabelBox');
         if (labelBox)
             labelBox.setAttribute('aria-expanded', 'false');
     },
 
     toggleObjectBox: function(objectBox, forceOpen)
     {
-        var isOpen = hasClass(objectBox, "open");
-        var nodeLabel = getElementByClass(objectBox, "nodeLabel");
-        var labelBox = getElementByClass(nodeLabel, 'nodeLabelBox');
+        let isOpen = hasClass(objectBox, "open");
+        let nodeLabel = getElementByClass(objectBox, "nodeLabel");
+        let labelBox = getElementByClass(nodeLabel, 'nodeLabelBox');
         if (labelBox)
             labelBox.setAttribute('aria-expanded', isOpen);
         if (!forceOpen && isOpen)
@@ -240,7 +240,7 @@ InsideOutBox.prototype =
         this.rootObject = this.getRootNode(object);
 
         // Get or create all of the boxes for the target and its ancestors
-        var objectBox = this.createObjectBoxes(object, this.rootObject);
+        let objectBox = this.createObjectBoxes(object, this.rootObject);
 
         if (FBTrace.DBG_HTML)
             FBTrace.sysout("\n----\ninsideOutBox.createObjectBox for object="+formatNode(object)+" got objectBox="+formatNode(objectBox), objectBox);
@@ -290,7 +290,7 @@ InsideOutBox.prototype =
         }
         else
         {
-            var parentNode = this.view.getParentObject(object);
+            let parentNode = this.view.getParentObject(object);
 
             if (FBTrace.DBG_HTML)
             {
@@ -298,19 +298,19 @@ InsideOutBox.prototype =
                 FBTrace.sysout("insideOutBox.createObjectBoxes view.getParentObject("+formatNode(object)+")=parentNode: "+formatNode(parentNode), parentNode);
             }
 
-            var parentObjectBox = this.createObjectBoxes(parentNode, rootObject);
+            let parentObjectBox = this.createObjectBoxes(parentNode, rootObject);
             if (FBTrace.DBG_HTML)
                 FBTrace.sysout("insideOutBox.createObjectBoxes createObjectBoxes("+formatNode(parentNode)+","+formatNode(rootObject)+"):parentObjectBox: "+formatNode(parentObjectBox), parentObjectBox);
             if (!parentObjectBox)
                 return null;
 
-            var parentChildBox = this.getChildObjectBox(parentObjectBox);
+            let parentChildBox = this.getChildObjectBox(parentObjectBox);
             if (FBTrace.DBG_HTML)
                 FBTrace.sysout("insideOutBox.createObjectBoxes getChildObjectBox("+formatNode(parentObjectBox)+")= parentChildBox: "+formatNode(parentChildBox)+"\n");
             if (!parentChildBox)
                 return null;
 
-            var childObjectBox = this.findChildObjectBox(parentChildBox, object);
+            let childObjectBox = this.findChildObjectBox(parentChildBox, object);
             if (FBTrace.DBG_HTML)
                 FBTrace.sysout("insideOutBox.createObjectBoxes findChildObjectBox("+formatNode(parentChildBox)+","+formatNode(object)+"): childObjectBox: "+formatNode(childObjectBox), childObjectBox);
             return childObjectBox
@@ -328,12 +328,12 @@ InsideOutBox.prototype =
             return this.rootObjectBox;
         else
         {
-            var parentNode = this.view.getParentObject(object);
-            var parentObjectBox = this.findObjectBox(parentNode);
+            let parentNode = this.view.getParentObject(object);
+            let parentObjectBox = this.findObjectBox(parentNode);
             if (!parentObjectBox)
                 return null;
 
-            var parentChildBox = this.getChildObjectBox(parentObjectBox);
+            let parentChildBox = this.getChildObjectBox(parentObjectBox);
             if (!parentChildBox)
                 return null;
 
@@ -343,15 +343,15 @@ InsideOutBox.prototype =
 
     appendChildBox: function(parentNodeBox, repObject)
     {
-        var childBox = this.getChildObjectBox(parentNodeBox);
-        var objectBox = this.findChildObjectBox(childBox, repObject);
+        let childBox = this.getChildObjectBox(parentNodeBox);
+        let objectBox = this.findChildObjectBox(childBox, repObject);
         if (objectBox)
             return objectBox;
 
         objectBox = this.view.createObjectBox(repObject);
         if (objectBox)
         {
-            var childBox = this.getChildObjectBox(parentNodeBox);
+            let childBox = this.getChildObjectBox(parentNodeBox);
             childBox.appendChild(objectBox);
         }
         return objectBox;
@@ -359,15 +359,15 @@ InsideOutBox.prototype =
 
     insertChildBoxBefore: function(parentNodeBox, repObject, nextSibling)
     {
-        var childBox = this.getChildObjectBox(parentNodeBox);
-        var objectBox = this.findChildObjectBox(childBox, repObject);
+        let childBox = this.getChildObjectBox(parentNodeBox);
+        let objectBox = this.findChildObjectBox(childBox, repObject);
         if (objectBox)
             return objectBox;
 
         objectBox = this.view.createObjectBox(repObject);
         if (objectBox)
         {
-            var siblingBox = this.findChildObjectBox(childBox, nextSibling);
+            let siblingBox = this.findChildObjectBox(childBox, nextSibling);
             childBox.insertBefore(objectBox, siblingBox);
         }
         return objectBox;
@@ -375,8 +375,8 @@ InsideOutBox.prototype =
 
     removeChildBox: function(parentNodeBox, repObject)
     {
-        var childBox = this.getChildObjectBox(parentNodeBox);
-        var objectBox = this.findChildObjectBox(childBox, repObject);
+        let childBox = this.getChildObjectBox(parentNodeBox);
+        let objectBox = this.findChildObjectBox(childBox, repObject);
         if (objectBox)
             childBox.removeChild(objectBox);
     },
@@ -386,21 +386,21 @@ InsideOutBox.prototype =
         if (!repObject)
             return null;
 
-        var parentObjectBox = getAncestorByClass(nodeChildBox, "nodeBox");
+        let parentObjectBox = getAncestorByClass(nodeChildBox, "nodeBox");
         if (FBTrace.DBG_HTML)
             FBTrace.sysout("+++insideOutBox.populateChildBox("+(repObject.localName?repObject.localName:repObject)+") parentObjectBox.populated "+parentObjectBox.populated+"\n");
         if (parentObjectBox.populated)
             return this.findChildObjectBox(nodeChildBox, repObject);
 
-        var lastSiblingBox = this.getChildObjectBox(nodeChildBox);
-        var siblingBox = nodeChildBox.firstChild;
-        var targetBox = null;
+        let lastSiblingBox = this.getChildObjectBox(nodeChildBox);
+        let siblingBox = nodeChildBox.firstChild;
+        let targetBox = null;
 
-        var view = this.view;
+        let view = this.view;
 
-        var targetSibling = null;
-        var parentNode = view.getParentObject(repObject);
-        for (var i = 0; 1; ++i)
+        let targetSibling = null;
+        let parentNode = view.getParentObject(repObject);
+        for (let i = 0; 1; ++i)
         {
             targetSibling = view.getChildObject(parentNode, i, targetSibling);
             if (!targetSibling)
@@ -412,7 +412,7 @@ InsideOutBox.prototype =
 
             if (!siblingBox || siblingBox.repObject != targetSibling)
             {
-                var newBox = view.createObjectBox(targetSibling);
+                let newBox = view.createObjectBox(targetSibling);
                 if (newBox)
                 {
                     if (lastSiblingBox)
@@ -441,7 +441,7 @@ InsideOutBox.prototype =
 
     getParentObjectBox: function(objectBox)
     {
-        var parent = objectBox.parentNode ? objectBox.parentNode.parentNode : null;
+        let parent = objectBox.parentNode ? objectBox.parentNode.parentNode : null;
         return parent && parent.repObject ? parent : null;
     },
 
@@ -452,7 +452,7 @@ InsideOutBox.prototype =
 
     findChildObjectBox: function(parentNodeBox, repObject)
     {
-        for (var childBox = parentNodeBox.firstChild; childBox; childBox = childBox.nextSibling)
+        for (let childBox = parentNodeBox.firstChild; childBox; childBox = childBox.nextSibling)
         {
             if (FBTrace.DBG_HTML)
                 FBTrace.sysout(
@@ -472,12 +472,12 @@ InsideOutBox.prototype =
     {
         if (FBTrace.DBG_HTML)
           FBTrace.sysout("insideOutBox.isInExistingRoot for ", node);
-        var parentNode = node;
+        let parentNode = node;
         while (parentNode && parentNode != this.rootObject)
         {
             if (FBTrace.DBG_HTML)
                 FBTrace.sysout(parentNode.localName+" < ", parentNode);
-            var parentNode = this.view.getParentObject(parentNode);
+            let parentNode = this.view.getParentObject(parentNode);
             if (FBTrace.DBG_HTML)
                 FBTrace.sysout((parentNode?" (parent="+parentNode.localName+")":" (null parentNode)"+"\n"), parentNode);
         }
@@ -492,7 +492,7 @@ InsideOutBox.prototype =
         {
             if (FBTrace.DBG_HTML)
                 FBTrace.sysout(node.localName+" < ", node);
-            var parentNode = this.view.getParentObject(node);
+            let parentNode = this.view.getParentObject(node);
             if (FBTrace.DBG_HTML)
                 FBTrace.sysout((parentNode?" (parent="+parentNode.localName+")":" (null parentNode)"+"\n"), parentNode);
 
@@ -508,8 +508,8 @@ InsideOutBox.prototype =
 
     onMouseDown: function(event)
     {
-        var hitTwisty = false;
-        for (var child = event.target; child; child = child.parentNode)
+        let hitTwisty = false;
+        for (let child = event.target; child; child = child.parentNode)
         {
             if (hasClass(child, "twisty"))
                 hitTwisty = true;
@@ -530,7 +530,7 @@ function isVisibleTarget(node)
 {
     if (node.repObject && node.repObject.nodeType == Node.ELEMENT_NODE)
     {
-        for (var parent = node.parentNode; parent; parent = parent.parentNode)
+        for (let parent = node.parentNode; parent; parent = parent.parentNode)
         {
             if (hasClass(parent, "nodeChildBox")
                 && !hasClass(parent.parentNode, "open")
@@ -551,7 +551,7 @@ function formatNode(object)
 
 function getObjectPath(element, aView)
 {
-    var path = [];
+    let path = [];
     for (; element; element = aView.getParentObject(element))
         path.push(element);
 

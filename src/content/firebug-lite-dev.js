@@ -14,11 +14,11 @@ if (window.Firebug)
 
 // ************************************************************************************************
 
-var bookmarkletMode = true;
+let bookmarkletMode = true;
 
-var bookmarkletSkinURL = "https://getfirebug.com/releases/lite/latest/skin/xp/"; // stable
-//var bookmarkletSkinURL = "https://getfirebug.com/releases/lite/beta/skin/xp/"; // beta
-//var bookmarkletSkinURL = "http://fbug.googlecode.com/svn/lite/branches/firebug1.3/skin/xp/"; // developer
+let bookmarkletSkinURL = "https://getfirebug.com/releases/lite/latest/skin/xp/"; // stable
+//let bookmarkletSkinURL = "https://getfirebug.com/releases/lite/beta/skin/xp/"; // beta
+//let bookmarkletSkinURL = "http://fbug.googlecode.com/svn/lite/branches/firebug1.3/skin/xp/"; // developer
 
 
 // ************************************************************************************************
@@ -138,15 +138,15 @@ window.FBDev =
     loadChromeApplication: function(chrome)
     {
         FBDev.buildSource(function(source){
-            var doc = chrome.document;
-            var script = doc.createElement("script");
+            let doc = chrome.document;
+            let script = doc.createElement("script");
             doc.getElementsByTagName("head")[0].appendChild(script);
             script.text = source;
         });
     },
 
     panelBuild: function() {
-        var panel = this.getPanel();
+        let panel = this.getPanel();
         panel.updateOutput("Building Source...");
 
         setTimeout(function(){
@@ -158,7 +158,7 @@ window.FBDev =
 
     panelBuildSkin: function()
     {
-        var panel = this.getPanel();
+        let panel = this.getPanel();
         panel.updateOutput("Building Source...");
 
         setTimeout(function(){
@@ -169,7 +169,7 @@ window.FBDev =
     },
 
     build: function() {
-        var out = document.createElement("textarea");
+        let out = document.createElement("textarea");
 
         FBDev.buildFullSource(function(source){
             out.style.cssText = "position: absolute; top: 0; left: 0; width: 100%; height: 100%;";
@@ -182,18 +182,18 @@ window.FBDev =
 
     buildFullSource: function(callback)
     {
-        var useClosure = true;
-        var source = [];
+        let useClosure = true;
+        let source = [];
 
         // remove the boot.js from the list of modules to be included
         // because it will be generated bellow
-        var modules = FBDev.modules.slice(0,FBDev.modules.length-1);
-        var last = modules.length-1;
+        let modules = FBDev.modules.slice(0,FBDev.modules.length-1);
+        let last = modules.length-1;
 
         if (useClosure)
             source.push("(function(){\n\n");
 
-        var htmlUrl = skinURL + "firebug.html",
+        let htmlUrl = skinURL + "firebug.html",
             cssUrl = skinURL + "firebug.css",
             html,
             css,
@@ -228,9 +228,9 @@ window.FBDev =
             }
         });
 
-        for (var i=0, module; module=modules[i]; i++)
+        for (let i=0, module; module=modules[i]; i++)
         {
-            var moduleURL = sourceURL + module;
+            let moduleURL = sourceURL + module;
 
             if (module.indexOf("chromeSkin") != -1) continue;
 
@@ -260,16 +260,16 @@ window.FBDev =
 
     buildSource: function(callback)
     {
-        var useClosure = true;
-        var source = [];
-        var last = FBDev.modules.length-1;
+        let useClosure = true;
+        let source = [];
+        let last = FBDev.modules.length-1;
 
         if (useClosure)
             source.push("(function(){\n\n");
 
-        for (var i=0, module; module=FBDev.modules[i]; i++)
+        for (let i=0, module; module=FBDev.modules[i]; i++)
         {
-            var moduleURL = sourceURL + module;
+            let moduleURL = sourceURL + module;
 
             FBL.Ajax.request({url: moduleURL, i: i, onComplete: function(r,o)
                 {
@@ -291,7 +291,7 @@ window.FBDev =
 
     buildSkin: function(callback)
     {
-        var htmlUrl = skinURL + "firebug.html",
+        let htmlUrl = skinURL + "firebug.html",
             cssUrl = skinURL + "firebug.css",
             html,
             css,
@@ -329,13 +329,13 @@ window.FBDev =
 
     compressSkinHTML: function()
     {
-        var url = skinURL + "firebug.html";
+        let url = skinURL + "firebug.html";
 
-        var out = document.createElement("textarea");
+        let out = document.createElement("textarea");
 
         FBL.Ajax.request({url: url, onComplete:function(r)
             {
-                var result = FBDev.compressHTML(r);
+                let result = FBDev.compressHTML(r);
 
                 out.style.cssText = "position: absolute; top: 0; left: 0; width: 100%; height: 100%;";
                 out.appendChild(document.createTextNode(result));
@@ -346,13 +346,13 @@ window.FBDev =
 
     compressSkinCSS: function()
     {
-        var url = skinURL + "firebug.css";
+        let url = skinURL + "firebug.css";
 
-        var out = document.createElement("textarea");
+        let out = document.createElement("textarea");
 
         FBL.Ajax.request({url: url, onComplete:function(r)
             {
-                var result = FBDev.compressCSS(r);
+                let result = FBDev.compressCSS(r);
 
                 out.style.cssText = "position: absolute; top: 0; left: 0; width: 100%; height: 100%;";
                 out.appendChild(document.createTextNode(result));
@@ -364,7 +364,7 @@ window.FBDev =
 
     compressHTML: function(html)
     {
-        var reHTMLComment = /(<!--([^-]|-(?!->))*-->)/g;
+        let reHTMLComment = /(<!--([^-]|-(?!->))*-->)/g;
 
         return html.replace(/^[\s\S]*<\s*body.*>\s*|\s*<\s*\/body.*>[\s\S]*$/gm, "").
             replace(reHTMLComment, "").
@@ -378,8 +378,8 @@ window.FBDev =
 
     compressCSS: function(css)
     {
-        var reComment = /(\/\/.*)\n/g;
-        var reMultiComment = /(\/\*([^\*]|\*(?!\/))*\*\/)/g;
+        let reComment = /(\/\/.*)\n/g;
+        let reMultiComment = /(\/\*([^\*]|\*(?!\/))*\*\/)/g;
 
         return css.replace(reComment, "").
             replace(reMultiComment, "").
@@ -404,23 +404,23 @@ window.FBDev =
 
 function findLocation()
 {
-    var reFirebugFile = /(firebug-lite(?:-\w+)?\.js)(#.+)?$/;
-    var rePath = /^(.*\/)/;
-    var reProtocol = /^\w+:\/\//;
+    let reFirebugFile = /(firebug-lite(?:-\w+)?\.js)(#.+)?$/;
+    let rePath = /^(.*\/)/;
+    let reProtocol = /^\w+:\/\//;
 
-    var head = document.getElementsByTagName("head")[0];
+    head = document.getElementsByTagName("head")[0];
 
-    var path = null;
+    let path = null;
 
-    for(var i=0, c=document.getElementsByTagName("script"), ci; ci=c[i]; i++)
+    for(let i=0, c=document.getElementsByTagName("script"), ci; ci=c[i]; i++)
     {
-        var file = null;
+        let file = null;
         if ( ci.nodeName.toLowerCase() == "script" &&
              (file = reFirebugFile.exec(ci.src)) )
         {
 
-            var fileName = file[1];
-            var fileOptions = file[2];
+            fileName = file[1];
+            fileOptions = file[2];
 
             if (reProtocol.test(ci.src)) {
                 // absolute path
@@ -430,17 +430,17 @@ function findLocation()
             else
             {
                 // relative path
-                var r = rePath.exec(ci.src);
-                var src = r ? r[1] : ci.src;
-                var rel = /^((?:\.\.\/)+)(.*)/.exec(src);
+                let r = rePath.exec(ci.src);
+                let src = r ? r[1] : ci.src;
+                let rel = /^((?:\.\.\/)+)(.*)/.exec(src);
                 path = rePath.exec(location.href)[1];
 
                 if (rel)
                 {
-                    var lastFolder = /^(.*\/)[^\/]+\/$/;
+                    let lastFolder = /^(.*\/)[^\/]+\/$/;
 
-                    var j = rel[1].length/3;
-                    var p;
+                    let j = rel[1].length/3;
+                    let p;
                     while (j-- > 0)
                         path = lastFolder.exec(path)[1];
 
@@ -456,7 +456,7 @@ function findLocation()
                     // "/some/path"
                     else if(/^\/./.test(src))
                     {
-                        var domain = /^(\w+:\/\/[^\/]+)/.exec(path);
+                        let domain = /^(\w+:\/\/[^\/]+)/.exec(path);
                         path = domain[1] + src;
                     }
                     // "some/path"
@@ -471,7 +471,7 @@ function findLocation()
         }
     }
 
-    var m = path.match(/([^\/]+)\/$/);
+    let m = path.match(/([^\/]+)\/$/);
 
     if (path && m)
     {
@@ -494,22 +494,22 @@ function loadModules() {
 
     publishedURL = bookmarkletMode ? bookmarkletSkinURL : skinURL;
 
-    var sufix = isApplicationContext ? "#app" : "";
+    let sufix = isApplicationContext ? "#app" : "";
 
-    var useDocWrite = true;
-    //var useDocWrite = isIE || isSafari;
+    let useDocWrite = true;
+    //let useDocWrite = isIE || isSafari;
 
-    var moduleURL, script;
-    var scriptTags = [];
+    let moduleURL, script;
+    let scriptTags = [];
 
     /*
     if (top != window)
     {
-        var xhr = getXHRObject();
-        var html = "";
-        for (var i=0, module; module=FBDev.modules[i]; i++)
+        let xhr = getXHRObject();
+        let html = "";
+        for (let i=0, module; module=FBDev.modules[i]; i++)
         {
-            var moduleURL = sourceURL + module + sufix;
+            let moduleURL = sourceURL + module + sufix;
 
             xhr.open("get", moduleURL, false);
             xhr.send();
@@ -525,13 +525,13 @@ function loadModules() {
 
     // new module loader
     /*
-    var length = FBDev.modules.length;
-    var loadModule = function(index){
+    let length = FBDev.modules.length;
+    let loadModule = function(index){
         if (index == length) return;
 
-        var module = FBDev.modules[index];
-        var moduleURL = sourceURL + module + sufix;
-        var script = document.createElement("script");
+        let module = FBDev.modules[index];
+        let moduleURL = sourceURL + module + sufix;
+        let script = document.createElement("script");
         script.src = moduleURL;
 
         script.onload = function() {
@@ -553,9 +553,9 @@ function loadModules() {
     /**/
 
 
-    for (var i=0, module; module=FBDev.modules[i]; i++)
+    for (let i=0, module; module=FBDev.modules[i]; i++)
     {
-        var moduleURL = sourceURL + module + sufix;
+        let moduleURL = sourceURL + module + sufix;
 
         if(useDocWrite)
         {
@@ -580,7 +580,7 @@ function loadModules() {
     waitFirebugLoad();
 };
 
-var waitFirebugLoad = function()
+let waitFirebugLoad = function()
 {
     if (window && "Firebug" in window)
     {
@@ -598,7 +598,7 @@ var waitFirebugLoad = function()
 
 // ************************************************************************************************
 /*
-var loadDevPanel = function() { with(FBL) {
+let loadDevPanel = function() { with(FBL) {
 
     // ********************************************************************************************
     // FBTrace Panel
@@ -618,8 +618,8 @@ var loadDevPanel = function() { with(FBL) {
         create: function(){
             Firebug.Panel.create.apply(this, arguments);
 
-            var doc = Firebug.chrome.document;
-            var out = doc.createElement("textarea");
+            let doc = Firebug.chrome.document;
+            let out = doc.createElement("textarea");
             out.id = "fbDevOutput";
             out.style.cssText = "position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0;";
 
@@ -660,7 +660,7 @@ var loadDevPanel = function() { with(FBL) {
 
         updateOutput: function(output)
         {
-            var doc = Firebug.chrome.document;
+            let doc = Firebug.chrome.document;
 
             if (isIE)
                 this.outputNode.innerText = output;
@@ -692,21 +692,21 @@ var loadDevPanel = function() { with(FBL) {
 */
 // ************************************************************************************************
 
-var getXHRObject = function()
+let getXHRObject = function()
 {
-    var xhrObj = false;
+    xhrObj = false;
     try
     {
         xhrObj = new XMLHttpRequest();
     }
     catch(e)
     {
-        var progid = [
+        let progid = [
                 "MSXML2.XMLHTTP.5.0", "MSXML2.XMLHTTP.4.0",
                 "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"
             ];
 
-        for ( var i=0; i < progid.length; ++i ) {
+        for ( let i=0; i < progid.length; ++i ) {
             try
             {
                 xhrObj = new ActiveXObject(progid[i]);
@@ -725,17 +725,17 @@ var getXHRObject = function()
 };
 
 // ************************************************************************************************
-var publishedURL = "";
-var baseURL = "";
-var sourceURL = "";
-var skinURL = "";
-var fullURL = "";
-var isApplicationContext = false;
+let publishedURL = "";
+let baseURL = "";
+let sourceURL = "";
+let skinURL = "";
+let fullURL = "";
+let isApplicationContext = false;
 
-var isFirefox = navigator.userAgent.indexOf("Firefox") != -1;
-var isIE = navigator.userAgent.indexOf("MSIE") != -1;
-var isOpera = navigator.userAgent.indexOf("Opera") != -1;
-var isSafari = navigator.userAgent.indexOf("AppleWebKit") != -1;
+let isFirefox = navigator.userAgent.indexOf("Firefox") != -1;
+let isIE = navigator.userAgent.indexOf("MSIE") != -1;
+let isOpera = navigator.userAgent.indexOf("Opera") != -1;
+let isSafari = navigator.userAgent.indexOf("AppleWebKit") != -1;
 
 loadModules();
 // ************************************************************************************************

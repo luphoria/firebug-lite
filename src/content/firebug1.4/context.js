@@ -6,19 +6,19 @@ FBL.ns( /**@scope ns-context*/ function() { with (FBL) {
 // ************************************************************************************************
 // Globals
 
-var refreshDelay = 300;
+let refreshDelay = 300;
 
 // Opera and some versions of webkit returns the wrong value of document.elementFromPoint()
 // function, without taking into account the scroll position. Safari 4 (webkit/531.21.8) 
 // still have this issue. Google Chrome 4 (webkit/532.5) does not. So, we're assuming this 
 // issue was fixed in the 532 version
-var shouldFixElementFromPoint = isOpera || isSafari && browserVersion < "532";
+let shouldFixElementFromPoint = isOpera || isSafari && browserVersion < "532";
 
-var evalError = "___firebug_evaluation_error___";
-var pixelsPerInch;
+let evalError = "___firebug_evaluation_error___";
+let pixelsPerInch;
 
-var resetStyle = "margin:0; padding:0; border:0; position:absolute; overflow:hidden; display:block;";
-var offscreenStyle = resetStyle + "top:-1234px; left:-1234px;";
+let resetStyle = "margin:0; padding:0; border:0; position:absolute; overflow:hidden; display:block;";
+let offscreenStyle = resetStyle + "top:-1234px; left:-1234px;";
 
 
 // ************************************************************************************************
@@ -43,7 +43,7 @@ FBL.Context = function(win)
     }
     
     // Create a new "black-box" eval() method that runs in the global namespace
-    // of the context window, without exposing the local variables declared
+    // of the context window, without exposing the local letiables declared
     // by the function that calls it
     this.eval = this.window.eval("new Function('" +
             "try{ return window.eval.apply(window,arguments) }catch(E){ E."+evalError+"=true; return E }" +
@@ -60,12 +60,12 @@ FBL.Context.prototype =
     
     setTimeout: function(fn, delay)
     {
-        var win = this.window;
+        let win = this.window;
         
         if (win.setTimeout == this.setTimeout)
             throw new Error("setTimeout recursion");
         
-        var timeout = win.setTimeout.apply ? // IE doesn't have apply method on setTimeout
+        let timeout = win.setTimeout.apply ? // IE doesn't have apply method on setTimeout
                 win.setTimeout.apply(win, arguments) :
                 win.setTimeout(fn, delay);
 
@@ -87,9 +87,9 @@ FBL.Context.prototype =
 
     setInterval: function(fn, delay)
     {
-        var win = this.window;
+        let win = this.window;
         
-        var timeout = win.setInterval.apply ? // IE doesn't have apply method on setTimeout
+        let timeout = win.setInterval.apply ? // IE doesn't have apply method on setTimeout
                 win.setInterval.apply(win, arguments) :
                 win.setInterval(fn, delay);
 
@@ -114,19 +114,19 @@ FBL.Context.prototype =
         if (!this.invalidPanels)
             this.invalidPanels = {};
 
-        for (var i = 0; i < arguments.length; ++i)
+        for (let i = 0; i < arguments.length; ++i)
         {
-            var panelName = arguments[i];
+            let panelName = arguments[i];
             
             // avoid error. need to create a better getPanel() function as explained below
             if (!Firebug.chrome || !Firebug.chrome.selectedPanel)
                 return;
             
-            //var panel = this.getPanel(panelName, true);
+            //let panel = this.getPanel(panelName, true);
             //TODO: xxxpedro context how to get all panels using a single function?
             // the current workaround to make the invalidation works is invalidating
             // only sidePanels. There's also a problem with panel name (LowerCase in Firebug Lite)
-            var panel = Firebug.chrome.selectedPanel.sidePanelBar ?
+            let panel = Firebug.chrome.selectedPanel.sidePanelBar ?
                     Firebug.chrome.selectedPanel.sidePanelBar.getPanel(panelName, true) :
                     null;
             
@@ -142,15 +142,15 @@ FBL.Context.prototype =
 
         this.refreshTimeout = this.setTimeout(bindFixed(function()
         {
-            var invalids = [];
+            let invalids = [];
 
-            for (var panelName in this.invalidPanels)
+            for (let panelName in this.invalidPanels)
             {
-                //var panel = this.getPanel(panelName, true);
+                //let panel = this.getPanel(panelName, true);
                 //TODO: xxxpedro context how to get all panels using a single function?
                 // the current workaround to make the invalidation works is invalidating
                 // only sidePanels. There's also a problem with panel name (LowerCase in Firebug Lite)
-                var panel = Firebug.chrome.selectedPanel.sidePanelBar ?
+                let panel = Firebug.chrome.selectedPanel.sidePanelBar ?
                         Firebug.chrome.selectedPanel.sidePanelBar.getPanel(panelName, true) :
                         null;
 
@@ -209,7 +209,7 @@ FBL.Context.prototype =
         // a global accessible element as: "my.namespaced.object"
         context = context || "window";
         
-        var cmd,
+        let cmd,
             result;
         
         // if the context is the "window" object, we don't need a closure
@@ -270,7 +270,7 @@ FBL.Context.prototype =
         
         if (result && result[evalError])
         {
-            var msg = result.name ? (result.name + ": ") : "";
+            let msg = result.name ? (result.name + ": ") : "";
             msg += result.message || result;
             
             if (errorHandler)
@@ -288,7 +288,7 @@ FBL.Context.prototype =
     
     getWindowSize: function()
     {
-        var width=0, height=0, el;
+        let width=0, height=0, el;
         
         if (typeof this.window.innerWidth == "number")
         {
@@ -311,7 +311,7 @@ FBL.Context.prototype =
     
     getWindowScrollSize: function()
     {
-        var width=0, height=0, el;
+        let width=0, height=0, el;
 
         // first try the document.documentElement scroll size
         if (!isIEQuiksMode && (el=this.document.documentElement) && 
@@ -336,7 +336,7 @@ FBL.Context.prototype =
     
     getWindowScrollPosition: function()
     {
-        var top=0, left=0, el;
+        let top=0, left=0, el;
         
         if(typeof this.window.pageYOffset == "number")
         {
@@ -365,7 +365,7 @@ FBL.Context.prototype =
     {
         if (shouldFixElementFromPoint)
         {
-            var scroll = this.getWindowScrollPosition();
+            let scroll = this.getWindowScrollPosition();
             return this.document.elementFromPoint(x + scroll.left, y + scroll.top);
         }
         else
@@ -374,8 +374,8 @@ FBL.Context.prototype =
     
     getElementPosition: function(el)
     {
-        var left = 0
-        var top = 0;
+        let left = 0
+        let top = 0;
         
         do
         {
@@ -389,16 +389,16 @@ FBL.Context.prototype =
     
     getElementBox: function(el)
     {
-        var result = {};
+        let result = {};
         
         if (el.getBoundingClientRect)
         {
-            var rect = el.getBoundingClientRect();
+            let rect = el.getBoundingClientRect();
             
             // fix IE problem with offset when not in fullscreen mode
-            var offset = isIE ? this.document.body.clientTop || this.document.documentElement.clientTop: 0;
+            let offset = isIE ? this.document.body.clientTop || this.document.documentElement.clientTop: 0;
             
-            var scroll = this.getWindowScrollPosition();
+            let scroll = this.getWindowScrollPosition();
             
             result.top = Math.round(rect.top - offset + scroll.top);
             result.left = Math.round(rect.left - offset + scroll.left);
@@ -407,7 +407,7 @@ FBL.Context.prototype =
         }
         else 
         {
-            var position = this.getElementPosition(el);
+            let position = this.getElementPosition(el);
             
             result.top = position.top;
             result.left = position.left;
@@ -424,15 +424,15 @@ FBL.Context.prototype =
     
     getMeasurement: function(el, name)
     {
-        var result = {value: 0, unit: "px"};
+        let result = {value: 0, unit: "px"};
         
-        var cssValue = this.getStyle(el, name);
+        let cssValue = this.getStyle(el, name);
         
         if (!cssValue) return result;
         if (cssValue.toLowerCase() == "auto") return result;
         
-        var reMeasure = /(\d+\.?\d*)(.*)/;
-        var m = cssValue.match(reMeasure);
+        let reMeasure = /(\d+\.?\d*)(.*)/;
+        let m = cssValue.match(reMeasure);
         
         if (m)
         {
@@ -447,9 +447,9 @@ FBL.Context.prototype =
     {
         if (!el) return null;
         
-        var m = this.getMeasurement(el, name);
-        var value = m.value;
-        var unit = m.unit;
+        let m = this.getMeasurement(el, name);
+        let value = m.value;
+        let unit = m.unit;
         
         if (unit == "px")
             return value;
@@ -466,10 +466,10 @@ FBL.Context.prototype =
 
     getMeasurementBox1: function(el, name)
     {
-        var sufixes = ["Top", "Left", "Bottom", "Right"];
-        var result = [];
+        let sufixes = ["Top", "Left", "Bottom", "Right"];
+        let result = [];
         
-        for(var i=0, sufix; sufix=sufixes[i]; i++)
+        for(let i=0, sufix; sufix=sufixes[i]; i++)
             result[i] = Math.round(this.getMeasurementInPixels(el, name + sufix));
         
         return {top:result[0], left:result[1], bottom:result[2], right:result[3]};
@@ -477,17 +477,17 @@ FBL.Context.prototype =
     
     getMeasurementBox: function(el, name)
     {
-        var result = [];
-        var sufixes = name == "border" ?
+        let result = [];
+        let sufixes = name == "border" ?
                 ["TopWidth", "LeftWidth", "BottomWidth", "RightWidth"] :
                 ["Top", "Left", "Bottom", "Right"];
         
         if (isIE)
         {
-            var propName, cssValue;
-            var autoMargin = null;
+            let propName, cssValue;
+            let autoMargin = null;
             
-            for(var i=0, sufix; sufix=sufixes[i]; i++)
+            for(let i=0, sufix; sufix=sufixes[i]; i++)
             {
                 propName = name + sufix;
                 
@@ -508,7 +508,7 @@ FBL.Context.prototype =
         }
         else
         {
-            for(var i=0, sufix; sufix=sufixes[i]; i++)
+            for(let i=0, sufix; sufix=sufixes[i]; i++)
                 result[i] = this.getMeasurementInPixels(el, name + sufix);
         }
         
@@ -525,30 +525,30 @@ FBL.Context.prototype =
             return {top:0, left:0, bottom:0, right:0};
             /**/
             
-        var offsetTop = 0;
+        let offsetTop = 0;
         if (false && isIEStantandMode)
         {
-            var scrollSize = Firebug.browser.getWindowScrollSize();
+            let scrollSize = Firebug.browser.getWindowScrollSize();
             offsetTop = scrollSize.height;
         }
         
-        var box = this.document.createElement("div");
+        let box = this.document.createElement("div");
         //box.style.cssText = "margin:0; padding:1px; border: 0; position:static; overflow:hidden; visibility: hidden;";
         box.style.cssText = "margin:0; padding:1px; border: 0; visibility: hidden;";
         
-        var clone = el.cloneNode(false);
-        var text = this.document.createTextNode("&nbsp;");
+        let clone = el.cloneNode(false);
+        let text = this.document.createTextNode("&nbsp;");
         clone.appendChild(text);
         
         box.appendChild(clone);
     
         this.document.body.appendChild(box);
         
-        var marginTop = clone.offsetTop - box.offsetTop - 1;
-        var marginBottom = box.offsetHeight - clone.offsetHeight - 2 - marginTop;
+        let marginTop = clone.offsetTop - box.offsetTop - 1;
+        let marginBottom = box.offsetHeight - clone.offsetHeight - 2 - marginTop;
         
-        var marginLeft = clone.offsetLeft - box.offsetLeft - 1;
-        var marginRight = box.offsetWidth - clone.offsetWidth - 2 - marginLeft;
+        let marginLeft = clone.offsetLeft - box.offsetLeft - 1;
+        let marginRight = box.offsetWidth - clone.offsetWidth - 2 - marginLeft;
         
         this.document.body.removeChild(box);
         
@@ -557,15 +557,15 @@ FBL.Context.prototype =
     
     getFontSizeInPixels: function(el)
     {
-        var size = this.getMeasurement(el, "fontSize");
+        let size = this.getMeasurement(el, "fontSize");
         
         if (size.unit == "px") return size.value;
         
         // get font size, the dirty way
-        var computeDirtyFontSize = function(el, calibration)
+        let computeDirtyFontSize = function(el, calibration)
         {
-            var div = this.document.createElement("div");
-            var divStyle = offscreenStyle;
+            let div = this.document.createElement("div");
+            let divStyle = offscreenStyle;
 
             if (calibration)
                 divStyle +=  " font-size:"+calibration+"px;";
@@ -574,22 +574,22 @@ FBL.Context.prototype =
             div.innerHTML = "A";
             el.appendChild(div);
             
-            var value = div.offsetHeight;
+            let value = div.offsetHeight;
             el.removeChild(div);
             return value;
         }
         
         /*
-        var calibrationBase = 200;
-        var calibrationValue = computeDirtyFontSize(el, calibrationBase);
-        var rate = calibrationBase / calibrationValue;
+        let calibrationBase = 200;
+        let calibrationValue = computeDirtyFontSize(el, calibrationBase);
+        let rate = calibrationBase / calibrationValue;
         /**/
         
         // the "dirty technique" fails in some environments, so we're using a static value
         // based in some tests.
-        var rate = 200 / 225;
+        let rate = 200 / 225;
         
-        var value = computeDirtyFontSize(el);
+        let value = computeDirtyFontSize(el);
 
         return value * rate;
     },
@@ -600,9 +600,9 @@ FBL.Context.prototype =
   
     pointsToPixels: function(name, value, returnFloat)
     {
-        var axis = /Top$|Bottom$/.test(name) ? "y" : "x";
+        let axis = /Top$|Bottom$/.test(name) ? "y" : "x";
         
-        var result = value * pixelsPerInch[axis] / 72;
+        let result = value * pixelsPerInch[axis] / 72;
         
         return returnFloat ? result : Math.round(result);
     },
@@ -611,7 +611,7 @@ FBL.Context.prototype =
     {
         if (!el) return null;
         
-        var fontSize = this.getFontSizeInPixels(el);
+        let fontSize = this.getFontSizeInPixels(el);
         
         return Math.round(value * fontSize);
     },
@@ -621,11 +621,11 @@ FBL.Context.prototype =
         if (!el) return null;
         
         // get ex value, the dirty way
-        var div = this.document.createElement("div");
+        let div = this.document.createElement("div");
         div.style.cssText = offscreenStyle + "width:"+value + "ex;";
         
         el.appendChild(div);
-        var value = div.offsetWidth;
+        value = div.offsetWidth;
         el.removeChild(div);
         
         return value;
@@ -636,11 +636,11 @@ FBL.Context.prototype =
         if (!el) return null;
         
         // get % value, the dirty way
-        var div = this.document.createElement("div");
+        let div = this.document.createElement("div");
         div.style.cssText = offscreenStyle + "width:"+value + "%;";
         
         el.appendChild(div);
-        var value = div.offsetWidth;
+        value = div.offsetWidth;
         el.removeChild(div);
         
         return value;

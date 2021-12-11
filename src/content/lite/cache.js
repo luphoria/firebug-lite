@@ -19,21 +19,21 @@ Firebug.Lite.Cache =
  * kind of cache. For ElementCache it should validate if the element still is 
  * inserted at the DOM.
  */ 
-var cacheUID = 0;
-var createCache = function()
+let cacheUID = 0;
+let createCache = function()
 {
-    var map = {};
-    var CID = Firebug.Lite.Cache.ID;
+    let map = {};
+    let CID = Firebug.Lite.Cache.ID;
     
     // better detection
-    var supportsDeleteExpando = !document.all;
+    let supportsDeleteExpando = !document.all;
     
-    var cacheFunction = function(element)
+    let cacheFunction = function(element)
     {
         return cacheAPI.set(element);
     };
     
-    var cacheAPI =  
+    let cacheAPI =  
     {
         get: function(key)
         {
@@ -44,7 +44,7 @@ var createCache = function()
         
         set: function(element)
         {
-            var id = element[CID];
+            let id = element[CID];
             
             if (!id)
             {
@@ -62,7 +62,7 @@ var createCache = function()
         
         unset: function(element)
         {
-            var id = element[CID];
+            let id = element[CID];
             
 			if (supportsDeleteExpando)
             {
@@ -89,9 +89,9 @@ var createCache = function()
         
         clear: function()
         {
-            for (var id in map)
+            for (let id in map)
             {
-                var element = map[id];
+                let element = map[id];
                 cacheAPI.unset(element);                
             }
         }

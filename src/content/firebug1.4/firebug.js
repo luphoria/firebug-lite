@@ -9,12 +9,12 @@ FBL.ns( /** @scope ns-firebug */ function() { with (FBL) {
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // Internals
 
-var modules = [];
-var panelTypes = [];
-var panelTypeMap = {};
-var reps = [];
+let modules = [];
+let panelTypes = [];
+let panelTypeMap = {};
+let reps = [];
 
-var parentPanelMap = {};
+let parentPanelMap = {};
 
 
 // ************************************************************************************************
@@ -61,7 +61,7 @@ window.Firebug = FBL.Firebug =
         
         if (Env.onLoad)
         {
-            var onLoad = Env.onLoad;
+            let onLoad = Env.onLoad;
             delete Env.onLoad;
             
             setTimeout(onLoad, 200);
@@ -75,9 +75,9 @@ window.Firebug = FBL.Firebug =
         
         dispatch(modules, "shutdown", []);
         
-        var chromeMap = FirebugChrome.chromeMap;
+        let chromeMap = FirebugChrome.chromeMap;
         
-        for (var name in chromeMap)
+        for (let name in chromeMap)
         {
             if (chromeMap.hasOwnProperty(name))
             {
@@ -106,7 +106,7 @@ window.Firebug = FBL.Firebug =
     {
         panelTypes.push.apply(panelTypes, arguments);
 
-        for (var i = 0, panelType; panelType = arguments[i]; ++i)
+        for (let i = 0, panelType; panelType = arguments[i]; ++i)
         {
             panelTypeMap[panelType.prototype.name] = arguments[i];
             
@@ -115,7 +115,7 @@ window.Firebug = FBL.Firebug =
         }
         
         if (FBTrace.DBG_INITIALIZE)
-            for (var i = 0; i < arguments.length; ++i)
+            for (let i = 0; i < arguments.length; ++i)
                 FBTrace.sysout("Firebug.registerPanel", arguments[i].prototype.name);
     },
     
@@ -126,7 +126,7 @@ window.Firebug = FBL.Firebug =
 
     unregisterRep: function()
     {
-        for (var i = 0; i < arguments.length; ++i)
+        for (let i = 0; i < arguments.length; ++i)
             remove(reps, arguments[i]);
     },
 
@@ -141,13 +141,13 @@ window.Firebug = FBL.Firebug =
 
     getRep: function(object)
     {
-        var type = typeof object;
+        let type = typeof object;
         if (isIE && isFunction(object))
             type = "function";
         
-        for (var i = 0; i < reps.length; ++i)
+        for (let i = 0; i < reps.length; ++i)
         {
-            var rep = reps[i];
+            let rep = reps[i];
             try
             {
                 if (rep.supportsObject(object, type))
@@ -174,8 +174,8 @@ window.Firebug = FBL.Firebug =
 
     getRepObject: function(node)
     {
-        var target = null;
-        for (var child = node; child; child = child.parentNode)
+        let target = null;
+        for (let child = node; child; child = child.parentNode)
         {
             if (hasClass(child, "repTarget"))
                 target = child;
@@ -192,7 +192,7 @@ window.Firebug = FBL.Firebug =
 
     getRepNode: function(node)
     {
-        for (var child = node; child; child = child.parentNode)
+        for (let child = node; child; child = child.parentNode)
         {
             if (child.repObject)
                 return child;
@@ -201,7 +201,7 @@ window.Firebug = FBL.Firebug =
 
     getElementByRepObject: function(element, object)
     {
-        for (var child = element.firstChild; child; child = child.nextSibling)
+        for (let child = element.firstChild; child; child = child.nextSibling)
         {
             if (child.repObject == object)
                 return child;
@@ -225,7 +225,7 @@ window.Firebug = FBL.Firebug =
     
     setPrefs: function(prefs)
     {
-        for (var name in prefs)
+        for (let name in prefs)
         {
             if (prefs.hasOwnProperty(name))
                 Firebug[name] = prefs[name];
@@ -236,9 +236,9 @@ window.Firebug = FBL.Firebug =
     
     restorePrefs: function()
     {
-        var Options = Env.Options;
+        let Options = Env.Options;
         
-        for (var name in Options)
+        for (let name in Options)
         {
             Firebug[name] = Options[name];
         }
@@ -250,7 +250,7 @@ window.Firebug = FBL.Firebug =
         
         prefs = prefs || eval("(" + readCookie("FirebugLite") + ")");
         
-        for (var name in prefs)
+        for (let name in prefs)
         {
             if (prefs.hasOwnProperty(name))
                 Firebug[name] = prefs[name];
@@ -259,19 +259,19 @@ window.Firebug = FBL.Firebug =
     
     savePrefs: function()
     {
-        var json = ['{'], jl = 0;
-        var Options = Env.Options;
+        let json = ['{'], jl = 0;
+        let Options = Env.Options;
         
-        for (var name in Options)
+        for (let name in Options)
         {
             if (Options.hasOwnProperty(name))
             {
-                var value = Firebug[name];
+                let value = Firebug[name];
                 
                 json[++jl] = '"'; 
                 json[++jl] = name;
                 
-                var type = typeof value;
+                let type = typeof value;
                 if (type == "boolean" || type == "number")
                 {
                     json[++jl] = '":';
@@ -312,9 +312,9 @@ if (!Env.Options.enablePersistent ||
 
 FBL.cacheDocument = function cacheDocument()
 {
-    var ElementCache = Firebug.Lite.Cache.Element;
-    var els = Firebug.browser.document.getElementsByTagName("*");
-    for (var i=0, l=els.length, el; i<l; i++)
+    let ElementCache = Firebug.Lite.Cache.Element;
+    let els = Firebug.browser.document.getElementsByTagName("*");
+    for (let i=0, l=els.length, el; i<l; i++)
     {
         el = els[i];
         ElementCache(el);
@@ -515,8 +515,8 @@ Firebug.Panel =
             this.sidePanelBar.create(this);
         }
         
-        var options = this.options = extend(Firebug.Panel.options, this.options);
-        var panelId = "fb" + this.name;
+        let options = this.options = extend(Firebug.Panel.options, this.options);
+        let panelId = "fb" + this.name;
         
         if (options.isPreRendered)
         {
@@ -538,11 +538,11 @@ Firebug.Panel =
         }
         else
         {
-            var containerSufix = this.parentPanel ? "2" : "1";
+            let containerSufix = this.parentPanel ? "2" : "1";
             
             // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
             // Create Panel
-            var panelNode = this.panelNode = createElement("div", {
+            let panelNode = this.panelNode = createElement("div", {
                 id: panelId,
                 className: "fbPanel"
             });
@@ -551,10 +551,10 @@ Firebug.Panel =
             
             // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
             // Create Panel Tab
-            var tabHTML = '<span class="fbTabL"></span><span class="fbTabText">' +
+            let tabHTML = '<span class="fbTabL"></span><span class="fbTabText">' +
                     this.title + '</span><span class="fbTabR"></span>';            
             
-            var tabNode = this.tabNode = createElement("a", {
+            let tabNode = this.tabNode = createElement("a", {
                 id: panelId + "Tab",
                 className: "fbTab fbHover",
                 innerHTML: tabHTML
@@ -565,7 +565,7 @@ Firebug.Panel =
                 tabNode.href = "javascript:void(0)";
             }
             
-            var panelBarNode = this.parentPanel ? 
+            let panelBarNode = this.parentPanel ? 
                     Firebug.chrome.getPanel(this.parentPanel).sidePanelBarNode :
                     this.panelBarNode;
             
@@ -664,8 +664,8 @@ Firebug.Panel =
             this.sidePanelBar.initialize();
         }
         
-        var options = this.options = extend(Firebug.Panel.options, this.options);
-        var panelId = "fb" + this.name;
+        let options = this.options = extend(Firebug.Panel.options, this.options);
+        let panelId = "fb" + this.name;
         
         this.panelNode = $(panelId);
         
@@ -749,7 +749,7 @@ Firebug.Panel =
 
     show: function(state)
     {
-        var options = this.options;
+        let options = this.options;
         
         if (options.hasStatusBar)
         {
@@ -772,7 +772,7 @@ Firebug.Panel =
 
     hide: function(state)
     {
-        var options = this.options;
+        let options = this.options;
         
         if (options.hasStatusBar)
         {
@@ -818,7 +818,7 @@ Firebug.Panel =
 
                 return;
             }
-            var buttons = this.context.browser.chrome.$(buttonsId);
+            let buttons = this.context.browser.chrome.$(buttonsId);
             if (buttons)
                 collapse(buttons, show ? "false" : "true");
         }
@@ -880,9 +880,9 @@ Firebug.Panel =
         {
             if (skipSelf)
             {
-                for (var i = 0; i < this.dependents.length; ++i)
+                for (let i = 0; i < this.dependents.length; ++i)
                 {
-                    var panelName = this.dependents[i];
+                    let panelName = this.dependents[i];
                     if (panelName != this.name)
                         this.context.invalidatePanels(panelName);
                 }
@@ -928,10 +928,10 @@ Firebug.Panel =
         // selector. This should be close enough, although it may be better
         // to simply generate the sorted list within the module, rather than
         // sorting within the UI.
-        var self = this;
+        let self = this;
         function compare(a, b) {
-            var locA = self.getObjectDescription(a);
-            var locB = self.getObjectDescription(b);
+            let locA = self.getObjectDescription(a);
+            let locB = self.getObjectDescription(b);
             if(locA.path > locB.path)
                 return 1;
             if(locA.path < locB.path)
@@ -942,22 +942,22 @@ Firebug.Panel =
                 return -1;
             return 0;
         }
-        var allLocs = this.getLocationList().sort(compare);
-        for (var curPos = 0; curPos < allLocs.length && allLocs[curPos] != this.location; curPos++);
+        let allLocs = this.getLocationList().sort(compare);
+        for (let curPos = 0; curPos < allLocs.length && allLocs[curPos] != this.location; curPos++);
 
         function transformIndex(index) {
             if (reverse) {
                 // For the reverse case we need to implement wrap around.
-                var intermediate = curPos - index - 1;
+                let intermediate = curPos - index - 1;
                 return (intermediate < 0 ? allLocs.length : 0) + intermediate;
             } else {
                 return (curPos + index + 1) % allLocs.length;
             }
         };
 
-        for (var next = 0; next < allLocs.length - 1; next++)
+        for (let next = 0; next < allLocs.length - 1; next++)
         {
-            var object = allLocs[transformIndex(next)];
+            let object = allLocs[transformIndex(next)];
 
             if (match(object))
             {
@@ -1051,7 +1051,7 @@ Firebug.Panel =
     // return.path: group/category label, return.name: item label
     getObjectDescription: function(object)
     {
-        var url = this.getObjectLocation(object);
+        let url = this.getObjectLocation(object);
         return FBL.splitURLBase(url);
     },
 
@@ -1061,7 +1061,7 @@ Firebug.Panel =
      */
     highlight: function(show)
     {
-        var tab = this.getTab();
+        let tab = this.getTab();
         if (!tab)
             return;
 
@@ -1073,9 +1073,9 @@ Firebug.Panel =
 
     getTab: function()
     {
-        var chrome = Firebug.chrome;
+        let chrome = Firebug.chrome;
 
-        var tab = chrome.$("fbPanelBar2").getTab(this.name);
+        let tab = chrome.$("fbPanelBar2").getTab(this.name);
         if (!tab)
             tab = chrome.$("fbPanelBar1").getTab(this.name);
         return tab;
@@ -1123,13 +1123,13 @@ Firebug.Panel =
         
         cancelEvent(event, true);
 
-        var target = event.target || event.srcElement;
+        let target = event.target || event.srcElement;
         
-        var menu = this.getContextMenuItems(this.selection, target);
+        let menu = this.getContextMenuItems(this.selection, target);
         if (!menu) 
             return;
         
-        var contextMenu = new Menu(
+        let contextMenu = new Menu(
         {
             id: "fbPanelContextMenu",
             
@@ -1143,9 +1143,9 @@ Firebug.Panel =
         /*
         // TODO: xxxpedro move code to somewhere. code to get cross-browser
         // window to screen coordinates
-        var box = Firebug.browser.getElementPosition(Firebug.chrome.node);
+        let box = Firebug.browser.getElementPosition(Firebug.chrome.node);
         
-        var screenY = 0;
+        let screenY = 0;
         
         // Firefox
         if (typeof window.mozInnerScreenY != "undefined")
@@ -1177,7 +1177,7 @@ Firebug.Panel =
  * MeasureBox
  * To get pixels size.width and size.height:
  * <ul><li>     this.startMeasuring(view); </li>
- *     <li>     var size = this.measureText(lineNoCharsSpacer); </li>
+ *     <li>     let size = this.measureText(lineNoCharsSpacer); </li>
  *     <li>     this.stopMeasuring(); </li>
  * </ul>
  *  
@@ -1219,8 +1219,8 @@ Firebug.MeasureBox =
 
     getBox: function(target)
     {
-        var style = this.measureBox.ownerDocument.defaultView.getComputedStyle(this.measureBox, "");
-        var box = getBoxFromStyles(style, this.measureBox);
+        let style = this.measureBox.ownerDocument.defaultView.getComputedStyle(this.measureBox, "");
+        let box = getBoxFromStyles(style, this.measureBox);
         return box;
     },
 
@@ -1262,10 +1262,10 @@ if (FBL.domplate) Firebug.Rep = domplate(
 
     getTitle: function(object)
     {
-        var label = safeToString(object);
+        let label = safeToString(object);
 
-        var re = /\[object (.*?)\]/;
-        var m = re.exec(label);
+        let re = /\[object (.*?)\]/;
+        let m = re.exec(label);
         
         ///return m ? m[1] : label;
         

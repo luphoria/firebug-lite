@@ -28,7 +28,7 @@ FBL.Controller = {
     
     addController: function()
     {
-        for (var i=0, arg; arg=arguments[i]; i++)
+        for (let i=0, arg; arg=arguments[i]; i++)
         {
             // If the first argument is a string, make a selector query 
             // within the controller node context
@@ -38,7 +38,7 @@ FBL.Controller = {
             }
             
             // bind the handler to the proper context
-            var handler = arg[2];
+            let handler = arg[2];
             arg[2] = bind(handler, this);
             // save the original handler as an extra-argument, so we can
             // look for it later, when removing a particular controller            
@@ -51,9 +51,9 @@ FBL.Controller = {
     
     removeController: function()
     {
-        for (var i=0, arg; arg=arguments[i]; i++)
+        for (let i=0, arg; arg=arguments[i]; i++)
         {
-            for (var j=0, c; c=this.controllers[j]; j++)
+            for (let j=0, c; c=this.controllers[j]; j++)
             {
                 if (arg[0] == c[0] && arg[1] == c[1] && arg[2] == c[3])
                     removeEvent.apply(this, c);
@@ -63,7 +63,7 @@ FBL.Controller = {
     
     removeControllers: function()
     {
-        for (var i=0, c; c=this.controllers[i]; i++)
+        for (let i=0, c; c=this.controllers[i]; i++)
         {
             removeEvent.apply(this, c);
         }
@@ -100,8 +100,8 @@ FBL.PanelBar =
             ownerPanel.sidePanelBarBoxNode.appendChild(ownerPanel.sidePanelBarNode);
         }
         
-        var panels = Firebug.panelTypes;
-        for (var i=0, p; p=panels[i]; i++)
+        let panels = Firebug.panelTypes;
+        for (let i=0, p; p=panels[i]; i++)
         {
             if ( // normal Panel  of the Chrome's PanelBar
                 !ownerPanel && !p.prototype.parentPanel ||
@@ -118,11 +118,11 @@ FBL.PanelBar =
     {
         PanelBar.shutdown.call(this);
         
-        for (var name in this.panelMap)
+        for (let name in this.panelMap)
         {
             this.removePanel(name);
             
-            var panel = this.panelMap[name];
+            let panel = this.panelMap[name];
             panel.destroy();
             
             this.panelMap[name] = null;
@@ -138,12 +138,12 @@ FBL.PanelBar =
         if (this.ownerPanel)
             this.ownerPanel.sidePanelBarNode.style.display = "inline";
         
-        for(var name in this.panelMap)
+        for(let name in this.panelMap)
         {
             (function(self, name){
                 
                 // tab click handler
-                var onTabClick = function onTabClick()
+                let onTabClick = function onTabClick()
                 { 
                     self.selectPanel(name);
                     return false;
@@ -157,7 +157,7 @@ FBL.PanelBar =
     
     shutdown: function()
     {
-        var selectedPanel = this.selectedPanel;
+        let selectedPanel = this.selectedPanel;
         
         if (selectedPanel)
         {
@@ -176,23 +176,23 @@ FBL.PanelBar =
 
     addPanel: function(panelName, parentPanel)
     {
-        var PanelType = Firebug.panelTypeMap[panelName];
-        var panel = this.panelMap[panelName] = new PanelType();
+        let PanelType = Firebug.panelTypeMap[panelName];
+        let panel = this.panelMap[panelName] = new PanelType();
         
         panel.create();
     },
     
     removePanel: function(panelName)
     {
-        var panel = this.panelMap[panelName];
+        let panel = this.panelMap[panelName];
         if (panel.hasOwnProperty(panelName))
             panel.destroy();
     },
     
     selectPanel: function(panelName)
     {
-        var selectedPanel = this.selectedPanel;
-        var panel = this.panelMap[panelName];
+        let selectedPanel = this.selectedPanel;
+        let panel = this.panelMap[panelName];
         
         if (panel && selectedPanel != panel)
         {
@@ -216,7 +216,7 @@ FBL.PanelBar =
     
     getPanel: function(panelName)
     {
-        var panel = this.panelMap[panelName];
+        let panel = this.panelMap[panelName];
         
         return panel;
     }
@@ -312,7 +312,7 @@ Button.prototype = extend(Controller,
     {
         Controller.initialize.apply(this);
         
-        var element = this.element;
+        let element = this.element;
         
         this.addController([element, "mousedown", this.handlePress]);
         
@@ -439,15 +439,16 @@ IconButton.prototype = extend(Button.prototype,
 //************************************************************************************************
 // Menu
 
-var menuItemProps = {"class": "$item.className", type: "$item.type", value: "$item.value",
+let menuItemProps = {"class": "$item.className", type: "$item.type", value: "$item.value",
         _command: "$item.command"};
 
 if (isIE6)
     menuItemProps.href = "javascript:void(0)";
 
 // Allow GUI to be loaded even when Domplate module is not installed.
+let MenuPlate;
 if (FBL.domplate)
-var MenuPlate = domplate(Firebug.Rep,
+MenuPlate = domplate(Firebug.Rep,
 {
     tag:
         DIV({"class": "fbMenu fbShadow"},
@@ -493,11 +494,11 @@ var MenuPlate = domplate(Firebug.Rep,
         
     memberIterator: function(items)
     {
-        var result = [];
+        let result = [];
         
-        for (var i=0, length=items.length; i<length; i++)
+        for (let i=0, length=items.length; i<length; i++)
         {
-            var item = items[i];
+            let item = items[i];
             
             // separator representation
             if (typeof item == "string" && item.indexOf("-") == 0)
@@ -511,12 +512,12 @@ var MenuPlate = domplate(Firebug.Rep,
             item.type = item.type || "";
             item.value = item.value || "";
             
-            var type = item.type;
+            let type = item.type;
             
             // default item representation
             item.tag = this.itemTag;
             
-            var className = item.className || ""; 
+            let className = item.className || ""; 
             
             className += "fbMenuOption fbHover ";
             
@@ -626,7 +627,7 @@ FBL.Menu = function(options)
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var menuMap = {};
+let menuMap = {};
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -681,7 +682,7 @@ Menu.prototype =  extend(Controller,
         
         if (this.parentMenu)
         {
-            var oldChildMenu = this.parentMenu.childMenu;
+            let oldChildMenu = this.parentMenu.childMenu;
             if (oldChildMenu && oldChildMenu != this)
             {
                 oldChildMenu.destroy();
@@ -695,7 +696,7 @@ Menu.prototype =  extend(Controller,
         this.elementStyle.display = "block";
         this.elementStyle.visibility = "hidden";
         
-        var size = Firebug.chrome.getSize();
+        let size = Firebug.chrome.getSize();
         
         x = Math.min(x, size.width - this.element.clientWidth - 10);
         x = Math.max(x, 0);
@@ -744,27 +745,27 @@ Menu.prototype =  extend(Controller,
     
     showChildMenu: function(target)
     {
-        var id = target.getAttribute("child");
+        let id = target.getAttribute("child");
         
-        var parent = this;
-        var target = target;
+        let parent = this;
+        // let target = target;
         
         this.showChildTimeout = Firebug.chrome.window.setTimeout(function(){
             
             //if (!parent.isVisible) return;
             
-            var box = Firebug.chrome.getElementBox(target);
+            let box = Firebug.chrome.getElementBox(target);
             
-            var childMenuObject = menuMap.hasOwnProperty(id) ?
+            let childMenuObject = menuMap.hasOwnProperty(id) ?
                     menuMap[id] : {element: $(id)};
             
-            var childMenu = new Menu(extend(childMenuObject, 
+            let childMenu = new Menu(extend(childMenuObject, 
                 {
                     parentMenu: parent,
                     parentTarget: target
                 }));
             
-            var offsetLeft = isIE6 ? -1 : -6; // IE6 problem with fixed position
+            let offsetLeft = isIE6 ? -1 : -6; // IE6 problem with fixed position
             childMenu.show(box.left + box.width + offsetLeft, box.top -6);
             setClass(target, "fbMenuGroupSelected");
             
@@ -793,11 +794,11 @@ Menu.prototype =  extend(Controller,
     {
         cancelEvent(event, true);
         
-        var topParent = this;
+        let topParent = this;
         while (topParent.parentMenu)
             topParent = topParent.parentMenu;
         
-        var target = event.target || event.srcElement;
+        let target = event.target || event.srcElement;
         
         target = getAncestorByClass(target, "fbMenuOption");
         
@@ -806,13 +807,13 @@ Menu.prototype =  extend(Controller,
         
         if (target && !hasClass(target, "fbMenuDisabled"))
         {
-            var type = target.getAttribute("type");
+            let type = target.getAttribute("type");
             
             if (type == "checkbox")
             {
-                var checked = target.getAttribute("checked");
-                var value = target.getAttribute("value");
-                var wasChecked = hasClass(target, "fbMenuChecked");
+                let checked = target.getAttribute("checked");
+                let value = target.getAttribute("value");
+                let wasChecked = hasClass(target, "fbMenuChecked");
                 
                 if (wasChecked)
                 {
@@ -831,11 +832,11 @@ Menu.prototype =  extend(Controller,
             
             if (type == "radiobutton")
             {
-                var selectedRadios = getElementsByClass(target.parentNode, "fbMenuRadioSelected");
+                let selectedRadios = getElementsByClass(target.parentNode, "fbMenuRadioSelected");
                 
-                var group = target.getAttribute("group");
+                let group = target.getAttribute("group");
                 
-                for (var i = 0, length = selectedRadios.length; i < length; i++)
+                for (let i = 0, length = selectedRadios.length; i < length; i++)
                 {
                     radio = selectedRadios[i];
                     
@@ -850,10 +851,10 @@ Menu.prototype =  extend(Controller,
                 target.setAttribute("selected", "true");
             }            
             
-            var handler = null;
+            let handler = null;
              
             // target.command can be a function or a string. 
-            var cmd = target.command;
+            let cmd = target.command;
             
             // If it is a function it will be used as the handler
             if (isFunction(cmd))
@@ -863,7 +864,7 @@ Menu.prototype =  extend(Controller,
             else if (typeof cmd == "string")
                 handler = this[cmd];
             
-            var closeMenu = true;
+            let closeMenu = true;
             
             if (handler)
                 closeMenu = handler.call(this, target) !== false;
@@ -879,7 +880,7 @@ Menu.prototype =  extend(Controller,
     {
         //console.log("handleWindowMouseDown");
         
-        var target = event.target || event.srcElement;
+        let target = event.target || event.srcElement;
         
         target = getAncestorByClass(target, "fbMenu");
         
@@ -897,14 +898,14 @@ Menu.prototype =  extend(Controller,
         this.clearHideTimeout();
         this.clearShowChildTimeout();
         
-        var target = event.target || event.srcElement;
+        let target = event.target || event.srcElement;
         
         target = getAncestorByClass(target, "fbMenuOption");
         
         if(!target)
             return;
         
-        var childMenu = this.childMenu;
+        let childMenu = this.childMenu;
         if(childMenu) 
         {
             removeClass(childMenu.parentTarget, "fbMenuGroupSelected");

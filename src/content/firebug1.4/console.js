@@ -39,13 +39,13 @@ r.tag.tag.renderDOM.apply(self ? self : r.tag.subject, domArgs);
 
 
  */
-var consoleQueue = [];
-var lastHighlightedObject;
-var FirebugContext = Env.browser;
+let consoleQueue = [];
+let lastHighlightedObject;
+let FirebugContext = Env.browser;
 
 // ************************************************************************************************
 
-var maxQueueRequests = 500;
+let maxQueueRequests = 500;
 
 // ************************************************************************************************
 
@@ -89,15 +89,15 @@ Firebug.ConsoleBase =
 
         if (noThrottle || !context)
         {
-            var panel = this.getPanel(context);
+            let panel = this.getPanel(context);
             if (panel)
             {
-                var row = panel.append(appender, objects, className, rep, sourceLink, noRow);
-                var container = panel.panelNode;
+                let row = panel.append(appender, objects, className, rep, sourceLink, noRow);
+                let container = panel.panelNode;
 
                 // TODO: xxxpedro what is this? console console2
                 /*
-                var template = Firebug.NetMonitor.NetLimit;
+                let template = Firebug.NetMonitor.NetLimit;
 
                 while (container.childNodes.length > maxQueueRequests + 1)
                 {
@@ -122,7 +122,7 @@ Firebug.ConsoleBase =
                 //FBTrace.sysout("console.logRow has not context.throttle! ");
                 return;
             }
-            var args = [appender, objects, context, className, rep, sourceLink, true, noRow];
+            let args = [appender, objects, context, className, rep, sourceLink, true, noRow];
             context.throttle(this.logRow, this, args);
         }
     },
@@ -132,7 +132,7 @@ Firebug.ConsoleBase =
         if (!context)
             context = FirebugContext;
 
-        var panel = this.getPanel(context);
+        let panel = this.getPanel(context);
         panel.appendFormatted(args, row);
     },
 
@@ -147,7 +147,7 @@ Firebug.ConsoleBase =
             Firebug.Errors.clear(context);
         /**/
         
-        var panel = this.getPanel(context, true);
+        let panel = this.getPanel(context, true);
         if (panel)
         {
             panel.clear();
@@ -167,8 +167,8 @@ Firebug.ConsoleBase =
 // ************************************************************************************************
 
 //TODO: xxxpedro
-//var ActivableConsole = extend(Firebug.ActivableModule, Firebug.ConsoleBase);
-var ActivableConsole = extend(Firebug.ConsoleBase, 
+//let ActivableConsole = extend(Firebug.ActivableModule, Firebug.ConsoleBase);
+let ActivableConsole = extend(Firebug.ConsoleBase, 
 {
     isAlwaysEnabled: function()
     {
@@ -190,9 +190,9 @@ Firebug.Console = Firebug.Console = extend(ActivableConsole,
     {
         dispatch(this.fbListeners,"flush",[]);
         
-        for (var i=0, length=consoleQueue.length; i<length; i++)
+        for (let i=0, length=consoleQueue.length; i<length; i++)
         {
-            var args = consoleQueue[i];
+            let args = consoleQueue[i];
             this.logRow.apply(this, args);
         }
     },
@@ -206,22 +206,24 @@ Firebug.Console = Firebug.Console = extend(ActivableConsole,
 
     getFirebugConsoleElement: function(context, win)
     {
-        var element = win.document.getElementById("_firebugConsole");
+        let element = win.document.getElementById("_firebugConsole");
         if (!element)
         {
             if (FBTrace.DBG_CONSOLE)
                 FBTrace.sysout("getFirebugConsoleElement forcing element");
-            var elementForcer = "(function(){var r=null; try { r = window._getFirebugConsoleElement();}catch(exc){r=exc;} return r;})();";  // we could just add the elements here
+            let elementForcer = "(function(){let r=null; try { r = window._getFirebugConsoleElement();}catch(exc){r=exc;} return r;})();";  // we could just add the elements here
+
+            let r;
 
             if (context.stopped)
                 Firebug.Console.injector.evaluateConsoleScript(context);  // todo evaluate consoleForcer on stack
             else
-                var r = Firebug.CommandLine.evaluateInWebPage(elementForcer, context, win);
+                r = Firebug.CommandLine.evaluateInWebPage(elementForcer, context, win);
 
             if (FBTrace.DBG_CONSOLE)
                 FBTrace.sysout("getFirebugConsoleElement forcing element result "+r, r);
 
-            var element = win.document.getElementById("_firebugConsole");
+            let element = win.document.getElementById("_firebugConsole");
             if (!element) // elementForce fails
             {
                 if (FBTrace.DBG_ERRORS) FBTrace.sysout("console.getFirebugConsoleElement: no _firebugConsole in win:", win);
@@ -243,8 +245,8 @@ Firebug.Console = Firebug.Console = extend(ActivableConsole,
             return this.injector.attachIfNeeded(context, win);
         else
         {
-            var attached = true;
-            for (var i = 0; i < context.windows.length; i++)
+            let attached = true;
+            for (let i = 0; i < context.windows.length; i++)
                 attached = attached && this.injector.attachIfNeeded(context, context.windows[i]);
             // already in the list above attached = attached && this.injector.attachIfNeeded(context, context.window);
             if (context.windows.indexOf(context.window) == -1)
@@ -287,7 +289,7 @@ Firebug.Console = Firebug.Console = extend(ActivableConsole,
 
     loadedContext: function(context)
     {
-        for (var url in context.sourceFileMap)
+        for (let url in context.sourceFileMap)
             return;  // if there are any sourceFiles, then do nothing
 
         // else we saw no JS, so the reload warning it not needed.
@@ -298,7 +300,7 @@ Firebug.Console = Firebug.Console = extend(ActivableConsole,
     {
          if (context.consoleReloadWarning)
          {
-             var panel = context.getPanel(this.panelName);
+             let panel = context.getPanel(this.panelName);
              panel.clearReloadWarning();
              delete context.consoleReloadWarning;
          }
@@ -306,7 +308,7 @@ Firebug.Console = Firebug.Console = extend(ActivableConsole,
 
     togglePersist: function(context)
     {
-        var panel = context.getPanel(this.panelName);
+        let panel = context.getPanel(this.panelName);
         panel.persistContent = panel.persistContent ? false : true;
         Firebug.chrome.setGlobalAttribute("cmd_togglePersistConsole", "checked", panel.persistContent);
     },
@@ -438,7 +440,7 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
 
     append: function(appender, objects, className, rep, sourceLink, noRow)
     {
-        var container = this.getTopContainer();
+        let container = this.getTopContainer();
 
         if (noRow)
         {
@@ -452,7 +454,7 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
             //if (this.panelNode.offsetHeight)
             //    this.wasScrolledToBottom = isScrolledToBottom(this.panelNode);
 
-            var row = this.createRow("logRow", className);
+            let row = this.createRow("logRow", className);
             appender.apply(this, [objects, row, rep]);
 
             if (sourceLink)
@@ -485,21 +487,21 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
         // Create limit row. This row is the first in the list of entries
         // and initially hidden. It's displayed as soon as the number of
         // entries reaches the limit.
-        var row = this.createRow("limitRow");
+        let row = this.createRow("limitRow");
 
-        var limitInfo = {
+        let limitInfo = {
             totalCount: 0,
             limitPrefsTitle: $STRF("LimitPrefsTitle", [Firebug.prefDomain+".console.logLimit"])
         };
 
         //TODO: xxxpedro console net limit!?
         // return;
-        var netLimitRep = Firebug.NetMonitor.NetLimit;
-        var nodes = netLimitRep.createTable(row, limitInfo);
+        let netLimitRep = Firebug.NetMonitor.NetLimit;
+        let nodes = netLimitRep.createTable(row, limitInfo);
 
         this.limit = nodes[1];
 
-        var container = this.panelNode;
+        let container = this.panelNode;
         container.insertBefore(nodes[0], container.firstChild);
     },
 
@@ -534,12 +536,12 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
 
         function logText(text, row)
         {
-            var node = row.ownerDocument.createTextNode(text);
+            let node = row.ownerDocument.createTextNode(text);
             row.appendChild(node);
         }
 
-        var format = objects[0];
-        var objIndex = 0;
+        let format = objects[0];
+        let objIndex = 0;
 
         if (typeof(format) != "string")
         {
@@ -557,11 +559,11 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
             }
         }
 
-        var parts = parseFormat(format);
-        var trialIndex = objIndex;
-        for (var i= 0; i < parts.length; i++)
+        let parts = parseFormat(format);
+        let trialIndex = objIndex;
+        for (let i= 0; i < parts.length; i++)
         {
-            var part = parts[i];
+            let part = parts[i];
             if (part && typeof(part) == "object")
             {
                 if (++trialIndex > objects.length)  // then too few parameters for format, assume unformatted.
@@ -574,12 +576,12 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
             }
 
         }
-        for (var i = 0; i < parts.length; ++i)
+        for (let i = 0; i < parts.length; ++i)
         {
-            var part = parts[i];
+            let part = parts[i];
             if (part && typeof(part) == "object")
             {
-                var object = objects[++objIndex];
+                let object = objects[++objIndex];
                 if (typeof(object) != "undefined")
                     this.appendObject(object, row, part.rep);
                 else
@@ -589,10 +591,10 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
                 FirebugReps.Text.tag.append({object: part}, row);
         }
 
-        for (var i = objIndex+1; i < objects.length; ++i)
+        for (let i = objIndex+1; i < objects.length; ++i)
         {
             logText(" ", row);
-            var object = objects[i];
+            let object = objects[i];
             if (typeof(object) == "string")
                 FirebugReps.Text.tag.append({object: object}, row);
             else
@@ -608,7 +610,7 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
         setClass(row, "logGroup");
         setClass(row, "opened");
 
-        var innerRow = this.createRow("logRow");
+        let innerRow = this.createRow("logRow");
         setClass(innerRow, "logGroupLabel");
         if (rep)
             rep.tag.replace({"objects": objects}, innerRow);
@@ -616,7 +618,7 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
             this.appendFormatted(objects, innerRow, rep);
         row.appendChild(innerRow);
         //dispatch([Firebug.A11yModel], 'onLogRowCreated', [this, innerRow]);
-        var groupBody = this.createRow("logGroupBody");
+        let groupBody = this.createRow("logGroupBody");
         row.appendChild(groupBody);
         groupBody.setAttribute('role', 'group');
         this.groups.push(groupBody);
@@ -627,11 +629,11 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
             {
                 //console.log(event.currentTarget == event.target);
                 
-                var target = event.target || event.srcElement;
+                let target = event.target || event.srcElement;
                 
                 target = getAncestorByClass(target, "logGroupLabel");
                 
-                var groupRow = target.parentNode;
+                let groupRow = target.parentNode;
                 
                 if (hasClass(groupRow, "opened"))
                 {
@@ -659,9 +661,9 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
     // TODO: xxxpedro console2
     onMouseMove: function(event)
     {
-        var target = event.srcElement || event.target;
+        let target = event.srcElement || event.target;
         
-        var object = getAncestorByClass(target, "objectLink-element");
+        let object = getAncestorByClass(target, "objectLink-element");
         object = object ? object.repObject : null;
         
         if(object && instanceOf(object, "Element") && object.nodeType == 1)
@@ -679,10 +681,10 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
     
     onMouseDown: function(event)
     {
-        var target = event.srcElement || event.target;
+        let target = event.srcElement || event.target;
         
-        var object = getAncestorByClass(target, "objectLink");
-        var repObject = object ? object.repObject : null;
+        let object = getAncestorByClass(target, "objectLink");
+        let repObject = object ? object.repObject : null;
         
         if (!repObject)
         {
@@ -830,7 +832,7 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
         if (FBTrace.DBG_CONSOLE)
             FBTrace.sysout("Console.panel show; " + this.context.getName(), state);
 
-        var enabled = Firebug.Console.isAlwaysEnabled();
+        let enabled = Firebug.Console.isAlwaysEnabled();
         if (enabled)
         {
              Firebug.Console.disabledPanelPage.hide(this);
@@ -942,7 +944,7 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
 
     getShowStackTraceMenuItem: function()
     {
-        var menuItem = serviceOptionMenu("ShowStackTrace", "showStackTrace");
+        let menuItem = serviceOptionMenu("ShowStackTrace", "showStackTrace");
         if (FirebugContext && !Firebug.Debugger.isAlwaysEnabled())
             menuItem.disabled = true;
         return menuItem;
@@ -950,9 +952,9 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
 
     getStrictOptionMenuItem: function()
     {
-        var strictDomain = "javascript.options";
-        var strictName = "strict";
-        var strictValue = prefs.getBoolPref(strictDomain+"."+strictName);
+        let strictDomain = "javascript.options";
+        let strictName = "strict";
+        let strictValue = prefs.getBoolPref(strictDomain+"."+strictName);
         return {label: "JavascriptOptionsStrict", type: "checkbox", checked: strictValue,
             command: bindFixed(Firebug.setPref, Firebug, strictDomain, strictName, !strictValue) };
     },
@@ -974,16 +976,16 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
         // Make previously visible nodes invisible again
         if (this.matchSet)
         {
-            for (var i in this.matchSet)
+            for (let i in this.matchSet)
                 removeClass(this.matchSet[i], "matched");
         }
 
         this.matchSet = [];
 
         function findRow(node) { return getAncestorByClass(node, "logRow"); }
-        var search = new TextSearch(this.panelNode, findRow);
+        let search = new TextSearch(this.panelNode, findRow);
 
-        var logRow = search.find(text);
+        let logRow = search.find(text);
         if (!logRow)
         {
             dispatch([Firebug.A11yModel], 'onConsoleSearchMatchFound', [this, text, []]);
@@ -1008,7 +1010,7 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
 
     createRow: function(rowName, className)
     {
-        var elt = this.document.createElement("div");
+        let elt = this.document.createElement("div");
         elt.className = rowName + (className ? " " + rowName + "-" + className : "");
         return elt;
     },
@@ -1047,15 +1049,15 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
 
     searchFilter: function(text, logRow)
     {
-        var count = this.panelNode.childNodes.length;
-        var searchRange = this.document.createRange();
+        let count = this.panelNode.childNodes.length;
+        let searchRange = this.document.createRange();
         searchRange.setStart(this.panelNode, 0);
         searchRange.setEnd(this.panelNode, count);
 
-        var startPt = this.document.createRange();
+        let startPt = this.document.createRange();
         startPt.setStartBefore(logRow);
 
-        var endPt = this.document.createRange();
+        let endPt = this.document.createRange();
         endPt.setStartAfter(logRow);
 
         return finder.Find(text, searchRange, startPt, endPt) != null;
@@ -1069,17 +1071,17 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
           return;
 
         // xxxHonza check this out.
-        var prefDomain = "Firebug.extension.";
-        var prefName = data.substr(prefDomain.length);
+        let prefDomain = "Firebug.extension.";
+        let prefName = data.substr(prefDomain.length);
         if (prefName == "console.logLimit")
             this.updateMaxLimit();
     },
 
     updateMaxLimit: function()
     {
-        var value = 1000;
+        let value = 1000;
         //TODO: xxxpedro preferences log limit?
-        //var value = Firebug.getPref(Firebug.prefDomain, "console.logLimit");
+        //let value = Firebug.getPref(Firebug.prefDomain, "console.logLimit");
         maxQueueRequests =  value ? value : maxQueueRequests;
     },
 
@@ -1130,12 +1132,12 @@ Firebug.ConsolePanel.prototype = extend(Firebug.Panel,
 
 function parseFormat(format)
 {
-    var parts = [];
+    let parts = [];
     if (format.length <= 0)
         return parts;
 
-    var reg = /((^%|.%)(\d+)?(\.)([a-zA-Z]))|((^%|.%)([a-zA-Z]))/;
-    for (var m = reg.exec(format); m; m = reg.exec(format))
+    let reg = /((^%|.%)(\d+)?(\.)([a-zA-Z]))|((^%|.%)([a-zA-Z]))/;
+    for (let m = reg.exec(format); m; m = reg.exec(format))
     {
         if (m[0].substr(0, 2) == "%%")
         {
@@ -1144,10 +1146,10 @@ function parseFormat(format)
         }
         else
         {
-            var type = m[8] ? m[8] : m[5];
-            var precision = m[3] ? parseInt(m[3]) : (m[4] == "." ? -1 : 0);
+            let type = m[8] ? m[8] : m[5];
+            let precision = m[3] ? parseInt(m[3]) : (m[4] == "." ? -1 : 0);
 
-            var rep = null;
+            let rep = null;
             switch (type)
             {
                 case "s":
@@ -1176,10 +1178,10 @@ function parseFormat(format)
 
 // ************************************************************************************************
 
-var appendObject = Firebug.ConsolePanel.prototype.appendObject;
-var appendFormatted = Firebug.ConsolePanel.prototype.appendFormatted;
-var appendOpenGroup = Firebug.ConsolePanel.prototype.appendOpenGroup;
-var appendCloseGroup = Firebug.ConsolePanel.prototype.appendCloseGroup;
+let appendObject = Firebug.ConsolePanel.prototype.appendObject;
+let appendFormatted = Firebug.ConsolePanel.prototype.appendFormatted;
+let appendOpenGroup = Firebug.ConsolePanel.prototype.appendOpenGroup;
+let appendCloseGroup = Firebug.ConsolePanel.prototype.appendCloseGroup;
 
 // ************************************************************************************************
 

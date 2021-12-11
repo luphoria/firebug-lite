@@ -14,9 +14,9 @@ FBL.ns(function() { with (FBL) {
 // ************************************************************************************************
 // Constants
 
-var maxWidth = 100, maxHeight = 80;
-var infoTipMargin = 10;
-var infoTipWindowPadding = 25;
+let maxWidth = 100, maxHeight = 80;
+let infoTipMargin = 10;
+let infoTipWindowPadding = 25;
 
 // ************************************************************************************************
 
@@ -40,17 +40,17 @@ Firebug.InfoTip = extend(Firebug.Module,
 
         onLoadImage: function(event)
         {
-            var img = event.currentTarget || event.srcElement;
-            ///var bgImg = img.nextSibling;
+            let img = event.currentTarget || event.srcElement;
+            ///let bgImg = img.nextSibling;
             ///if (!bgImg)
             ///    return; // Sometimes gets called after element is dead
 
-            ///var caption = bgImg.nextSibling;
-            var innerBox = img.parentNode;
+            ///let caption = bgImg.nextSibling;
+            let innerBox = img.parentNode;
             
             /// TODO: xxxpedro infoTip hack
-            var caption = getElementByClass(innerBox, "infoTipCaption");
-            var bgImg = getElementByClass(innerBox, "infoTipBgImage");
+            let caption = getElementByClass(innerBox, "infoTipCaption");
+            let bgImg = getElementByClass(innerBox, "infoTipBgImage");
             if (!bgImg)
                 return; // Sometimes gets called after element is dead
             
@@ -59,12 +59,12 @@ Firebug.InfoTip = extend(Firebug.Module,
             if (isIE)
                 removeClass(innerBox, "infoTipLoading");
             
-            var updateInfoTip = function(){
+            let updateInfoTip = function(){
             
-            var w = img.naturalWidth || img.width || 10, 
+            let w = img.naturalWidth || img.width || 10, 
                 h = img.naturalHeight || img.height || 10;
             
-            var repeat = img.getAttribute("repeat");
+            let repeat = img.getAttribute("repeat");
 
             if (repeat == "repeat-x" || (w == 1 && h > 1))
             {
@@ -134,16 +134,16 @@ Firebug.InfoTip = extend(Firebug.Module,
         /// onLoadImage original
         onLoadImage: function(event)
         {
-            var img = event.currentTarget;
-            var bgImg = img.nextSibling;
+            let img = event.currentTarget;
+            let bgImg = img.nextSibling;
             if (!bgImg)
                 return; // Sometimes gets called after element is dead
 
-            var caption = bgImg.nextSibling;
-            var innerBox = img.parentNode;
+            let caption = bgImg.nextSibling;
+            let innerBox = img.parentNode;
 
-            var w = img.naturalWidth, h = img.naturalHeight;
-            var repeat = img.getAttribute("repeat");
+            let w = img.naturalWidth, h = img.naturalHeight;
+            let repeat = img.getAttribute("repeat");
 
             if (repeat == "repeat-x" || (w == 1 && h > 1))
             {
@@ -205,8 +205,8 @@ Firebug.InfoTip = extend(Firebug.Module,
         browser.onInfoTipMouseOut = bind(this.onMouseOut, this, browser);
         browser.onInfoTipMouseMove = bind(this.onMouseMove, this, browser);
 
-        ///var doc = browser.contentDocument;
-        var doc = browser.document;
+        ///let doc = browser.contentDocument;
+        let doc = browser.document;
         if (!doc)
             return;
 
@@ -224,8 +224,8 @@ Firebug.InfoTip = extend(Firebug.Module,
     {
         if (browser.infoTip)
         {
-            ///var doc = browser.contentDocument;
-            var doc = browser.document;
+            ///let doc = browser.contentDocument;
+            let doc = browser.document;
             ///doc.removeEventListener("mouseover", browser.onInfoTipMouseMove, true);
             ///doc.removeEventListener("mouseout", browser.onInfoTipMouseOut, true);
             ///doc.removeEventListener("mousemove", browser.onInfoTipMouseMove, true);
@@ -244,14 +244,14 @@ Firebug.InfoTip = extend(Firebug.Module,
         if (!Firebug.showInfoTips)
             return;
 
-        var scrollParent = getOverflowParent(target);
-        var scrollX = x + (scrollParent ? scrollParent.scrollLeft : 0);
+        let scrollParent = getOverflowParent(target);
+        let scrollX = x + (scrollParent ? scrollParent.scrollLeft : 0);
 
         if (panel.showInfoTip(infoTip, target, scrollX, y, rangeParent, rangeOffset))
         {
-            var htmlElt = infoTip.ownerDocument.documentElement;
-            var panelWidth = htmlElt.clientWidth;
-            var panelHeight = htmlElt.clientHeight;
+            let htmlElt = infoTip.ownerDocument.documentElement;
+            let panelWidth = htmlElt.clientWidth;
+            let panelHeight = htmlElt.clientHeight;
 
             if (x+infoTip.offsetWidth+infoTipMargin > panelWidth)
             {
@@ -309,7 +309,7 @@ Firebug.InfoTip = extend(Firebug.Module,
 
         if (browser.currentPanel)
         {
-            var x = event.clientX, y = event.clientY, target = event.target || event.srcElement;
+            let x = event.clientX, y = event.clientY, target = event.target || event.srcElement;
             this.showInfoTip(browser.infoTip, browser.currentPanel, target, x, y, event.rangeParent, event.rangeOffset);
         }
         else
@@ -346,7 +346,7 @@ Firebug.InfoTip = extend(Firebug.Module,
     {
         if (panel)
         {
-            var infoTip = panel.panelBrowser.infoTip;
+            let infoTip = panel.panelBrowser.infoTip;
             if (!infoTip)
                 infoTip = this.initializeBrowser(panel.panelBrowser);
             this.hideInfoTip(infoTip);

@@ -45,18 +45,18 @@ ScriptPanel.prototype = extend(Firebug.Panel,
         
         this.onChangeSelect = bind(this.onChangeSelect, this);
         
-        var doc = Firebug.browser.document;
-        var scripts = doc.getElementsByTagName("script");
-        var selectNode = this.selectNode = createElement("select");
+        let doc = Firebug.browser.document;
+        let scripts = doc.getElementsByTagName("script");
+        let selectNode = this.selectNode = createElement("select");
         
-        for(var i=0, script; script=scripts[i]; i++)
+        for(let i=0, script; script=scripts[i]; i++)
         {
             // Don't show Firebug Lite source code in the list of options
             if (Firebug.ignoreFirebugElements && script.getAttribute("firebugIgnore"))
                 continue;
             
-            var fileName = getFileName(script.src) || getFileName(doc.location.href);
-            var option = createElement("option", {value:i});
+            let fileName = getFileName(script.src) || getFileName(doc.location.href);
+            let option = createElement("option", {value:i});
             
             option.appendChild(Firebug.chrome.document.createTextNode(fileName));
             selectNode.appendChild(option);
@@ -86,8 +86,8 @@ ScriptPanel.prototype = extend(Firebug.Panel,
     {
         Firebug.Panel.detach.apply(this, arguments);
         
-        var oldPanel = oldChrome.getPanel("Script");
-        var index = oldPanel.selectIndex;
+        let oldPanel = oldChrome.getPanel("Script");
+        let index = oldPanel.selectIndex;
         
         this.selectNode.selectedIndex = index;
         this.selectIndex = index;
@@ -96,29 +96,29 @@ ScriptPanel.prototype = extend(Firebug.Panel,
     
     onChangeSelect: function(event)
     {
-        var select = this.selectNode;
+        let select = this.selectNode;
         
         this.selectIndex = select.selectedIndex;
         
-        var option = select.options[select.selectedIndex];
+        let option = select.options[select.selectedIndex];
         if (!option)
             return;
         
-        var selectedSourceIndex = parseInt(option.value);
+        let selectedSourceIndex = parseInt(option.value);
         
         this.renderSourceCode(selectedSourceIndex);
     },
     
     selectSourceCode: function(index)
     {
-        var select = this.selectNode; 
+        let select = this.selectNode; 
         select.selectedIndex = index;
         
-        var option = select.options[index];
+        let option = select.options[index];
         if (!option)
             return;
         
-        var selectedSourceIndex = parseInt(option.value);
+        let selectedSourceIndex = parseInt(option.value);
         
         this.renderSourceCode(selectedSourceIndex);
     },
@@ -127,9 +127,9 @@ ScriptPanel.prototype = extend(Firebug.Panel,
     {
         if (this.sourceIndex != index)
         {
-            var renderProcess = function renderProcess(src)
+            let renderProcess = function renderProcess(src)
             {
-                var html = [],
+                let html = [],
                     hl = 0;
                 
                 src = isIE && !isExternal ? 
@@ -138,8 +138,8 @@ ScriptPanel.prototype = extend(Firebug.Panel,
                 
                 // find the number of lines of code
                 src = src.replace(/\n\r|\r\n/g, "\n");
-                var match = src.match(/[\n]/g);
-                var lines=match ? match.length : 0;
+                let match = src.match(/[\n]/g);
+                let lines=match ? match.length : 0;
                 
                 // render the full source code + line numbers html
                 html[hl++] = '<div><div class="sourceBox" style="left:'; 
@@ -149,7 +149,7 @@ ScriptPanel.prototype = extend(Firebug.Panel,
                 html[hl++] = '</pre></div><div class="lineNo">';
                 
                 // render the line number divs
-                for(var l=1, lines; l<=lines; l++)
+                for(let l=1, lines; l<=lines; l++)
                 {
                     html[hl++] = '<div line="';
                     html[hl++] = l;
@@ -163,7 +163,7 @@ ScriptPanel.prototype = extend(Firebug.Panel,
                 updatePanel(html);
             };
             
-            var updatePanel = function(html)
+            let updatePanel = function(html)
             {
                 self.panelNode.innerHTML = html.join("");
                 
@@ -173,17 +173,17 @@ ScriptPanel.prototype = extend(Firebug.Panel,
                 },0);                        
             };
             
-            var onFailure = function()
+            let onFailure = function()
             {
                 FirebugReps.Warning.tag.replace({object: "AccessRestricted"}, self.panelNode);
             };
             
-            var self = this;
+            let self = this;
             
-            var doc = Firebug.browser.document;
-            var script = doc.getElementsByTagName("script")[index];
-            var url = getScriptURL(script);
-            var isExternal = url && url != doc.location.href;
+            let doc = Firebug.browser.document;
+            let script = doc.getElementsByTagName("script")[index];
+            let url = getScriptURL(script);
+            let isExternal = url && url != doc.location.href;
             
             try
             {
@@ -193,7 +193,7 @@ ScriptPanel.prototype = extend(Firebug.Panel,
                 }
                 else
                 {
-                    var src = script.innerHTML;
+                    let src = script.innerHTML;
                     renderProcess(src);
                 }
             }
@@ -213,20 +213,20 @@ Firebug.registerPanel(ScriptPanel);
 // ************************************************************************************************
 
 
-var getScriptURL = function getScriptURL(script) 
+let getScriptURL = function getScriptURL(script) 
 {
-    var reFile = /([^\/\?#]+)(#.+)?$/;
-    var rePath = /^(.*\/)/;
-    var reProtocol = /^\w+:\/\//;
-    var path = null;
-    var doc = Firebug.browser.document;
+    let reFile = /([^\/\?#]+)(#.+)?$/;
+    let rePath = /^(.*\/)/;
+    let reProtocol = /^\w+:\/\//;
+    let path = null;
+    let doc = Firebug.browser.document;
     
-    var file = reFile.exec(script.src);
+    let file = reFile.exec(script.src);
 
     if (file)
     {
-        var fileName = file[1];
-        var fileOptions = file[2];
+        let fileName = file[1];
+        let fileOptions = file[2];
         
         // absolute path
         if (reProtocol.test(script.src)) {
@@ -236,17 +236,17 @@ var getScriptURL = function getScriptURL(script)
         // relative path
         else
         {
-            var r = rePath.exec(script.src);
-            var src = r ? r[1] : script.src;
-            var backDir = /^((?:\.\.\/)+)(.*)/.exec(src);
-            var reLastDir = /^(.*\/)[^\/]+\/$/;
+            let r = rePath.exec(script.src);
+            let src = r ? r[1] : script.src;
+            let backDir = /^((?:\.\.\/)+)(.*)/.exec(src);
+            let reLastDir = /^(.*\/)[^\/]+\/$/;
             path = rePath.exec(doc.location.href)[1];
             
             // "../some/path"
             if (backDir)
             {
-                var j = backDir[1].length/3;
-                var p;
+                let j = backDir[1].length/3;
+                let p;
                 while (j-- > 0)
                     path = reLastDir.exec(path)[1];
 
@@ -263,7 +263,7 @@ var getScriptURL = function getScriptURL(script)
                 // "/some/path"
                 else if(/^\/./.test(src))
                 {
-                    var domain = /^(\w+:\/\/[^\/]+)/.exec(path);
+                    let domain = /^(\w+:\/\/[^\/]+)/.exec(path);
                     path = domain[1] + src;
                 }
                 // "some/path"
@@ -275,7 +275,7 @@ var getScriptURL = function getScriptURL(script)
         }
     }
     
-    var m = path && path.match(/([^\/]+)\/$/) || null;
+    let m = path && path.match(/([^\/]+)\/$/) || null;
     
     if (path && m)
     {
@@ -283,11 +283,11 @@ var getScriptURL = function getScriptURL(script)
     }
 };
 
-var getFileName = function getFileName(path)
+let getFileName = function getFileName(path)
 {
     if (!path) return "";
     
-    var match = path && path.match(/[^\/]+(\?.*)?(#.*)?$/);
+    let match = path && path.match(/[^\/]+(\?.*)?(#.*)?$/);
     
     return match && match[0] || path;
 };

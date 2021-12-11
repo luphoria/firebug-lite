@@ -7,32 +7,32 @@ FBL.ns(function() { with (FBL) {
 // ************************************************************************************************
 // Globals
 
-var commandPrefix = ">>>";
-var reOpenBracket = /[\[\(\{]/;
-var reCloseBracket = /[\]\)\}]/;
+let commandPrefix = ">>>";
+let reOpenBracket = /[\[\(\{]/;
+let reCloseBracket = /[\]\)\}]/;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var commandHistory = [];
-var commandPointer = -1;
+let commandHistory = [];
+let commandPointer = -1;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var isAutoCompleting = null;
-var autoCompletePrefix = null;
-var autoCompleteExpr = null;
-var autoCompleteBuffer = null;
-var autoCompletePosition = null;
+let isAutoCompleting = null;
+let autoCompletePrefix = null;
+let autoCompleteExpr = null;
+let autoCompleteBuffer = null;
+let autoCompletePosition = null;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var fbCommandLine = null;
-var fbLargeCommandLine = null;
-var fbLargeCommandButtons = null;
+let fbCommandLine = null;
+let fbLargeCommandLine = null;
+let fbLargeCommandButtons = null;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var _completion =
+let _completion =
 {
     window:
     [
@@ -48,7 +48,7 @@ var _completion =
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var _stack = function(command)
+let _stack = function(command)
 {
     commandHistory.push(command);
     commandPointer = commandHistory.length;
@@ -213,9 +213,9 @@ Firebug.CommandLine = extend(Firebug.Module,
     evaluate: function(expr)
     {
         // TODO: need to register the API in console.firebug.commandLineAPI
-        var api = "Firebug.CommandLine.API"
+        let api = "Firebug.CommandLine.API"
         
-        var result = Firebug.context.evaluate(expr, "window", api, Firebug.Console.error);
+        let result = Firebug.context.evaluate(expr, "window", api, Firebug.Console.error);
         
         return result;
     },
@@ -224,7 +224,7 @@ Firebug.CommandLine = extend(Firebug.Module,
     
     enter: function()
     {
-        var command = this.element.value;
+        let command = this.element.value;
         
         if (!command) return;
         
@@ -232,7 +232,7 @@ Firebug.CommandLine = extend(Firebug.Module,
         
         Firebug.Console.log(commandPrefix + " " + stripNewLines(command), Firebug.browser, "command", FirebugReps.Text);
         
-        var result = this.evaluate(command);
+        let result = this.evaluate(command);
         
         Firebug.Console.log(result);
     },
@@ -247,10 +247,10 @@ Firebug.CommandLine = extend(Firebug.Module,
   
     nextCommand: function()
     {
-        var element = this.element;
+        let element = this.element;
         
-        var limit = commandHistory.length -1;
-        var i = commandPointer;
+        let limit = commandHistory.length -1;
+        let i = commandPointer;
         
         if (i < limit)
           element.value = commandHistory[++commandPointer];
@@ -266,15 +266,15 @@ Firebug.CommandLine = extend(Firebug.Module,
     
     autocomplete: function(reverse)
     {
-        var element = this.element;
+        let element = this.element;
         
-        var command = element.value;
-        var offset = getExpressionOffset(command);
+        let command = element.value;
+        let offset = getExpressionOffset(command);
 
-        var valBegin = offset ? command.substr(0, offset) : "";
-        var val = command.substr(offset);
+        let valBegin = offset ? command.substr(0, offset) : "";
+        let val = command.substr(offset);
         
-        var buffer, obj, objName, commandBegin, result, prefix;
+        let buffer, obj, objName, commandBegin, result, prefix;
         
         // if it is the beginning of the completion
         if(!isAutoCompleting)
@@ -283,8 +283,8 @@ Firebug.CommandLine = extend(Firebug.Module,
             // group1 - command begin
             // group2 - base object
             // group3 - property prefix
-            var reObj = /(.*[^_$\w\d\.])?((?:[_$\w][_$\w\d]*\.)*)([_$\w][_$\w\d]*)?$/;
-            var r = reObj.exec(val);
+            let reObj = /(.*[^_$\w\d\.])?((?:[_$\w][_$\w\d]*\.)*)([_$\w][_$\w\d]*)?$/;
+            let r = reObj.exec(val);
             
             // parse command
             if (r[1] || r[2] || r[3])
@@ -309,10 +309,10 @@ Firebug.CommandLine = extend(Firebug.Module,
             {
                 objName = objName.replace(/\.$/, "");
         
-                var n = objName.split(".");
-                var target = window, o;
+                let n = objName.split(".");
+                let target = window, o;
                 
-                for (var i=0, ni; ni = n[i]; i++)
+                for (let i=0, ni; ni = n[i]; i++)
                 {
                     if (o = target[ni])
                       target = o;
@@ -336,7 +336,7 @@ Firebug.CommandLine = extend(Firebug.Module,
                 buffer = autoCompleteBuffer = isIE ?
                     _completion[objName || "window"] || [] : [];
                 
-                for(var p in obj)
+                for(let p in obj)
                     buffer.push(p);
             }
     
@@ -348,9 +348,9 @@ Firebug.CommandLine = extend(Firebug.Module,
         {
             prefix = autoCompletePrefix;
             
-            var diff = reverse ? -1 : 1;
+            let diff = reverse ? -1 : 1;
             
-            for(var i=autoCompletePosition+diff, l=buffer.length, bi; i>=0 && i<l; i+=diff)
+            for(let i=autoCompletePosition+diff, l=buffer.length, bi; i>=0 && i<l; i+=diff)
             {
                 bi = buffer[i];
                 
@@ -382,9 +382,9 @@ Firebug.CommandLine = extend(Firebug.Module,
     {
         href = href || "";
         
-        var lastSlash = href.lastIndexOf("/");
-        var fileName = lastSlash == -1 ? href : href.substr(lastSlash+1);
-        var html = [
+        let lastSlash = href.lastIndexOf("/");
+        let fileName = lastSlash == -1 ? href : href.substr(lastSlash+1);
+        let html = [
             '<span class="errorMessage">', msg, '</span>', 
             '<div class="objectBox-sourceLink">', fileName, ' (line ', lineNo, ')</div>'
           ];
@@ -397,7 +397,7 @@ Firebug.CommandLine = extend(Firebug.Module,
     {
         e = e || event;
         
-        var code = e.keyCode;
+        let code = e.keyCode;
         
         /*tab, shift, control, alt*/
         if (code != 9 && code != 16 && code != 17 && code != 18)
@@ -437,7 +437,7 @@ Firebug.CommandLine = extend(Firebug.Module,
     {
         e = e || event;
         
-        var code = e.keyCode;
+        let code = e.keyCode;
         
         if (code == 13 /* enter */ && e.ctrlKey)
         {
@@ -458,12 +458,12 @@ function getExpressionOffset(command)
     // to find the start of the expression that the cursor is inside.
     // Not 100% fool proof, but hey...
 
-    var bracketCount = 0;
+    let bracketCount = 0;
 
-    var start = command.length-1;
+    let start = command.length-1;
     for (; start >= 0; --start)
     {
-        var c = command[start];
+        let c = command[start];
         if ((c == "," || c == ";" || c == " ") && !bracketCount)
             break;
         if (reOpenBracket.test(c))
@@ -483,7 +483,7 @@ function getExpressionOffset(command)
 // ************************************************************************************************
 // CommandLine API
 
-var CommandLineAPI =
+let CommandLineAPI =
 {
     $: function(id)
     {
@@ -522,14 +522,14 @@ var CommandLineAPI =
 
 // ************************************************************************************************
 
-var defineCommandLineAPI = function defineCommandLineAPI()
+let defineCommandLineAPI = function defineCommandLineAPI()
 {
     Firebug.CommandLine.API = {};
-    for (var m in CommandLineAPI)
+    for (let m in CommandLineAPI)
         if (!Env.browser.window[m])
             Firebug.CommandLine.API[m] = CommandLineAPI[m];
     
-    var stack = FirebugChrome.htmlSelectionStack;
+    let stack = FirebugChrome.htmlSelectionStack;
     if (stack)
     {
         Firebug.CommandLine.API.$0 = stack[0];

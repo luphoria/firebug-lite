@@ -10,7 +10,7 @@ FBL.ns( /**@scope ns-selector*/ function() { with (FBL) {
  *  More information: http://sizzlejs.com/
  */
 
-var chunker = /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^[\]]*\]|['"][^'"]*['"]|[^[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?((?:.|\r|\n)*)/g,
+let chunker = /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^[\]]*\]|['"][^'"]*['"]|[^[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?((?:.|\r|\n)*)/g,
     done = 0,
     toString = Object.prototype.toString,
     hasDuplicate = false,
@@ -33,9 +33,9 @@ var chunker = /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^[\]]*\]|['"][^'"]*['"]|[^
 /**
  * @exports Sizzle as Firebug.Selector
  */ 
-var Sizzle = function(selector, context, results, seed) {
+let Sizzle = function(selector, context, results, seed) {
     results = results || [];
-    var origContext = context = context || document;
+    let origContext = context = context || document;
 
     if ( context.nodeType !== 1 && context.nodeType !== 9 ) {
         return [];
@@ -45,7 +45,7 @@ var Sizzle = function(selector, context, results, seed) {
         return results;
     }
 
-    var parts = [], m, set, checkSet, check, mode, extra, prune = true, contextXML = isXML(context),
+    let parts = [], m, set, checkSet, check, mode, extra, prune = true, contextXML = isXML(context),
         soFar = selector;
     
     // Reset the position of the chunker regexp (start from head)
@@ -82,12 +82,12 @@ var Sizzle = function(selector, context, results, seed) {
         // (but not if it'll be faster if the inner selector is an ID)
         if ( !seed && parts.length > 1 && context.nodeType === 9 && !contextXML &&
                 Expr.match.ID.test(parts[0]) && !Expr.match.ID.test(parts[parts.length - 1]) ) {
-            var ret = Sizzle.find( parts.shift(), context, contextXML );
+            let ret = Sizzle.find( parts.shift(), context, contextXML );
             context = ret.expr ? Sizzle.filter( ret.expr, ret.set )[0] : ret.set[0];
         }
 
         if ( context ) {
-            var ret = seed ?
+            let ret = seed ?
                 { expr: parts.pop(), set: makeArray(seed) } :
                 Sizzle.find( parts.pop(), parts.length === 1 && (parts[0] === "~" || parts[0] === "+") && context.parentNode ? context.parentNode : context, contextXML );
             set = ret.expr ? Sizzle.filter( ret.expr, ret.set ) : ret.set;
@@ -99,7 +99,7 @@ var Sizzle = function(selector, context, results, seed) {
             }
 
             while ( parts.length ) {
-                var cur = parts.pop(), pop = cur;
+                let cur = parts.pop(), pop = cur;
 
                 if ( !Expr.relative[ cur ] ) {
                     cur = "";
@@ -130,13 +130,13 @@ var Sizzle = function(selector, context, results, seed) {
         if ( !prune ) {
             results.push.apply( results, checkSet );
         } else if ( context && context.nodeType === 1 ) {
-            for ( var i = 0; checkSet[i] != null; i++ ) {
+            for ( let i = 0; checkSet[i] != null; i++ ) {
                 if ( checkSet[i] && (checkSet[i] === true || checkSet[i].nodeType === 1 && contains(context, checkSet[i])) ) {
                     results.push( set[i] );
                 }
             }
         } else {
-            for ( var i = 0; checkSet[i] != null; i++ ) {
+            for ( let i = 0; checkSet[i] != null; i++ ) {
                 if ( checkSet[i] && checkSet[i].nodeType === 1 ) {
                     results.push( set[i] );
                 }
@@ -160,7 +160,7 @@ Sizzle.uniqueSort = function(results){
         results.sort(sortOrder);
 
         if ( hasDuplicate ) {
-            for ( var i = 1; i < results.length; i++ ) {
+            for ( let i = 1; i < results.length; i++ ) {
                 if ( results[i] === results[i-1] ) {
                     results.splice(i--, 1);
                 }
@@ -176,17 +176,17 @@ Sizzle.matches = function(expr, set){
 };
 
 Sizzle.find = function(expr, context, isXML){
-    var set, match;
+    let set, match;
 
     if ( !expr ) {
         return [];
     }
 
-    for ( var i = 0, l = Expr.order.length; i < l; i++ ) {
-        var type = Expr.order[i], match;
+    for ( let i = 0, l = Expr.order.length; i < l; i++ ) {
+        let type = Expr.order[i], match;
         
         if ( (match = Expr.leftMatch[ type ].exec( expr )) ) {
-            var left = match[1];
+            let left = match[1];
             match.splice(1,1);
 
             if ( left.substr( left.length - 1 ) !== "\\" ) {
@@ -208,13 +208,13 @@ Sizzle.find = function(expr, context, isXML){
 };
 
 Sizzle.filter = function(expr, set, inplace, not){
-    var old = expr, result = [], curLoop = set, match, anyFound,
+    let old = expr, result = [], curLoop = set, match, anyFound,
         isXMLFilter = set && set[0] && isXML(set[0]);
 
     while ( expr && set.length ) {
-        for ( var type in Expr.filter ) {
+        for ( let type in Expr.filter ) {
             if ( (match = Expr.match[ type ].exec( expr )) != null ) {
-                var filter = Expr.filter[ type ], found, item;
+                let filter = Expr.filter[ type ], found, item;
                 anyFound = false;
 
                 if ( curLoop == result ) {
@@ -232,10 +232,10 @@ Sizzle.filter = function(expr, set, inplace, not){
                 }
 
                 if ( match ) {
-                    for ( var i = 0; (item = curLoop[i]) != null; i++ ) {
+                    for ( let i = 0; (item = curLoop[i]) != null; i++ ) {
                         if ( item ) {
                             found = filter( item, match, i, curLoop );
-                            var pass = not ^ !!found;
+                            let pass = not ^ !!found;
 
                             if ( inplace && found != null ) {
                                 if ( pass ) {
@@ -283,7 +283,7 @@ Sizzle.filter = function(expr, set, inplace, not){
 };
 
 /**#@+ @ignore */
-var Expr = Sizzle.selectors = {
+let Expr = Sizzle.selectors = {
     order: [ "ID", "NAME", "TAG" ],
     match: {
         ID: /#((?:[\w\u00c0-\uFFFF-]|\\.)+)/,
@@ -307,7 +307,7 @@ var Expr = Sizzle.selectors = {
     },
     relative: {
         "+": function(checkSet, part, isXML){
-            var isPartStr = typeof part === "string",
+            let isPartStr = typeof part === "string",
                 isTag = isPartStr && !/\W/.test(part),
                 isPartStrNotTag = isPartStr && !isTag;
 
@@ -315,7 +315,7 @@ var Expr = Sizzle.selectors = {
                 part = part.toUpperCase();
             }
 
-            for ( var i = 0, l = checkSet.length, elem; i < l; i++ ) {
+            for ( let i = 0, l = checkSet.length, elem; i < l; i++ ) {
                 if ( (elem = checkSet[i]) ) {
                     while ( (elem = elem.previousSibling) && elem.nodeType !== 1 ) {}
 
@@ -330,21 +330,21 @@ var Expr = Sizzle.selectors = {
             }
         },
         ">": function(checkSet, part, isXML){
-            var isPartStr = typeof part === "string";
+            let isPartStr = typeof part === "string";
 
             if ( isPartStr && !/\W/.test(part) ) {
                 part = isXML ? part : part.toUpperCase();
 
-                for ( var i = 0, l = checkSet.length; i < l; i++ ) {
-                    var elem = checkSet[i];
+                for ( let i = 0, l = checkSet.length; i < l; i++ ) {
+                    let elem = checkSet[i];
                     if ( elem ) {
-                        var parent = elem.parentNode;
+                        let parent = elem.parentNode;
                         checkSet[i] = parent.nodeName === part ? parent : false;
                     }
                 }
             } else {
-                for ( var i = 0, l = checkSet.length; i < l; i++ ) {
-                    var elem = checkSet[i];
+                for ( let i = 0, l = checkSet.length; i < l; i++ ) {
+                    let elem = checkSet[i];
                     if ( elem ) {
                         checkSet[i] = isPartStr ?
                             elem.parentNode :
@@ -358,20 +358,20 @@ var Expr = Sizzle.selectors = {
             }
         },
         "": function(checkSet, part, isXML){
-            var doneName = done++, checkFn = dirCheck;
+            let doneName = done++, checkFn = dirCheck;
 
             if ( !/\W/.test(part) ) {
-                var nodeCheck = part = isXML ? part : part.toUpperCase();
+                let nodeCheck = part = isXML ? part : part.toUpperCase();
                 checkFn = dirNodeCheck;
             }
 
             checkFn("parentNode", part, doneName, checkSet, nodeCheck, isXML);
         },
         "~": function(checkSet, part, isXML){
-            var doneName = done++, checkFn = dirCheck;
+            let doneName = done++, checkFn = dirCheck;
 
             if ( typeof part === "string" && !/\W/.test(part) ) {
-                var nodeCheck = part = isXML ? part : part.toUpperCase();
+                let nodeCheck = part = isXML ? part : part.toUpperCase();
                 checkFn = dirNodeCheck;
             }
 
@@ -381,15 +381,15 @@ var Expr = Sizzle.selectors = {
     find: {
         ID: function(match, context, isXML){
             if ( typeof context.getElementById !== "undefined" && !isXML ) {
-                var m = context.getElementById(match[1]);
+                let m = context.getElementById(match[1]);
                 return m ? [m] : [];
             }
         },
         NAME: function(match, context, isXML){
             if ( typeof context.getElementsByName !== "undefined" ) {
-                var ret = [], results = context.getElementsByName(match[1]);
+                let ret = [], results = context.getElementsByName(match[1]);
 
-                for ( var i = 0, l = results.length; i < l; i++ ) {
+                for ( let i = 0, l = results.length; i < l; i++ ) {
                     if ( results[i].getAttribute("name") === match[1] ) {
                         ret.push( results[i] );
                     }
@@ -410,7 +410,7 @@ var Expr = Sizzle.selectors = {
                 return match;
             }
 
-            for ( var i = 0, elem; (elem = curLoop[i]) != null; i++ ) {
+            for ( let i = 0, elem; (elem = curLoop[i]) != null; i++ ) {
                 if ( elem ) {
                     if ( not ^ (elem.className && (" " + elem.className + " ").indexOf(match) >= 0) ) {
                         if ( !inplace )
@@ -427,13 +427,13 @@ var Expr = Sizzle.selectors = {
             return match[1].replace(/\\/g, "");
         },
         TAG: function(match, curLoop){
-            for ( var i = 0; curLoop[i] === false; i++ ){}
+            for ( let i = 0; curLoop[i] === false; i++ ){}
             return curLoop[i] && isXML(curLoop[i]) ? match[1] : match[1].toUpperCase();
         },
         CHILD: function(match){
             if ( match[1] == "nth" ) {
                 // parse equations like 'even', 'odd', '5', '2n', '3n+2', '4n-1', '-n+6'
-                var test = /(-?)(\d*)n((?:\+|-)?\d*)/.exec(
+                let test = /(-?)(\d*)n((?:\+|-)?\d*)/.exec(
                     match[2] == "even" && "2n" || match[2] == "odd" && "2n+1" ||
                     !/\D/.test( match[2] ) && "0n+" + match[2] || match[2]);
 
@@ -448,7 +448,7 @@ var Expr = Sizzle.selectors = {
             return match;
         },
         ATTR: function(match, curLoop, inplace, result, not, isXML){
-            var name = match[1].replace(/\\/g, "");
+            let name = match[1].replace(/\\/g, "");
             
             if ( !isXML && Expr.attrMap[name] ) {
                 match[1] = Expr.attrMap[name];
@@ -466,7 +466,7 @@ var Expr = Sizzle.selectors = {
                 if ( ( chunker.exec(match[3]) || "" ).length > 1 || /^\w/.test(match[3]) ) {
                     match[3] = Sizzle(match[3], null, null, curLoop);
                 } else {
-                    var ret = Sizzle.filter(match[3], curLoop, inplace, true ^ not);
+                    let ret = Sizzle.filter(match[3], curLoop, inplace, true ^ not);
                     if ( !inplace ) {
                         result.push.apply( result, ret );
                     }
@@ -570,16 +570,16 @@ var Expr = Sizzle.selectors = {
     },
     filter: {
         PSEUDO: function(elem, match, i, array){
-            var name = match[1], filter = Expr.filters[ name ];
+            let name = match[1], filter = Expr.filters[ name ];
 
             if ( filter ) {
                 return filter( elem, i, match, array );
             } else if ( name === "contains" ) {
                 return (elem.textContent || elem.innerText || "").indexOf(match[3]) >= 0;
             } else if ( name === "not" ) {
-                var not = match[3];
+                let not = match[3];
 
-                for ( var i = 0, l = not.length; i < l; i++ ) {
+                for ( let i = 0, l = not.length; i < l; i++ ) {
                     if ( not[i] === elem ) {
                         return false;
                     }
@@ -589,7 +589,7 @@ var Expr = Sizzle.selectors = {
             }
         },
         CHILD: function(elem, match){
-            var type = match[1], node = elem;
+            let type = match[1], node = elem;
             switch (type) {
                 case 'only':
                 case 'first':
@@ -604,17 +604,17 @@ var Expr = Sizzle.selectors = {
                     }
                     return true;
                 case 'nth':
-                    var first = match[2], last = match[3];
+                    let first = match[2], last = match[3];
 
                     if ( first == 1 && last == 0 ) {
                         return true;
                     }
                     
-                    var doneName = match[0],
+                    let doneName = match[0],
                         parent = elem.parentNode;
     
                     if ( parent && (parent.sizcache !== doneName || !elem.nodeIndex) ) {
-                        var count = 0;
+                        let count = 0;
                         for ( node = parent.firstChild; node; node = node.nextSibling ) {
                             if ( node.nodeType === 1 ) {
                                 node.nodeIndex = ++count;
@@ -623,7 +623,7 @@ var Expr = Sizzle.selectors = {
                         parent.sizcache = doneName;
                     }
                     
-                    var diff = elem.nodeIndex - last;
+                    let diff = elem.nodeIndex - last;
                     if ( first == 0 ) {
                         return diff == 0;
                     } else {
@@ -642,7 +642,7 @@ var Expr = Sizzle.selectors = {
                 .indexOf( match ) > -1;
         },
         ATTR: function(elem, match){
-            var name = match[1],
+            let name = match[1],
                 result = Expr.attrHandle[ name ] ?
                     Expr.attrHandle[ name ]( elem ) :
                     elem[ name ] != null ?
@@ -673,7 +673,7 @@ var Expr = Sizzle.selectors = {
                 false;
         },
         POS: function(elem, match, i, array){
-            var name = match[2], filter = Expr.setFilters[ name ];
+            let name = match[2], filter = Expr.setFilters[ name ];
 
             if ( filter ) {
                 return filter( elem, i, match, array );
@@ -682,14 +682,14 @@ var Expr = Sizzle.selectors = {
     }
 };
 
-var origPOS = Expr.match.POS;
+let origPOS = Expr.match.POS;
 
-for ( var type in Expr.match ) {
+for ( let type in Expr.match ) {
     Expr.match[ type ] = new RegExp( Expr.match[ type ].source + /(?![^\[]*\])(?![^\(]*\))/.source );
     Expr.leftMatch[ type ] = new RegExp( /(^(?:.|\r|\n)*?)/.source + Expr.match[ type ].source );
 }
 
-var makeArray = function(array, results) {
+let makeArray = function(array, results) {
     array = Array.prototype.slice.call( array, 0 );
 
     if ( results ) {
@@ -708,17 +708,17 @@ try {
 // Provide a fallback method if it does not work
 } catch(e){
     makeArray = function(array, results) {
-        var ret = results || [];
+        let ret = results || [];
 
         if ( toString.call(array) === "[object Array]" ) {
             Array.prototype.push.apply( ret, array );
         } else {
             if ( typeof array.length === "number" ) {
-                for ( var i = 0, l = array.length; i < l; i++ ) {
+                for ( let i = 0, l = array.length; i < l; i++ ) {
                     ret.push( array[i] );
                 }
             } else {
-                for ( var i = 0; array[i]; i++ ) {
+                for ( let i = 0; array[i]; i++ ) {
                     ret.push( array[i] );
                 }
             }
@@ -728,7 +728,7 @@ try {
     };
 }
 
-var sortOrder;
+let sortOrder;
 
 if ( document.documentElement.compareDocumentPosition ) {
     sortOrder = function( a, b ) {
@@ -739,7 +739,7 @@ if ( document.documentElement.compareDocumentPosition ) {
             return 0;
         }
 
-        var ret = a.compareDocumentPosition(b) & 4 ? -1 : a === b ? 0 : 1;
+        let ret = a.compareDocumentPosition(b) & 4 ? -1 : a === b ? 0 : 1;
         if ( ret === 0 ) {
             hasDuplicate = true;
         }
@@ -754,7 +754,7 @@ if ( document.documentElement.compareDocumentPosition ) {
             return 0;
         }
 
-        var ret = a.sourceIndex - b.sourceIndex;
+        let ret = a.sourceIndex - b.sourceIndex;
         if ( ret === 0 ) {
             hasDuplicate = true;
         }
@@ -769,12 +769,12 @@ if ( document.documentElement.compareDocumentPosition ) {
             return 0;
         }
 
-        var aRange = a.ownerDocument.createRange(), bRange = b.ownerDocument.createRange();
+        let aRange = a.ownerDocument.createRange(), bRange = b.ownerDocument.createRange();
         aRange.setStart(a, 0);
         aRange.setEnd(a, 0);
         bRange.setStart(b, 0);
         bRange.setEnd(b, 0);
-        var ret = aRange.compareBoundaryPoints(Range.START_TO_END, bRange);
+        let ret = aRange.compareBoundaryPoints(Range.START_TO_END, bRange);
         if ( ret === 0 ) {
             hasDuplicate = true;
         }
@@ -786,12 +786,12 @@ if ( document.documentElement.compareDocumentPosition ) {
 // querying by getElementById (and provide a workaround)
 (function(){
     // We're going to inject a fake input element with a specified name
-    var form = document.createElement("div"),
+    let form = document.createElement("div"),
         id = "script" + (new Date).getTime();
     form.innerHTML = "<a name='" + id + "'/>";
 
     // Inject it into the root element, check its status, and remove it quickly
-    var root = document.documentElement;
+    let root = document.documentElement;
     root.insertBefore( form, root.firstChild );
 
     // The workaround has to do additional checks after a getElementById
@@ -799,13 +799,13 @@ if ( document.documentElement.compareDocumentPosition ) {
     if ( !!document.getElementById( id ) ) {
         Expr.find.ID = function(match, context, isXML){
             if ( typeof context.getElementById !== "undefined" && !isXML ) {
-                var m = context.getElementById(match[1]);
+                let m = context.getElementById(match[1]);
                 return m ? m.id === match[1] || typeof m.getAttributeNode !== "undefined" && m.getAttributeNode("id").nodeValue === match[1] ? [m] : undefined : [];
             }
         };
 
         Expr.filter.ID = function(elem, match){
-            var node = typeof elem.getAttributeNode !== "undefined" && elem.getAttributeNode("id");
+            let node = typeof elem.getAttributeNode !== "undefined" && elem.getAttributeNode("id");
             return elem.nodeType === 1 && node && node.nodeValue === match;
         };
     }
@@ -819,19 +819,19 @@ if ( document.documentElement.compareDocumentPosition ) {
     // when doing getElementsByTagName("*")
 
     // Create a fake element
-    var div = document.createElement("div");
+    let div = document.createElement("div");
     div.appendChild( document.createComment("") );
 
     // Make sure no comments are found
     if ( div.getElementsByTagName("*").length > 0 ) {
         Expr.find.TAG = function(match, context){
-            var results = context.getElementsByTagName(match[1]);
+            let results = context.getElementsByTagName(match[1]);
 
             // Filter out possible comments
             if ( match[1] === "*" ) {
-                var tmp = [];
+                let tmp = [];
 
-                for ( var i = 0; results[i]; i++ ) {
+                for ( let i = 0; results[i]; i++ ) {
                     if ( results[i].nodeType === 1 ) {
                         tmp.push( results[i] );
                     }
@@ -857,7 +857,7 @@ if ( document.documentElement.compareDocumentPosition ) {
 })();
 
 if ( document.querySelectorAll ) (function(){
-    var oldSizzle = Sizzle, div = document.createElement("div");
+    let oldSizzle = Sizzle, div = document.createElement("div");
     div.innerHTML = "<p class='TEST'></p>";
 
     // Safari can't handle uppercase or unicode characters when
@@ -880,7 +880,7 @@ if ( document.querySelectorAll ) (function(){
         return oldSizzle(query, context, extra, seed);
     };
 
-    for ( var prop in oldSizzle ) {
+    for ( let prop in oldSizzle ) {
         Sizzle[ prop ] = oldSizzle[ prop ];
     }
 
@@ -888,7 +888,7 @@ if ( document.querySelectorAll ) (function(){
 })();
 
 if ( document.getElementsByClassName && document.documentElement.getElementsByClassName ) (function(){
-    var div = document.createElement("div");
+    let div = document.createElement("div");
     div.innerHTML = "<div class='test e'></div><div class='test'></div>";
 
     // Opera can't find a second classname (in 9.6)
@@ -912,16 +912,16 @@ if ( document.getElementsByClassName && document.documentElement.getElementsByCl
 })();
 
 function dirNodeCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
-    var sibDir = dir == "previousSibling" && !isXML;
-    for ( var i = 0, l = checkSet.length; i < l; i++ ) {
-        var elem = checkSet[i];
+    let sibDir = dir == "previousSibling" && !isXML;
+    for ( let i = 0, l = checkSet.length; i < l; i++ ) {
+        let elem = checkSet[i];
         if ( elem ) {
             if ( sibDir && elem.nodeType === 1 ){
                 elem.sizcache = doneName;
                 elem.sizset = i;
             }
             elem = elem[dir];
-            var match = false;
+            let match = false;
 
             while ( elem ) {
                 if ( elem.sizcache === doneName ) {
@@ -948,16 +948,16 @@ function dirNodeCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
 }
 
 function dirCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
-    var sibDir = dir == "previousSibling" && !isXML;
-    for ( var i = 0, l = checkSet.length; i < l; i++ ) {
-        var elem = checkSet[i];
+    let sibDir = dir == "previousSibling" && !isXML;
+    for ( let i = 0, l = checkSet.length; i < l; i++ ) {
+        let elem = checkSet[i];
         if ( elem ) {
             if ( sibDir && elem.nodeType === 1 ) {
                 elem.sizcache = doneName;
                 elem.sizset = i;
             }
             elem = elem[dir];
-            var match = false;
+            let match = false;
 
             while ( elem ) {
                 if ( elem.sizcache === doneName ) {
@@ -990,19 +990,19 @@ function dirCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
     }
 }
 
-var contains = document.compareDocumentPosition ?  function(a, b){
+let contains = document.compareDocumentPosition ?  function(a, b){
     return a.compareDocumentPosition(b) & 16;
 } : function(a, b){
     return a !== b && (a.contains ? a.contains(b) : true);
 };
 
-var isXML = function(elem){
+let isXML = function(elem){
     return elem.nodeType === 9 && elem.documentElement.nodeName !== "HTML" ||
         !!elem.ownerDocument && elem.ownerDocument.documentElement.nodeName !== "HTML";
 };
 
-var posProcess = function(selector, context){
-    var tmpSet = [], later = "", match,
+let posProcess = function(selector, context){
+    let tmpSet = [], later = "", match,
         root = context.nodeType ? [context] : context;
 
     // Position selectors must be done after the filter
@@ -1014,7 +1014,7 @@ var posProcess = function(selector, context){
 
     selector = Expr.relative[selector] ? selector + "*" : selector;
 
-    for ( var i = 0, l = root.length; i < l; i++ ) {
+    for ( let i = 0, l = root.length; i < l; i++ ) {
         Sizzle( selector, root[i], tmpSet );
     }
 

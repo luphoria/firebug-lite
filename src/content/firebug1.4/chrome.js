@@ -9,7 +9,7 @@ FBL.ns( /**@scope ns-chrome*/ function() { with (FBL) {
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // Window Options
 
-var WindowDefaultOptions = 
+let WindowDefaultOptions = 
     {
         type: "frame",
         id: "FirebugUI",
@@ -124,7 +124,7 @@ FBL.FirebugChrome =
         if (Env.chrome.type == "frame" || Env.chrome.type == "div")
             ChromeMini.create(Env.chrome);
         
-        var chrome = Firebug.chrome = new Chrome(Env.chrome);
+        let chrome = Firebug.chrome = new Chrome(Env.chrome);
         FirebugChrome.chromeMap[chrome.type] = chrome;
         
         addGlobalEvent("keydown", onGlobalKeyDown);
@@ -132,7 +132,7 @@ FBL.FirebugChrome =
         if (Env.Options.enablePersistent && chrome.type == "popup")
         {
             // TODO: xxxpedro persist - revise chrome synchronization when in persistent mode
-            var frame = FirebugChrome.chromeMap.frame;
+            let frame = FirebugChrome.chromeMap.frame;
             if (frame)
                 frame.close();
             
@@ -144,9 +144,9 @@ FBL.FirebugChrome =
     
     clone: function(FBChrome)
     {
-        for (var name in FBChrome)
+        for (let name in FBChrome)
         {
-            var prop = FBChrome[name];
+            let prop = FBChrome[name];
             if (FBChrome.hasOwnProperty(name) && !isFunction(prop))
             {
                 this[name] = prop;
@@ -160,14 +160,14 @@ FBL.FirebugChrome =
 // ************************************************************************************************
 // Chrome Window Creation
 
-var createChromeWindow = function(options)
+let createChromeWindow = function(options)
 {
     options = extend(WindowDefaultOptions, options || {});
     
     //* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     // Locals
     
-    var chrome = {},
+    let chrome = {},
         
         context = options.context || Env.browser,
     
@@ -211,7 +211,7 @@ var createChromeWindow = function(options)
         {
             //Firebug.Console.warn("Firebug Lite GUI is working in 'windowless mode'. It may behave slower and receive interferences from the page in which it is installed.");
         
-            var node = chrome.node = createGlobalElement("div"),
+            let node = chrome.node = createGlobalElement("div"),
                 style = createGlobalElement("style"),
                 
                 css = FirebugChrome.Skin.CSS
@@ -269,6 +269,7 @@ var createChromeWindow = function(options)
     
     try
     {
+        let node;
         //* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
         // create the Chrome as a "div" (windowless mode)
         if (type == "div")
@@ -282,7 +283,7 @@ var createChromeWindow = function(options)
         else if (isChromeFrame)
         {
             // Create the Chrome Frame
-            var node = chrome.node = createGlobalElement("iframe");
+            node = chrome.node = createGlobalElement("iframe");
             node.setAttribute("src", url);
             node.setAttribute("frameBorder", "0");
             
@@ -301,7 +302,7 @@ var createChromeWindow = function(options)
         // create the Chrome as a "popup"
         else
         {
-            var height = FirebugChrome.height || options.height,
+            let height = FirebugChrome.height || options.height,
             
                 options = [
                     "true,top=",
@@ -343,7 +344,7 @@ var createChromeWindow = function(options)
         
         if (!useLocalSkin)
         {
-            var tpl = getChromeTemplate(!isChromeFrame),
+            let tpl = getChromeTemplate(!isChromeFrame),
                 doc = isChromeFrame ? node.contentWindow.document : node.document;
             
             doc.write(tpl);
@@ -353,7 +354,7 @@ var createChromeWindow = function(options)
         //* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
         // Wait the Window to be loaded
         
-        var win,
+        let win,
         
             waitDelay = useLocalSkin ? isChromeFrame ? 200 : 300 : 100,
             
@@ -383,8 +384,8 @@ var createChromeWindow = function(options)
     }
     catch(e)
     {
-        var msg = e.message || e;
-        
+        let msg = e.message || e;
+
         if (/access/i.test(msg))
         {
             // Firebug Lite could not create a window for its Graphical User Interface due to
@@ -408,7 +409,7 @@ var createChromeWindow = function(options)
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var onChromeLoad = function onChromeLoad(chrome)
+let onChromeLoad = function onChromeLoad(chrome)
 {
     Env.chrome = chrome;
     
@@ -428,8 +429,8 @@ var onChromeLoad = function onChromeLoad(chrome)
         }
         else
         {
-            var doc = chrome.document;
-            var script = doc.createElement("script");
+            let doc = chrome.document;
+            let script = doc.createElement("script");
             script.src = Env.Location.app + "#remote,persist";
             doc.getElementsByTagName("head")[0].appendChild(script);
         }
@@ -445,9 +446,9 @@ var onChromeLoad = function onChromeLoad(chrome)
         }
         else if (chrome.type == "popup")
         {
-            var oldChrome = FirebugChrome.chromeMap.frame;
+            let oldChrome = FirebugChrome.chromeMap.frame;
             
-            var newChrome = new Chrome(chrome);
+            let newChrome = new Chrome(chrome);
         
             // TODO: xxxpedro sync detach reattach attach
             dispatch(newChrome.panelMap, "detach", [oldChrome, newChrome]);
@@ -462,15 +463,15 @@ var onChromeLoad = function onChromeLoad(chrome)
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var getChromeDivTemplate = function()
+let getChromeDivTemplate = function()
 {
     return FirebugChrome.Skin.HTML;
 };
 
-var getChromeTemplate = function(isPopup)
+let getChromeTemplate = function(isPopup)
 {
-    var tpl = FirebugChrome.Skin; 
-    var r = [], i = -1;
+    let tpl = FirebugChrome.Skin; 
+    let r = [], i = -1;
     
     r[++i] = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/DTD/strict.dtd">';
     r[++i] = '<html><head><title>';
@@ -499,10 +500,10 @@ var getChromeTemplate = function(isPopup)
 // Chrome Class
     
 /**@class*/
-var Chrome = function Chrome(chrome)
+let Chrome = function Chrome(chrome)
 {
-    var type = chrome.type;
-    var Base = type == "frame" || type == "div" ? ChromeFrameBase : ChromePopupBase; 
+    let type = chrome.type;
+    let Base = type == "frame" || type == "div" ? ChromeFrameBase : ChromePopupBase; 
     
     append(this, Base);   // inherit from base class (ChromeFrameBase or ChromePopupBase)
     append(this, chrome); // inherit chrome window properties
@@ -528,7 +529,7 @@ var Chrome = function Chrome(chrome)
  * @extends FBL.Controller 
  * @extends FBL.PanelBar 
  **/
-var ChromeBase = {};
+let ChromeBase = {};
 append(ChromeBase, Controller); 
 append(ChromeBase, PanelBar);
 append(ChromeBase,
@@ -590,7 +591,7 @@ append(ChromeBase,
     
     testMenu: function()
     {
-        var firebugMenu = new Menu(
+        let firebugMenu = new Menu(
         {
             id: "fbFirebugMenu",
             
@@ -690,13 +691,13 @@ append(ChromeBase,
         });
         
         /**@private*/
-        var firebugOptionsMenu =
+        let firebugOptionsMenu =
         {
             id: "fbFirebugOptionsMenu",
             
             getItems: function()
             {
-                var cookiesDisabled = !Firebug.saveCookies;
+                let cookiesDisabled = !Firebug.saveCookies;
                 
                 return [
                     {
@@ -786,7 +787,7 @@ append(ChromeBase,
             
             saveOptions: function(target)
             {
-                var saveEnabled = target.getAttribute("checked");
+                let saveEnabled = target.getAttribute("checked");
                 
                 if (!saveEnabled) this.restorePrefs();
                 
@@ -812,10 +813,10 @@ append(ChromeBase,
             
             updateMenu: function(target)
             {
-                var options = getElementsByClass(target.parentNode, "fbMenuOption");
+                let options = getElementsByClass(target.parentNode, "fbMenuOption");
                 
-                var firstOption = options[0]; 
-                var enabled = Firebug.saveCookies;
+                let firstOption = options[0]; 
+                let enabled = Firebug.saveCookies;
                 if (enabled)
                     Menu.check(firstOption);
                 else
@@ -826,12 +827,12 @@ append(ChromeBase,
                 else
                     Menu.uncheck(options[0]);
                 
-                for (var i = 1, length = options.length; i < length; i++)
+                for (let i = 1, length = options.length; i < length; i++)
                 {
-                    var option = options[i];
+                    let option = options[i];
                     
-                    var value = option.getAttribute("value");
-                    var pref = Firebug[value];
+                    let value = option.getAttribute("value");
+                    let pref = Firebug[value];
                     
                     if (pref)
                         Menu.check(option);
@@ -848,20 +849,20 @@ append(ChromeBase,
         
         Menu.register(firebugOptionsMenu);
         
-        var menu = firebugMenu;
+        let menu = firebugMenu;
         
-        var testMenuClick = function(event)
+        let testMenuClick = function(event)
         {
             //console.log("testMenuClick");
             cancelEvent(event, true);
             
-            var target = event.target || event.srcElement;
+            let target = event.target || event.srcElement;
             
             if (menu.isVisible)
                 menu.hide();
             else
             {
-                var offsetLeft = isIE6 ? 1 : -4,  // IE6 problem with fixed position
+                let offsetLeft = isIE6 ? 1 : -4,  // IE6 problem with fixed position
                     
                     chrome = Firebug.chrome,
                     
@@ -880,7 +881,7 @@ append(ChromeBase,
             return false;
         };
         
-        var iconButton = new IconButton({
+        let iconButton = new IconButton({
             type: "toggle",
             element: $("fbFirebugButton"),
             
@@ -968,8 +969,8 @@ append(ChromeBase,
         if (isIE6 && Firebug.Selector)
         {
             // TODO: xxxpedro change to getElementsByClass
-            var as = $$(".fbHover");
-            for (var i=0, a; a=as[i]; i++)
+            let as = $$(".fbHover");
+            for (let i=0, a; a=as[i]; i++)
             {
                 a.setAttribute("href", "javascript:void(0)");
             }
@@ -978,8 +979,8 @@ append(ChromeBase,
         // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
         // initialize all panels
         /*
-        var panelMap = Firebug.panelTypes;
-        for (var i=0, p; p=panelMap[i]; i++)
+        let panelMap = Firebug.panelTypes;
+        for (let i=0, p; p=panelMap[i]; i++)
         {
             if (!p.parentPanel)
             {
@@ -1009,7 +1010,7 @@ append(ChromeBase,
         
         // Select the first registered panel
         // TODO: BUG IE7
-        var self = this;
+        let self = this;
         setTimeout(function(){
             self.selectPanel(FirebugChrome.selectedPanelName);
             
@@ -1034,15 +1035,15 @@ append(ChromeBase,
         // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
         // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-        var onPanelMouseDown = function onPanelMouseDown(event)
+        let onPanelMouseDown = function onPanelMouseDown(event)
         {
             //console.log("onPanelMouseDown", event.target || event.srcElement, event);
             
-            var target = event.target || event.srcElement;
+            let target = event.target || event.srcElement;
             
             if (FBL.isLeftClick(event))
             {
-                var editable = FBL.getAncestorByClass(target, "editable");
+                let editable = FBL.getAncestorByClass(target, "editable");
                 
                 // if an editable element has been clicked then start editing
                 if (editable)
@@ -1066,10 +1067,10 @@ append(ChromeBase,
         
         Firebug.getElementPanel = function(element)
         {
-            var panelNode = getAncestorByClass(element, "fbPanel");
-            var id = panelNode.id.substr(2);
+            let panelNode = getAncestorByClass(element, "fbPanel");
+            let id = panelNode.id.substr(2);
             
-            var panel = Firebug.chrome.panelMap[id];
+            let panel = Firebug.chrome.panelMap[id];
             
             if (!panel)
             {
@@ -1089,16 +1090,16 @@ append(ChromeBase,
         // Improved window key code event listener. Only one "keydown" event will be attached
         // to the window, and the onKeyCodeListen() function will delegate which listeners
         // should be called according to the event.keyCode fired.
-        var onKeyCodeListenersMap = [];
-        var onKeyCodeListen = function(event)
+        let onKeyCodeListenersMap = [];
+        let onKeyCodeListen = function(event)
         {
-            for (var keyCode in onKeyCodeListenersMap)
+            for (let keyCode in onKeyCodeListenersMap)
             {
-                var listeners = onKeyCodeListenersMap[keyCode];
+                let listeners = onKeyCodeListenersMap[keyCode];
                 
-                for (var i = 0, listener; listener = listeners[i]; i++)
+                for (let i = 0, listener; listener = listeners[i]; i++)
                 {
-                    var filter = listener.filter || FBL.noKeyModifiers;
+                    let filter = listener.filter || FBL.noKeyModifiers;
         
                     if (event.keyCode == keyCode && (!filter || filter(event)))
                     {
@@ -1118,7 +1119,7 @@ append(ChromeBase,
          */
         Firebug.chrome.keyCodeListen = function(key, filter, listener, capture)
         {
-            var keyCode = KeyEvent["DOM_VK_"+key];
+            let keyCode = KeyEvent["DOM_VK_"+key];
             
             if (!onKeyCodeListenersMap[keyCode])
                 onKeyCodeListenersMap[keyCode] = [];
@@ -1154,9 +1155,9 @@ append(ChromeBase,
             if (!filter)
                 filter = FBL.noKeyModifiers;
     
-            var keyCode = KeyEvent["DOM_VK_"+key];
+            let keyCode = KeyEvent["DOM_VK_"+key];
     
-            var fn = function fn(event)
+            let fn = function fn(event)
             {
                 if (event.keyCode == keyCode && (!filter || filter(event)))
                 {
@@ -1289,7 +1290,7 @@ append(ChromeBase,
         {
             if (isOpera && Firebug.chrome.type == "popup" && Firebug.chrome.node.closed)
             {
-                var frame = FirebugChrome.chromeMap.frame;
+                let frame = FirebugChrome.chromeMap.frame;
                 frame.reattach();
                 
                 FirebugChrome.chromeMap.popup = null;
@@ -1302,7 +1303,7 @@ append(ChromeBase,
             // If the context is a popup, ignores the toggle process
             if (Firebug.chrome.type == "popup") return;
             
-            var shouldOpen = forceOpen || !FirebugChrome.isOpen;
+            let shouldOpen = forceOpen || !FirebugChrome.isOpen;
             
             if(shouldOpen)
                this.open();
@@ -1326,11 +1327,11 @@ append(ChromeBase,
         Firebug.browser.window.Firebug = Firebug;
         
         // chrome synchronization
-        var newPanelMap = newChrome.panelMap;
-        var oldPanelMap = oldChrome.panelMap;
+        let newPanelMap = newChrome.panelMap;
+        let oldPanelMap = oldChrome.panelMap;
         
-        var panel;
-        for(var name in newPanelMap)
+        let panel;
+        for(let name in newPanelMap)
         {
             // TODO: xxxpedro innerHTML
             panel = newPanelMap[name]; 
@@ -1363,10 +1364,10 @@ append(ChromeBase,
 
     draw: function()
     {
-        var size = this.getSize();
+        let size = this.getSize();
         
         // Height related values
-        var commandLineHeight = Firebug.chrome.commandLineVisible ? fbCommandLine.offsetHeight : 0,
+        let commandLineHeight = Firebug.chrome.commandLineVisible ? fbCommandLine.offsetHeight : 0,
             
             y = Math.max(size.height /* chrome height */, topHeight),
             
@@ -1407,7 +1408,7 @@ append(ChromeBase,
         {
             sideWidthValue = Math.max(sideWidthValue - 6, 0);
             
-            var sideWidth = sideWidthValue + "px";
+            let sideWidth = sideWidthValue + "px";
             
             fbPanelBox2Style.width = sideWidth;
             
@@ -1448,7 +1449,7 @@ append(ChromeBase,
     
     resize: function()
     {
-        var self = this;
+        let self = this;
         
         // avoid partial resize when maximizing window
         setTimeout(function(){
@@ -1465,7 +1466,7 @@ append(ChromeBase,
     {
         if (FBTrace.DBG_CHROME) FBTrace.sysout("Chrome.layout", "");
         
-        var options = panel.options;
+        let options = panel.options;
         
         changeCommandLineVisibility(options.hasCommandLine);
         changeSidePanelVisibility(panel.hasSidePanel);
@@ -1475,7 +1476,7 @@ append(ChromeBase,
     
     showLargeCommandLine: function(hideToggleIcon)
     {
-        var chrome = Firebug.chrome;
+        let chrome = Firebug.chrome;
         
         if (!chrome.largeCommandLineVisible)
         {
@@ -1537,7 +1538,7 @@ append(ChromeBase,
     
     focusCommandLine: function()
     {
-        var selectedPanelName = this.selectedPanel.name, panelToSelect;
+        let selectedPanelName = this.selectedPanel.name, panelToSelect;
         
         if (focusCommandLineState == 0 || selectedPanelName != "Console")
         {
@@ -1580,7 +1581,7 @@ append(ChromeBase,
  * @namespace
  * @extends ns-chrome-ChromeBase 
  */ 
-var ChromeFrameBase = extend(ChromeBase,
+let ChromeFrameBase = extend(ChromeBase,
 /**@extend ns-chrome-ChromeFrameBase*/
 {
     create: function()
@@ -1661,7 +1662,7 @@ var ChromeFrameBase = extend(ChromeBase,
     
     reattach: function()
     {
-        var frame = FirebugChrome.chromeMap.frame;
+        let frame = FirebugChrome.chromeMap.frame;
         
         ChromeBase.reattach(FirebugChrome.chromeMap.popup, this);
     },
@@ -1675,7 +1676,7 @@ var ChromeFrameBase = extend(ChromeBase,
             if (Env.isChromeExtension)
                 localStorage.setItem("Firebug", "1,1");
             
-            var node = this.node;
+            let node = this.node;
             
             node.style.visibility = "hidden"; // Avoid flickering
             
@@ -1690,13 +1691,13 @@ var ChromeFrameBase = extend(ChromeBase,
             else
                 node.style.display = "block";
             
-            var main = $("fbChrome");
+            let main = $("fbChrome");
             
             // IE6 throws an error when setting this property! why?
             //main.style.display = "table";
             main.style.display = "";
             
-            var self = this;
+            let self = this;
                 /// TODO: xxxpedro FOUC
                 node.style.visibility = "visible";
             setTimeout(function(){
@@ -1729,14 +1730,14 @@ var ChromeFrameBase = extend(ChromeBase,
             if (Env.isChromeExtension)
                 localStorage.setItem("Firebug", "1,0");
             
-            var node = this.node;
+            let node = this.node;
             
             if (Firebug.showIconWhenHidden)
             {
                 node.style.visibility = "hidden"; // Avoid flickering
                 
                 // TODO: xxxpedro - persist IE fixed? 
-                var main = $("fbChrome", FirebugChrome.chromeMap.frame.document);
+                let main = $("fbChrome", FirebugChrome.chromeMap.frame.document);
                 main.style.display = "none";
                         
                 ChromeMini.initialize();
@@ -1771,15 +1772,15 @@ var ChromeFrameBase = extend(ChromeBase,
     fixIEPosition: function()
     {
         // fix IE problem with offset when not in fullscreen mode
-        var doc = this.document;
-        var offset = isIE ? doc.body.clientTop || doc.documentElement.clientTop: 0;
+        let doc = this.document;
+        let offset = isIE ? doc.body.clientTop || doc.documentElement.clientTop: 0;
         
-        var size = Firebug.browser.getWindowSize();
-        var scroll = Firebug.browser.getWindowScrollPosition();
-        var maxHeight = size.height;
-        var height = this.node.offsetHeight;
+        let size = Firebug.browser.getWindowSize();
+        let scroll = Firebug.browser.getWindowScrollPosition();
+        let maxHeight = size.height;
+        let height = this.node.offsetHeight;
         
-        var bodyStyle = doc.body.currentStyle;
+        let bodyStyle = doc.body.currentStyle;
         
         this.node.style.top = maxHeight - height + scroll.top + "px";
         
@@ -1805,7 +1806,7 @@ var ChromeFrameBase = extend(ChromeBase,
  * @namespace
  * @extends FBL.Controller
  */  
-var ChromeMini = extend(Controller,
+let ChromeMini = extend(Controller,
 /**@extend ns-chrome-ChromeMini*/ 
 {
     create: function(chrome)
@@ -1818,20 +1819,20 @@ var ChromeMini = extend(Controller,
     {
         Controller.initialize.apply(this);
         
-        var doc = FirebugChrome.chromeMap.frame.document;
+        let doc = FirebugChrome.chromeMap.frame.document;
         
-        var mini = $("fbMiniChrome", doc);
+        let mini = $("fbMiniChrome", doc);
         mini.style.display = "block";
         
-        var miniIcon = $("fbMiniIcon", doc);
-        var width = miniIcon.offsetWidth + 10;
+        let miniIcon = $("fbMiniIcon", doc);
+        let width = miniIcon.offsetWidth + 10;
         miniIcon.title = "Open " + Firebug.version;
         
-        var errors = $("fbMiniErrors", doc);
+        let errors = $("fbMiniErrors", doc);
         if (errors.offsetWidth)
             width += errors.offsetWidth + 10;
         
-        var node = this.node;
+        let node = this.node;
         node.style.height = "27px";
         node.style.width = width + "px";
         node.style.left = "";
@@ -1864,7 +1865,7 @@ var ChromeMini = extend(Controller,
     
     shutdown: function()
     {
-        var node = this.node;
+        let node = this.node;
         node.style.height = FirebugChrome.height + "px";
         node.style.width = "100%";
         node.style.left = 0;
@@ -1881,9 +1882,9 @@ var ChromeMini = extend(Controller,
         if (noFixedPosition)
             this.fixIEPosition();
         
-        var doc = FirebugChrome.chromeMap.frame.document;
+        let doc = FirebugChrome.chromeMap.frame.document;
         
-        var mini = $("fbMiniChrome", doc);
+        let mini = $("fbMiniChrome", doc);
         mini.style.display = "none";
         
         Controller.shutdown.apply(this);
@@ -1908,7 +1909,7 @@ var ChromeMini = extend(Controller,
  * @namespace
  * @extends ns-chrome-ChromeBase
  */  
-var ChromePopupBase = extend(ChromeBase,
+let ChromePopupBase = extend(ChromeBase,
 /**@extend ns-chrome-ChromePopupBase*/
 {
     
@@ -1939,7 +1940,7 @@ var ChromePopupBase = extend(ChromeBase,
     destroy: function()
     {
         // TODO: xxxpedro sync detach reattach attach
-        var frame = FirebugChrome.chromeMap.frame;
+        let frame = FirebugChrome.chromeMap.frame;
         
         if(frame)
         {
@@ -1969,11 +1970,11 @@ var ChromePopupBase = extend(ChromeBase,
         Firebug.Inspector.destroy();
         Firebug.browser.window.FirebugOldBrowser = true;
         
-        var persistTimeStart = new Date().getTime();
+        let persistTimeStart = new Date().getTime();
         
-        var waitMainWindow = function()
+        let waitMainWindow = function()
         {
-            var doc, head;
+            let doc, head;
         
             try
             {
@@ -2000,15 +2001,15 @@ var ChromePopupBase = extend(ChromeBase,
                         // the delay time should be calculated right after registering the 
                         // console, once right after the console registration, call log messages
                         // will be properly handled
-                        var persistDelay = new Date().getTime() - persistTimeStart;
+                        let persistDelay = new Date().getTime() - persistTimeStart;
                 
-                        var chrome = Firebug.chrome;
+                        let chrome = Firebug.chrome;
                         addEvent(Firebug.browser.window, "unload", chrome.persist);
                 
                         FBL.cacheDocument();
                         Firebug.Inspector.create();
                 
-                        var htmlPanel = chrome.getPanel("HTML");
+                        let htmlPanel = chrome.getPanel("HTML");
                         htmlPanel.createUI();
                         
                         Firebug.Console.logFormatted(
@@ -2048,10 +2049,10 @@ var ChromePopupBase = extend(ChromeBase,
 //************************************************************************************************
 // UI helpers
 
-var changeCommandLineVisibility = function changeCommandLineVisibility(visibility)
+let changeCommandLineVisibility = function changeCommandLineVisibility(visibility)
 {
-    var last = Firebug.chrome.commandLineVisible;
-    var visible = Firebug.chrome.commandLineVisible =  
+    let last = Firebug.chrome.commandLineVisible;
+    let visible = Firebug.chrome.commandLineVisible =  
         typeof visibility == "boolean" ? visibility : !Firebug.chrome.commandLineVisible;
     
     if (visible != last)
@@ -2073,9 +2074,9 @@ var changeCommandLineVisibility = function changeCommandLineVisibility(visibilit
     }
 };
 
-var changeSidePanelVisibility = function changeSidePanelVisibility(visibility)
+let changeSidePanelVisibility = function changeSidePanelVisibility(visibility)
 {
-    var last = Firebug.chrome.sidePanelVisible;
+    let last = Firebug.chrome.sidePanelVisible;
     Firebug.chrome.sidePanelVisible =  
         typeof visibility == "boolean" ? visibility : !Firebug.chrome.sidePanelVisible;
     
@@ -2090,11 +2091,11 @@ var changeSidePanelVisibility = function changeSidePanelVisibility(visibility)
 // ************************************************************************************************
 // F12 Handler
 
-var onGlobalKeyDown = function onGlobalKeyDown(event)
+let onGlobalKeyDown = function onGlobalKeyDown(event)
 {
-    var keyCode = event.keyCode;
-    var shiftKey = event.shiftKey;
-    var ctrlKey = event.ctrlKey;
+    let keyCode = event.keyCode;
+    let shiftKey = event.shiftKey;
+    let ctrlKey = event.ctrlKey;
     
     if (keyCode == 123 /* F12 */ && (!isFirefox && !shiftKey || shiftKey && isFirefox))
     {
@@ -2120,7 +2121,7 @@ var onGlobalKeyDown = function onGlobalKeyDown(event)
     }
 };
 
-var onMiniIconClick = function onMiniIconClick(event)
+let onMiniIconClick = function onMiniIconClick(event)
 {
     Firebug.chrome.toggle(false, event.ctrlKey);
     cancelEvent(event, true);
@@ -2130,7 +2131,7 @@ var onMiniIconClick = function onMiniIconClick(event)
 // ************************************************************************************************
 // Horizontal Splitter Handling
 
-var onHSplitterMouseDown = function onHSplitterMouseDown(event)
+let onHSplitterMouseDown = function onHSplitterMouseDown(event)
 {
     addGlobalEvent("mousemove", onHSplitterMouseMove);
     addGlobalEvent("mouseup", onHSplitterMouseUp);
@@ -2143,12 +2144,12 @@ var onHSplitterMouseDown = function onHSplitterMouseDown(event)
     return false;
 };
 
-var onHSplitterMouseMove = function onHSplitterMouseMove(event)
+let onHSplitterMouseMove = function onHSplitterMouseMove(event)
 {
     cancelEvent(event, true);
     
-    var clientY = event.clientY;
-    var win = isIE
+    let clientY = event.clientY;
+    let win = isIE
         ? event.srcElement.ownerDocument.parentWindow
         : event.target.ownerDocument && event.target.ownerDocument.defaultView;
     
@@ -2157,10 +2158,10 @@ var onHSplitterMouseMove = function onHSplitterMouseMove(event)
     
     if (win != win.parent)
     {
-        var frameElement = win.frameElement;
+        let frameElement = win.frameElement;
         if (frameElement)
         {
-            var framePos = Firebug.browser.getElementPosition(frameElement).top;
+            let framePos = Firebug.browser.getElementPosition(frameElement).top;
             clientY += framePos;
             
             if (frameElement.style.position != "fixed")
@@ -2198,7 +2199,7 @@ var onHSplitterMouseMove = function onHSplitterMouseMove(event)
     return false;
 };
 
-var handleHSplitterMouseMove = function()
+let handleHSplitterMouseMove = function()
 {
     if (onHSplitterMouseMoveTimer)
     {
@@ -2206,23 +2207,23 @@ var handleHSplitterMouseMove = function()
         onHSplitterMouseMoveTimer = null;
     }
     
-    var clientY = onHSplitterMouseMoveBuffer;
+    let clientY = onHSplitterMouseMoveBuffer;
     
-    var windowSize = Firebug.browser.getWindowSize();
-    var scrollSize = Firebug.browser.getWindowScrollSize();
+    let windowSize = Firebug.browser.getWindowSize();
+    let scrollSize = Firebug.browser.getWindowScrollSize();
     
     // compute chrome fixed size (top bar and command line)
-    var commandLineHeight = Firebug.chrome.commandLineVisible ? fbCommandLine.offsetHeight : 0;
-    var fixedHeight = topHeight + commandLineHeight;
-    var chromeNode = Firebug.chrome.node;
+    let commandLineHeight = Firebug.chrome.commandLineVisible ? fbCommandLine.offsetHeight : 0;
+    let fixedHeight = topHeight + commandLineHeight;
+    let chromeNode = Firebug.chrome.node;
     
-    var scrollbarSize = !isIE && (scrollSize.width > windowSize.width) ? 17 : 0;
+    let scrollbarSize = !isIE && (scrollSize.width > windowSize.width) ? 17 : 0;
     
-    //var height = !isOpera ? chromeNode.offsetTop + chromeNode.clientHeight : windowSize.height;
-    var height =  windowSize.height;
+    //let height = !isOpera ? chromeNode.offsetTop + chromeNode.clientHeight : windowSize.height;
+    let height =  windowSize.height;
     
     // compute the min and max size of the chrome
-    var chromeHeight = Math.max(height - clientY + 5 - scrollbarSize, fixedHeight);
+    let chromeHeight = Math.max(height - clientY + 5 - scrollbarSize, fixedHeight);
         chromeHeight = Math.min(chromeHeight, windowSize.height - scrollbarSize);
 
     FirebugChrome.height = chromeHeight;
@@ -2234,7 +2235,7 @@ var handleHSplitterMouseMove = function()
     Firebug.chrome.draw();
 };
 
-var onHSplitterMouseUp = function onHSplitterMouseUp(event)
+let onHSplitterMouseUp = function onHSplitterMouseUp(event)
 {
     removeGlobalEvent("mousemove", onHSplitterMouseMove);
     removeGlobalEvent("mouseup", onHSplitterMouseUp);
@@ -2255,7 +2256,7 @@ var onHSplitterMouseUp = function onHSplitterMouseUp(event)
 // ************************************************************************************************
 // Vertical Splitter Handling
 
-var onVSplitterMouseDown = function onVSplitterMouseDown(event)
+let onVSplitterMouseDown = function onVSplitterMouseDown(event)
 {
     addGlobalEvent("mousemove", onVSplitterMouseMove);
     addGlobalEvent("mouseup", onVSplitterMouseUp);
@@ -2263,23 +2264,23 @@ var onVSplitterMouseDown = function onVSplitterMouseDown(event)
     return false;
 };
 
-var onVSplitterMouseMove = function onVSplitterMouseMove(event)
+let onVSplitterMouseMove = function onVSplitterMouseMove(event)
 {
     if (new Date().getTime() - lastVSplitterMouseMove > chromeRedrawSkipRate) // frame skipping
     {
-        var target = event.target || event.srcElement;
+        let target = event.target || event.srcElement;
         if (target && target.ownerDocument) // avoid error when cursor reaches out of the chrome
         {
-            var clientX = event.clientX;
-            var win = document.all
+            let clientX = event.clientX;
+            let win = document.all
                 ? event.srcElement.ownerDocument.parentWindow
                 : event.target.ownerDocument.defaultView;
           
             if (win != win.parent)
                 clientX += win.frameElement ? win.frameElement.offsetLeft : 0;
             
-            var size = Firebug.chrome.getSize();
-            var x = Math.max(size.width - clientX + 3, 6);
+            let size = Firebug.chrome.getSize();
+            let x = Math.max(size.width - clientX + 3, 6);
             
             FirebugChrome.sidePanelWidth = x;
             Firebug.chrome.draw();
@@ -2292,7 +2293,7 @@ var onVSplitterMouseMove = function onVSplitterMouseMove(event)
     return false;
 };
 
-var onVSplitterMouseUp = function onVSplitterMouseUp(event)
+let onVSplitterMouseUp = function onVSplitterMouseUp(event)
 {
     removeGlobalEvent("mousemove", onVSplitterMouseMove);
     removeGlobalEvent("mouseup", onVSplitterMouseUp);

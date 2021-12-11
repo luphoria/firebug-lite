@@ -4,7 +4,7 @@ FBL.ns( /** @scope ns-i18n */ function() { with (FBL) {
 // ************************************************************************************************
 
 // TODO: xxxpedro localization
-var oSTR =
+let oSTR =
 {
     "NoMembersWarning": "There are no properties to show for this object.",
     
@@ -36,16 +36,16 @@ FBL.$STRF = function(name, args)
 {
     if (!oSTR.hasOwnProperty(name)) return name;
     
-    var format = oSTR[name];
-    var objIndex = 0;
+    let format = oSTR[name];
+    let objIndex = 0;
     
-    var parts = parseFormat(format);
-    var trialIndex = objIndex;
-    var objects = args;
+    let parts = parseFormat(format);
+    let trialIndex = objIndex;
+    let objects = args;
     
-    for (var i= 0; i < parts.length; i++)
+    for (let i= 0; i < parts.length; i++)
     {
-        var part = parts[i];
+        let part = parts[i];
         if (part && typeof(part) == "object")
         {
             if (++trialIndex > objects.length)  // then too few parameters for format, assume unformatted.
@@ -59,10 +59,10 @@ FBL.$STRF = function(name, args)
 
     }
     
-    var result = [];
-    for (var i = 0; i < parts.length; ++i)
+    let result = [];
+    for (let i = 0; i < parts.length; ++i)
     {
-        var part = parts[i];
+        let part = parts[i];
         if (part && typeof(part) == "object")
         {
             result.push(""+args.shift());
@@ -76,14 +76,14 @@ FBL.$STRF = function(name, args)
 
 // ************************************************************************************************
 
-var parseFormat = function parseFormat(format)
+let parseFormat = function parseFormat(format)
 {
-    var parts = [];
+    let parts = [];
     if (format.length <= 0)
         return parts;
 
-    var reg = /((^%|.%)(\d+)?(\.)([a-zA-Z]))|((^%|.%)([a-zA-Z]))/;
-    for (var m = reg.exec(format); m; m = reg.exec(format))
+    let reg = /((^%|.%)(\d+)?(\.)([a-zA-Z]))|((^%|.%)([a-zA-Z]))/;
+    for (let m = reg.exec(format); m; m = reg.exec(format))
     {
         if (m[0].substr(0, 2) == "%%")
         {
@@ -92,10 +92,10 @@ var parseFormat = function parseFormat(format)
         }
         else
         {
-            var type = m[8] ? m[8] : m[5];
-            var precision = m[3] ? parseInt(m[3]) : (m[4] == "." ? -1 : 0);
+            let type = m[8] ? m[8] : m[5];
+            let precision = m[3] ? parseInt(m[3]) : (m[4] == "." ? -1 : 0);
 
-            var rep = null;
+            let rep = null;
             switch (type)
             {
                 case "s":

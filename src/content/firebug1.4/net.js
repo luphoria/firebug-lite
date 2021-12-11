@@ -5,20 +5,20 @@ FBL.ns(function() { with (FBL) {
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var reIgnore = /about:|javascript:|resource:|chrome:|jar:/;
-var layoutInterval = 300;
-var indentWidth = 18;
+let reIgnore = /about:|javascript:|resource:|chrome:|jar:/;
+let layoutInterval = 300;
+let indentWidth = 18;
 
-var cacheSession = null;
-var contexts = new Array();
-var panelName = "net";
-var maxQueueRequests = 500;
-//var panelBar1 = $("fbPanelBar1"); // chrome not available at startup
-var activeRequests = [];
+let cacheSession = null;
+let contexts = new Array();
+let panelName = "net";
+let maxQueueRequests = 500;
+//let panelBar1 = $("fbPanelBar1"); // chrome not available at startup
+let activeRequests = [];
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var mimeExtensionMap =
+let mimeExtensionMap =
 {
     "txt": "text/plain",
     "html": "text/html",
@@ -37,7 +37,7 @@ var mimeExtensionMap =
     "flv": "video/x-flv"
 };
 
-var fileCategories =
+let fileCategories =
 {
     "undefined": 1,
     "html": 1,
@@ -50,7 +50,7 @@ var fileCategories =
     "bin": 1
 };
 
-var textFileCategories =
+let textFileCategories =
 {
     "txt": 1,
     "html": 1,
@@ -59,13 +59,13 @@ var textFileCategories =
     "js": 1
 };
 
-var binaryFileCategories =
+let binaryFileCategories =
 {
     "bin": 1,
     "flash": 1
 };
 
-var mimeCategoryMap =
+let mimeCategoryMap =
 {
     "text/plain": "txt",
     "application/octet-stream": "bin",
@@ -84,7 +84,7 @@ var mimeCategoryMap =
     "video/x-flv": "flash"
 };
 
-var binaryCategoryMap =
+let binaryCategoryMap =
 {
     "image": 1,
     "flash" : 1
@@ -105,7 +105,7 @@ Firebug.NetMonitor = extend(Firebug.ActivableModule,
     clear: function(context)
     {
         // The user pressed a Clear button so, remove content of the panel...
-        var panel = context.getPanel(panelName, true);
+        let panel = context.getPanel(panelName, true);
         if (panel)
             panel.clear();
     },
@@ -255,8 +255,8 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
 
     getParamName: function(param)
     {
-        var limit = 25;
-        var name = param.name;
+        let limit = 25;
+        let name = param.name;
         if (name.length > limit)
             name = name.substr(0, limit) + "...";
         return name;
@@ -264,8 +264,8 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
 
     getParamTitle: function(param)
     {
-        var limit = 25;
-        var name = param.name;
+        let limit = 25;
+        let name = param.name;
         if (name.length > limit)
             return name;
         return "";
@@ -329,7 +329,7 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
     appendTab: function(netInfoBox, tabId, tabTitle)
     {
         // Create new tab and body.
-        var args = {tabId: tabId, tabTitle: tabTitle};
+        let args = {tabId: tabId, tabTitle: tabTitle};
         ///this.customTab.append(args, netInfoBox.getElementsByClassName("netInfoTabs").item(0));
         ///this.customBody.append(args, netInfoBox.getElementsByClassName("netInfoBodies").item(0));
         this.customTab.append(args, $$(".netInfoTabs", netInfoBox)[0]);
@@ -338,18 +338,18 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
 
     selectTabByName: function(netInfoBox, tabName)
     {
-        var tab = getChildByClass(netInfoBox, "netInfoTabs", "netInfo"+tabName+"Tab");
+        let tab = getChildByClass(netInfoBox, "netInfoTabs", "netInfo"+tabName+"Tab");
         if (tab)
             this.selectTab(tab);
     },
 
     selectTab: function(tab)
     {
-        var view = tab.getAttribute("view");
+        let view = tab.getAttribute("view");
         
-        var netInfoBox = getAncestorByClass(tab, "netInfoBody");
+        let netInfoBox = getAncestorByClass(tab, "netInfoBody");
         
-        var selectedTab = netInfoBox.selectedTab;
+        let selectedTab = netInfoBox.selectedTab;
 
         if (selectedTab)
         {
@@ -361,7 +361,7 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
             selectedTab.setAttribute("aria-selected", "false");
         }
 
-        var textBodyName = "netInfo" + view + "Text";
+        let textBodyName = "netInfo" + view + "Text";
 
         selectedTab = netInfoBox.selectedTab = tab;
         
@@ -375,10 +375,10 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
         selectedTab.setAttribute("selected", "true");
         selectedTab.setAttribute("aria-selected", "true");
 
-        var file = Firebug.getRepObject(netInfoBox);
+        let file = Firebug.getRepObject(netInfoBox);
         
-        //var context = Firebug.getElementPanel(netInfoBox).context;
-        var context = Firebug.chrome;
+        //let context = Firebug.getElementPanel(netInfoBox).context;
+        let context = Firebug.chrome;
         
         this.updateInfo(netInfoBox, file, context);
     },
@@ -395,7 +395,7 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
             return;
         }
 
-        var tab = netInfoBox.selectedTab;
+        let tab = netInfoBox.selectedTab;
         
         if (hasClass(tab, "netInfoParamsTab"))
         {
@@ -408,8 +408,8 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
 
         else if (hasClass(tab, "netInfoHeadersTab"))
         {
-            var headersText = $$(".netInfoHeadersText", netInfoBox)[0];
-            //var headersText = netInfoBox.getElementsByClassName("netInfoHeadersText").item(0);
+            let headersText = $$(".netInfoHeadersText", netInfoBox)[0];
+            //let headersText = netInfoBox.getElementsByClassName("netInfoHeadersText").item(0);
 
             if (file.responseHeaders && !netInfoBox.responseHeadersPresented)
             {
@@ -429,8 +429,8 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
             if (!netInfoBox.postPresented)
             {
                 netInfoBox.postPresented  = true;
-                //var postText = netInfoBox.getElementsByClassName("netInfoPostText").item(0);
-                var postText = $$(".netInfoPostText", netInfoBox)[0];
+                //let postText = netInfoBox.getElementsByClassName("netInfoPostText").item(0);
+                let postText = $$(".netInfoPostText", netInfoBox)[0];
                 NetInfoPostData.render(context, postText, file);
             }
         }
@@ -440,21 +440,21 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
             if (!netInfoBox.putPresented)
             {
                 netInfoBox.putPresented  = true;
-                //var putText = netInfoBox.getElementsByClassName("netInfoPutText").item(0);
-                var putText = $$(".netInfoPutText", netInfoBox)[0];
+                //let putText = netInfoBox.getElementsByClassName("netInfoPutText").item(0);
+                let putText = $$(".netInfoPutText", netInfoBox)[0];
                 NetInfoPostData.render(context, putText, file);
             }
         }
 
         else if (hasClass(tab, "netInfoResponseTab") && file.loaded && !netInfoBox.responsePresented)
         {
-            ///var responseTextBox = netInfoBox.getElementsByClassName("netInfoResponseText").item(0);
-            var responseTextBox = $$(".netInfoResponseText", netInfoBox)[0];
+            ///let responseTextBox = netInfoBox.getElementsByClassName("netInfoResponseText").item(0);
+            let responseTextBox = $$(".netInfoResponseText", netInfoBox)[0];
             if (file.category == "image")
             {
                 netInfoBox.responsePresented = true;
 
-                var responseImage = netInfoBox.ownerDocument.createElement("img");
+                let responseImage = netInfoBox.ownerDocument.createElement("img");
                 responseImage.src = file.href;
 
                 clearNode(responseTextBox);
@@ -468,7 +468,7 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
 
         else if (hasClass(tab, "netInfoCacheTab") && file.loaded && !netInfoBox.cachePresented)
         {
-            var responseTextBox = netInfoBox.getElementsByClassName("netInfoCacheText").item(0);
+            let responseTextBox = netInfoBox.getElementsByClassName("netInfoCacheText").item(0);
             if (file.cacheEntry) {
                 netInfoBox.cachePresented = true;
                 this.insertHeaderRows(netInfoBox, file.cacheEntry, "Cache");
@@ -479,15 +479,15 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
         {
             netInfoBox.htmlPresented = true;
 
-            var text = Utils.getResponseText(file, context);
+            let text = Utils.getResponseText(file, context);
             
-            ///var iframe = netInfoBox.getElementsByClassName("netInfoHtmlPreview").item(0);
-            var iframe = $$(".netInfoHtmlPreview", netInfoBox)[0];
+            ///let iframe = netInfoBox.getElementsByClassName("netInfoHtmlPreview").item(0);
+            let iframe = $$(".netInfoHtmlPreview", netInfoBox)[0];
             
             ///iframe.contentWindow.document.body.innerHTML = text;
             
             // TODO: xxxpedro net - remove scripts
-            var reScript = /<script(.|\s)*?\/script>/gi;
+            let reScript = /<script(.|\s)*?\/script>/gi;
             
             text = text.replace(reScript, "");
                 
@@ -522,9 +522,9 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
         //**********************************************
         
         // Get response text and make sure it doesn't exceed the max limit.
-        var text = Utils.getResponseText(file, context);
-        var limit = Firebug.netDisplayedResponseLimit + 15;
-        var limitReached = text ? (text.length > limit) : false;
+        let text = Utils.getResponseText(file, context);
+        let limit = Firebug.netDisplayedResponseLimit + 15;
+        let limitReached = text ? (text.length > limit) : false;
         if (limitReached)
             text = text.substr(0, limit) + "...";
 
@@ -537,10 +537,10 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
         // Append a message informing the user that the response isn't fully displayed.
         if (limitReached)
         {
-            var object = {
+            let object = {
                 text: $STR("net.responseSizeLimitMessage"),
                 onClickLink: function() {
-                    var panel = context.getPanel("net", true);
+                    let panel = context.getPanel("net", true);
                     panel.openResponseInTab(file);
                 }
             };
@@ -558,19 +558,19 @@ Firebug.NetMonitor.NetInfoBody = domplate(Firebug.Rep, new Firebug.Listener(),
         if (!headers.length)
             return;
 
-        var headersTable = $$(".netInfo"+tableName+"Table", netInfoBox)[0];
-        //var headersTable = netInfoBox.getElementsByClassName("netInfo"+tableName+"Table").item(0);
-        var tbody = getChildByClass(headersTable, "netInfo" + rowName + "Body");
+        let headersTable = $$(".netInfo"+tableName+"Table", netInfoBox)[0];
+        //let headersTable = netInfoBox.getElementsByClassName("netInfo"+tableName+"Table").item(0);
+        let tbody = getChildByClass(headersTable, "netInfo" + rowName + "Body");
         if (!tbody)
             tbody = headersTable.firstChild;
-        var titleRow = getChildByClass(tbody, "netInfo" + rowName + "Title");
+        let titleRow = getChildByClass(tbody, "netInfo" + rowName + "Title");
 
         this.headerDataTag.insertRows({headers: headers}, titleRow ? titleRow : tbody);
         removeClass(titleRow, "collapsed");
     }
 });
 
-var NetInfoBody = Firebug.NetMonitor.NetInfoBody;
+let NetInfoBody = Firebug.NetMonitor.NetInfoBody;
 
 // ************************************************************************************************
 
@@ -615,21 +615,21 @@ Firebug.NetMonitor.NetInfoHeaders = domplate(Firebug.Rep, //new Firebug.Listener
 
     onViewSource: function(event)
     {
-        var target = event.target;
-        var requestHeaders = (target.rowName == "RequestHeaders");
+        let target = event.target;
+        let requestHeaders = (target.rowName == "RequestHeaders");
 
-        var netInfoBox = getAncestorByClass(target, "netInfoBody");
-        var file = netInfoBox.repObject;
+        let netInfoBox = getAncestorByClass(target, "netInfoBody");
+        let file = netInfoBox.repObject;
 
         if (target.sourceDisplayed)
         {
-            var headers = requestHeaders ? file.requestHeaders : file.responseHeaders;
+            let headers = requestHeaders ? file.requestHeaders : file.responseHeaders;
             this.insertHeaderRows(netInfoBox, headers, target.rowName);
             target.innerHTML = $STR("net.headers.view source");
         }
         else
         {
-            var source = requestHeaders ? file.requestHeadersText : file.responseHeadersText;
+            let source = requestHeaders ? file.requestHeadersText : file.responseHeadersText;
             this.insertSource(netInfoBox, source, target.rowName);
             target.innerHTML = $STR("net.headers.pretty print");
         }
@@ -645,21 +645,21 @@ Firebug.NetMonitor.NetInfoHeaders = domplate(Firebug.Rep, //new Firebug.Listener
         //if (source)
         //    source = source.replace(/\r\n/gm, "<span style='color:lightgray'>\\r\\n</span>\r\n");
 
-        ///var tbody = netInfoBox.getElementsByClassName("netInfo" + rowName + "Body").item(0);
-        var tbody = $$(".netInfo" + rowName + "Body", netInfoBox)[0];
-        var node = this.sourceTag.replace({}, tbody);
-        ///var sourceNode = node.getElementsByClassName("source").item(0);
-        var sourceNode = $$(".source", node)[0];
+        ///let tbody = netInfoBox.getElementsByClassName("netInfo" + rowName + "Body").item(0);
+        let tbody = $$(".netInfo" + rowName + "Body", netInfoBox)[0];
+        let node = this.sourceTag.replace({}, tbody);
+        ///let sourceNode = node.getElementsByClassName("source").item(0);
+        let sourceNode = $$(".source", node)[0];
         sourceNode.innerHTML = source;
     },
 
     insertHeaderRows: function(netInfoBox, headers, rowName)
     {
-        var headersTable = $$(".netInfoHeadersTable", netInfoBox)[0];
-        var tbody = $$(".netInfo" + rowName + "Body", headersTable)[0];
+        let headersTable = $$(".netInfoHeadersTable", netInfoBox)[0];
+        let tbody = $$(".netInfo" + rowName + "Body", headersTable)[0];
         
-        //var headersTable = netInfoBox.getElementsByClassName("netInfoHeadersTable").item(0);
-        //var tbody = headersTable.getElementsByClassName("netInfo" + rowName + "Body").item(0);
+        //let headersTable = netInfoBox.getElementsByClassName("netInfoHeadersTable").item(0);
+        //let tbody = headersTable.getElementsByClassName("netInfo" + rowName + "Body").item(0);
 
         clearNode(tbody);
 
@@ -668,18 +668,18 @@ Firebug.NetMonitor.NetInfoHeaders = domplate(Firebug.Rep, //new Firebug.Listener
 
         NetInfoBody.headerDataTag.insertRows({headers: headers}, tbody);
 
-        var titleRow = getChildByClass(headersTable, "netInfo" + rowName + "Title");
+        let titleRow = getChildByClass(headersTable, "netInfo" + rowName + "Title");
         removeClass(titleRow, "collapsed");
     },
 
     init: function(parent)
     {
-        var rootNode = this.tag.append({}, parent);
+        let rootNode = this.tag.append({}, parent);
 
-        var netInfoBox = getAncestorByClass(parent, "netInfoBody");
-        var file = netInfoBox.repObject;
+        let netInfoBox = getAncestorByClass(parent, "netInfoBody");
+        let file = netInfoBox.repObject;
 
-        var viewSource;
+        let viewSource;
 
         viewSource = $$(".request", rootNode)[0];
         //viewSource = rootNode.getElementsByClassName("netHeadersViewSource request").item(0);
@@ -701,7 +701,7 @@ Firebug.NetMonitor.NetInfoHeaders = domplate(Firebug.Rep, //new Firebug.Listener
     }
 });
 
-var NetInfoHeaders = Firebug.NetMonitor.NetInfoHeaders;
+let NetInfoHeaders = Firebug.NetMonitor.NetInfoHeaders;
 
 // ************************************************************************************************
 
@@ -811,14 +811,14 @@ Firebug.NetMonitor.NetInfoPostData = domplate(Firebug.Rep, /*new Firebug.Listene
     render: function(context, parentNode, file)
     {
         //debugger;
-        var spy = getAncestorByClass(parentNode, "spyHead");
-        var spyObject = spy.repObject;
-        var data = spyObject.data;
+        let spy = getAncestorByClass(parentNode, "spyHead");
+        let spyObject = spy.repObject;
+        let data = spyObject.data;
         
-        ///var contentType = Utils.findHeader(file.requestHeaders, "content-type");
-        var contentType = file.mimeType;
+        ///let contentType = Utils.findHeader(file.requestHeaders, "content-type");
+        let contentType = file.mimeType;
         
-        ///var text = Utils.getPostText(file, context, true);
+        ///let text = Utils.getPostText(file, context, true);
         ///if (text == undefined)
         ///    return;
 
@@ -827,25 +827,25 @@ Firebug.NetMonitor.NetInfoPostData = domplate(Firebug.Rep, /*new Firebug.Listene
         if (contentType && contentType == "application/x-www-form-urlencoded" ||
             data && data.indexOf("=") != -1) 
         {
-            ///var lines = text.split("\n");
-            ///var params = parseURLEncodedText(lines[lines.length-1]);
-            var params = parseURLEncodedTextArray(data);
+            ///let lines = text.split("\n");
+            ///let params = parseURLEncodedText(lines[lines.length-1]);
+            let params = parseURLEncodedTextArray(data);
             if (params)
                 this.insertParameters(parentNode, params);
         }
 
         ///if (Utils.isMultiPartRequest(file, context))
         ///{
-        ///    var data = this.parseMultiPartText(file, context);
+        ///    let data = this.parseMultiPartText(file, context);
         ///    if (data)
         ///        this.insertParts(parentNode, data);
         ///}
 
         // moved to the top
-        ///var contentType = Utils.findHeader(file.requestHeaders, "content-type");
+        ///let contentType = Utils.findHeader(file.requestHeaders, "content-type");
 
         ///if (Firebug.JSONViewerModel.isJSON(contentType))
-        var jsonData = {
+        let jsonData = {
             responseText: data
         };
         
@@ -856,9 +856,9 @@ Firebug.NetMonitor.NetInfoPostData = domplate(Firebug.Rep, /*new Firebug.Listene
         ///if (Firebug.XMLViewerModel.isXML(contentType))
         ///    this.insertXML(parentNode, file, context);
 
-        ///var postText = Utils.getPostText(file, context);
+        ///let postText = Utils.getPostText(file, context);
         ///postText = Utils.formatPostText(postText);
-        var postText = data;
+        let postText = data;
         if (postText)
             this.insertSource(parentNode, postText);
     },
@@ -868,12 +868,12 @@ Firebug.NetMonitor.NetInfoPostData = domplate(Firebug.Rep, /*new Firebug.Listene
         if (!params || !params.length)
             return;
 
-        var paramTable = this.paramsTable.append({object:{}}, parentNode);
-        var row = $$(".netInfoPostParamsTitle", paramTable)[0];
-        //var paramTable = this.paramsTable.append(null, parentNode);
-        //var row = paramTable.getElementsByClassName("netInfoPostParamsTitle").item(0);
+        let paramTable = this.paramsTable.append({object:{}}, parentNode);
+        let row = $$(".netInfoPostParamsTitle", paramTable)[0];
+        //let paramTable = this.paramsTable.append(null, parentNode);
+        //let row = paramTable.getElementsByClassName("netInfoPostParamsTitle").item(0);
         
-        var tbody = paramTable.getElementsByTagName("tbody")[0];
+        let tbody = paramTable.getElementsByTagName("tbody")[0];
         
         NetInfoBody.headerDataTag.insertRows({headers: params}, row);
     },
@@ -883,27 +883,27 @@ Firebug.NetMonitor.NetInfoPostData = domplate(Firebug.Rep, /*new Firebug.Listene
         if (!data.params || !data.params.length)
             return;
 
-        var partsTable = this.partsTable.append({object:{}}, parentNode);
-        var row = $$(".netInfoPostPartsTitle", paramTable)[0];
-        //var partsTable = this.partsTable.append(null, parentNode);
-        //var row = partsTable.getElementsByClassName("netInfoPostPartsTitle").item(0);
+        let partsTable = this.partsTable.append({object:{}}, parentNode);
+        let row = $$(".netInfoPostPartsTitle", paramTable)[0];
+        //let partsTable = this.partsTable.append(null, parentNode);
+        //let row = partsTable.getElementsByClassName("netInfoPostPartsTitle").item(0);
 
         NetInfoBody.headerDataTag.insertRows({headers: data.params}, row);
     },
 
     insertJSON: function(parentNode, file, context)
     {
-        ///var text = Utils.getPostText(file, context);
-        var text = file.responseText;
-        ///var data = parseJSONString(text, "http://" + file.request.originalURI.host);
-        var data = parseJSONString(text);
+        ///let text = Utils.getPostText(file, context);
+        let text = file.responseText;
+        ///let data = parseJSONString(text, "http://" + file.request.originalURI.host);
+        let data = parseJSONString(text);
         if (!data)
             return;
 
-        ///var jsonTable = this.jsonTable.append(null, parentNode);
-        var jsonTable = this.jsonTable.append({}, parentNode);
-        ///var jsonBody = jsonTable.getElementsByClassName("netInfoPostJSONBody").item(0);
-        var jsonBody = $$(".netInfoPostJSONBody", jsonTable)[0];
+        ///let jsonTable = this.jsonTable.append(null, parentNode);
+        let jsonTable = this.jsonTable.append({}, parentNode);
+        ///let jsonBody = jsonTable.getElementsByClassName("netInfoPostJSONBody").item(0);
+        let jsonBody = $$(".netInfoPostJSONBody", jsonTable)[0];
 
         if (!this.toggles)
             this.toggles = {};
@@ -914,52 +914,52 @@ Firebug.NetMonitor.NetInfoPostData = domplate(Firebug.Rep, /*new Firebug.Listene
 
     insertXML: function(parentNode, file, context)
     {
-        var text = Utils.getPostText(file, context);
+        let text = Utils.getPostText(file, context);
 
-        var jsonTable = this.xmlTable.append(null, parentNode);
-        ///var jsonBody = jsonTable.getElementsByClassName("netInfoPostXMLBody").item(0);
-        var jsonBody = $$(".netInfoPostXMLBody", jsonTable)[0];
+        let jsonTable = this.xmlTable.append(null, parentNode);
+        ///let jsonBody = jsonTable.getElementsByClassName("netInfoPostXMLBody").item(0);
+        let jsonBody = $$(".netInfoPostXMLBody", jsonTable)[0];
 
         Firebug.XMLViewerModel.insertXML(jsonBody, text);
     },
 
     insertSource: function(parentNode, text)
     {
-        var sourceTable = this.sourceTable.append({object:{}}, parentNode);
-        var row = $$(".netInfoPostSourceTitle", sourceTable)[0];
-        //var sourceTable = this.sourceTable.append(null, parentNode);
-        //var row = sourceTable.getElementsByClassName("netInfoPostSourceTitle").item(0);
+        let sourceTable = this.sourceTable.append({object:{}}, parentNode);
+        let row = $$(".netInfoPostSourceTitle", sourceTable)[0];
+        //let sourceTable = this.sourceTable.append(null, parentNode);
+        //let row = sourceTable.getElementsByClassName("netInfoPostSourceTitle").item(0);
 
-        var param = {value: [text]};
+        let param = {value: [text]};
         this.sourceBodyTag.insertRows({param: param}, row);
     },
 
     parseMultiPartText: function(file, context)
     {
-        var text = Utils.getPostText(file, context);
+        let text = Utils.getPostText(file, context);
         if (text == undefined)
             return null;
 
         FBTrace.sysout("net.parseMultiPartText; boundary: ", text);
 
-        var boundary = text.match(/\s*boundary=\s*(.*)/)[1];
+        let boundary = text.match(/\s*boundary=\s*(.*)/)[1];
 
-        var divider = "\r\n\r\n";
-        var bodyStart = text.indexOf(divider);
-        var body = text.substr(bodyStart + divider.length);
+        let divider = "\r\n\r\n";
+        let bodyStart = text.indexOf(divider);
+        let body = text.substr(bodyStart + divider.length);
 
-        var postData = {};
+        let postData = {};
         postData.mimeType = "multipart/form-data";
         postData.params = [];
 
-        var parts = body.split("--" + boundary);
-        for (var i=0; i<parts.length; i++)
+        let parts = body.split("--" + boundary);
+        for (let i=0; i<parts.length; i++)
         {
-            var part = parts[i].split(divider);
+            let part = parts[i].split(divider);
             if (part.length != 2)
                 continue;
 
-            var m = part[0].match(/\s*name=\"(.*)\"(;|$)/);
+            let m = part[0].match(/\s*name=\"(.*)\"(;|$)/);
             postData.params.push({
                 name: (m && m.length > 1) ? m[1] : "",
                 value: trim(part[1])
@@ -970,13 +970,13 @@ Firebug.NetMonitor.NetInfoPostData = domplate(Firebug.Rep, /*new Firebug.Listene
     }
 });
 
-var NetInfoPostData = Firebug.NetMonitor.NetInfoPostData;
+let NetInfoPostData = Firebug.NetMonitor.NetInfoPostData;
 
 // ************************************************************************************************
 
 
 // TODO: xxxpedro net i18n
-var $STRP = function(a){return a;};
+let $STRP = function(a){return a;};
 
 Firebug.NetMonitor.NetLimit = domplate(Firebug.Rep,
 {
@@ -1029,20 +1029,20 @@ Firebug.NetMonitor.NetLimit = domplate(Firebug.Rep,
         removeClass(row, "collapsed");
 
         // Update info within the limit row.
-        var limitLabel = row.getElementsByClassName("netLimitLabel").item(0);
+        let limitLabel = row.getElementsByClassName("netLimitLabel").item(0);
         limitLabel.firstChild.nodeValue = $STRP("plural.Limit_Exceeded", [row.limitInfo.totalCount]);
     },
 
     createTable: function(parent, limitInfo)
     {
-        var table = this.tableTag.replace({}, parent);
-        var row = this.createRow(table.firstChild.firstChild, limitInfo);
+        let table = this.tableTag.replace({}, parent);
+        let row = this.createRow(table.firstChild.firstChild, limitInfo);
         return [table, row];
     },
 
     createRow: function(parent, limitInfo)
     {
-        var row = this.limitTag.insertRows(limitInfo, parent, this)[0];
+        let row = this.limitTag.insertRows(limitInfo, parent, this)[0];
         row.limitInfo = limitInfo;
         return row;
     },
@@ -1060,12 +1060,12 @@ Firebug.NetMonitor.NetLimit = domplate(Firebug.Rep,
 
     updateMaxLimit: function()
     {
-        var value = Firebug.getPref(Firebug.prefDomain, "net.logLimit");
+        let value = Firebug.getPref(Firebug.prefDomain, "net.logLimit");
         maxQueueRequests = value ? value : maxQueueRequests;
     }
 });
 
-var NetLimit = Firebug.NetMonitor.NetLimit;
+let NetLimit = Firebug.NetMonitor.NetLimit;
 
 // ************************************************************************************************
 
@@ -1083,7 +1083,7 @@ Firebug.NetMonitor.ResponseSizeLimit = domplate(Firebug.Rep,
     reLink: /^(.*)<a>(.*)<\/a>(.*$)/,
     append: function(obj, parent)
     {
-        var m = obj.text.match(this.reLink);
+        let m = obj.text.match(this.reLink);
         return this.tag.append({onClickLink: obj.onClickLink,
             object: {
             beforeLink: m[1],
@@ -1104,9 +1104,9 @@ Firebug.NetMonitor.Utils =
             return null;
 
         name = name.toLowerCase();
-        for (var i = 0; i < headers.length; ++i)
+        for (let i = 0; i < headers.length; ++i)
         {
-            var headerName = headers[i].name.toLowerCase();
+            let headerName = headers[i].name.toLowerCase();
             if (headerName == name)
                 return headers[i].value;
         }
@@ -1133,7 +1133,7 @@ Firebug.NetMonitor.Utils =
         if (!file.postText)
             return file.postText;
 
-        var limit = Firebug.netDisplayedPostBodyLimit;
+        let limit = Firebug.netDisplayedPostBodyLimit;
         if (file.postText.length > limit && !noLimit)
         {
             return cropString(file.postText, limit,
@@ -1152,13 +1152,13 @@ Firebug.NetMonitor.Utils =
 
     isURLEncodedRequest: function(file, context)
     {
-        var text = Utils.getPostText(file, context);
+        let text = Utils.getPostText(file, context);
         if (text && text.toLowerCase().indexOf("content-type: application/x-www-form-urlencoded") == 0)
             return true;
 
         // The header value doesn't have to be always exactly "application/x-www-form-urlencoded",
         // there can be even charset specified. So, use indexOf rather than just "==".
-        var headerValue = Utils.findHeader(file.requestHeaders, "content-type");
+        let headerValue = Utils.findHeader(file.requestHeaders, "content-type");
         if (headerValue && headerValue.indexOf("application/x-www-form-urlencoded") == 0)
             return true;
 
@@ -1167,7 +1167,7 @@ Firebug.NetMonitor.Utils =
 
     isMultiPartRequest: function(file, context)
     {
-        var text = Utils.getPostText(file, context);
+        let text = Utils.getPostText(file, context);
         if (text && text.toLowerCase().indexOf("content-type: multipart/form-data") == 0)
             return true;
         return false;
@@ -1177,12 +1177,12 @@ Firebug.NetMonitor.Utils =
     {
         if (!mimeType || !(mimeCategoryMap.hasOwnProperty(mimeType)))
         {
-            var ext = getFileExtension(uri);
+            let ext = getFileExtension(uri);
             if (!ext)
                 return mimeType;
             else
             {
-                var extMimeType = mimeExtensionMap[ext.toLowerCase()];
+                let extMimeType = mimeExtensionMap[ext.toLowerCase()];
                 return extMimeType ? extMimeType : mimeType;
             }
         }
@@ -1192,7 +1192,7 @@ Firebug.NetMonitor.Utils =
 
     getDateFromSeconds: function(s)
     {
-        var d = new Date();
+        let d = new Date();
         d.setTime(s*1000);
         return d;
     },
@@ -1201,7 +1201,7 @@ Firebug.NetMonitor.Utils =
     {
         try
         {
-            var http = QI(request, Ci.nsIHttpChannel);
+            let http = QI(request, Ci.nsIHttpChannel);
             file.status = request.responseStatus;
 
             // xxxHonza: is there any problem to do this in requestedFile method?
@@ -1211,7 +1211,7 @@ Firebug.NetMonitor.Utils =
 
             if (!file.responseHeaders && Firebug.collectHttpHeaders)
             {
-                var requestHeaders = [], responseHeaders = [];
+                let requestHeaders = [], responseHeaders = [];
 
                 http.visitRequestHeaders({
                     visitHeader: function(name, value)
@@ -1243,8 +1243,8 @@ Firebug.NetMonitor.Utils =
     {
         try
         {
-            var callbacks = request.notificationCallbacks;
-            var xhrRequest = callbacks ? callbacks.getInterface(Ci.nsIXMLHttpRequest) : null;
+            let callbacks = request.notificationCallbacks;
+            let xhrRequest = callbacks ? callbacks.getInterface(Ci.nsIXMLHttpRequest) : null;
             if (FBTrace.DBG_NET)
                 FBTrace.sysout("net.isXHR; " + (xhrRequest != null) + ", " + safeGetName(request));
 
@@ -1275,7 +1275,7 @@ Firebug.NetMonitor.Utils =
 
         if (!file.mimeType)
         {
-            var ext = getFileExtension(file.href);
+            let ext = getFileExtension(file.href);
             if (ext)
                 file.mimeType = mimeExtensionMap[ext.toLowerCase()];
         }
@@ -1288,7 +1288,7 @@ Firebug.NetMonitor.Utils =
             return "";
 
         // Solve cases when charset is also specified, eg "text/html; charset=UTF-8".
-        var mimeType = file.mimeType;
+        let mimeType = file.mimeType;
         if (mimeType)
             mimeType = mimeType.split(";")[0];
 
@@ -1296,7 +1296,7 @@ Firebug.NetMonitor.Utils =
     }
 };
 
-var Utils = Firebug.NetMonitor.Utils;
+let Utils = Firebug.NetMonitor.Utils;
 
 // ************************************************************************************************
 

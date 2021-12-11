@@ -31,8 +31,8 @@ Firebug.HTMLLib =
     {
         root = root.documentElement || root;
         walker = walker || new Firebug.HTMLLib.DOMWalker(root);
-        var re = new ReversibleRegExp(text, "m");
-        var matchCount = 0;
+        let re = new ReversibleRegExp(text, "m");
+        let matchCount = 0;
 
         /**
          * Finds the first match within the document.
@@ -43,14 +43,14 @@ Firebug.HTMLLib =
          */
         this.find = function(reverse, caseSensitive)
         {
-            var match = this.findNextMatch(reverse, caseSensitive);
+            let match = this.findNextMatch(reverse, caseSensitive);
             if (match)
             {
                 this.lastMatch = match;
                 ++matchCount;
 
-                var node = match.node;
-                var nodeBox = this.openToNode(node, match.isValue);
+                let node = match.node;
+                let nodeBox = this.openToNode(node, match.isValue);
 
                 this.selectMatched(nodeBox, node, match, reverse);
             }
@@ -85,7 +85,7 @@ Firebug.HTMLLib =
          */
         this.findNextMatch = function(reverse, caseSensitive)
         {
-            var innerMatch = this.findNextInnerMatch(reverse, caseSensitive);
+            let innerMatch = this.findNextInnerMatch(reverse, caseSensitive);
             if (innerMatch)
                 return innerMatch;
             else
@@ -93,7 +93,7 @@ Firebug.HTMLLib =
 
             function walkNode() { return reverse ? walker.previousNode() : walker.nextNode(); }
 
-            var node;
+            let node;
             while (node = walkNode())
             {
                 if (node.nodeType == Node.TEXT_NODE)
@@ -102,7 +102,7 @@ Firebug.HTMLLib =
                         continue;
                 }
 
-                var m = this.checkNode(node, reverse, caseSensitive);
+                let m = this.checkNode(node, reverse, caseSensitive);
                 if (m)
                     return m;
             }
@@ -118,9 +118,9 @@ Firebug.HTMLLib =
         {
             if (this.lastMatch)
             {
-                var lastMatchNode = this.lastMatch.node;
-                var lastReMatch = this.lastMatch.match;
-                var m = re.exec(lastReMatch.input, reverse, lastReMatch.caseSensitive, lastReMatch);
+                let lastMatchNode = this.lastMatch.node;
+                let lastReMatch = this.lastMatch.match;
+                let m = re.exec(lastReMatch.input, reverse, lastReMatch.caseSensitive, lastReMatch);
                 if (m)
                 {
                     return {
@@ -146,11 +146,11 @@ Firebug.HTMLLib =
          */
         this.checkNode = function(node, reverse, caseSensitive, firstStep)
         {
-            var checkOrder;
+            let checkOrder;
             if (node.nodeType != Node.TEXT_NODE)
             {
-                var nameCheck = { name: "nodeName", isValue: false, caseSensitive: false };
-                var valueCheck = { name: "nodeValue", isValue: true, caseSensitive: caseSensitive };
+                let nameCheck = { name: "nodeName", isValue: false, caseSensitive: false };
+                let valueCheck = { name: "nodeValue", isValue: true, caseSensitive: caseSensitive };
                 checkOrder = reverse ? [ valueCheck, nameCheck ] : [ nameCheck, valueCheck ];
             }
             else
@@ -158,8 +158,8 @@ Firebug.HTMLLib =
                 checkOrder = [{name: "nodeValue", isValue: false, caseSensitive: caseSensitive }];
             }
 
-            for (var i = firstStep || 0; i < checkOrder.length; i++) {
-                var m = re.exec(node[checkOrder[i].name], reverse, checkOrder[i].caseSensitive);
+            for (let i = firstStep || 0; i < checkOrder.length; i++) {
+                let m = re.exec(node[checkOrder[i].name], reverse, checkOrder[i].caseSensitive);
                 if (m)
                     return {
                         node: node,
@@ -178,15 +178,15 @@ Firebug.HTMLLib =
         {
             if (node.nodeType == Node.ELEMENT_NODE)
             {
-                var nodeBox = ioBox.openToObject(node);
+                let nodeBox = ioBox.openToObject(node);
                 return nodeBox.getElementsByClassName("nodeTag")[0];
             }
             else if (node.nodeType == Node.ATTRIBUTE_NODE)
             {
-                var nodeBox = ioBox.openToObject(node.ownerElement);
+                let nodeBox = ioBox.openToObject(node.ownerElement);
                 if (nodeBox)
                 {
-                    var attrNodeBox = Firebug.HTMLLib.findNodeAttrBox(nodeBox, node.nodeName);
+                    let attrNodeBox = Firebug.HTMLLib.findNodeAttrBox(nodeBox, node.nodeName);
                     if (isValue)
                         return getChildByClass(attrNodeBox, "nodeValue");
                     else
@@ -195,12 +195,12 @@ Firebug.HTMLLib =
             }
             else if (node.nodeType == Node.TEXT_NODE)
             {
-                var nodeBox = ioBox.openToObject(node);
+                let nodeBox = ioBox.openToObject(node);
                 if (nodeBox)
                     return nodeBox;
                 else
                 {
-                    var nodeBox = ioBox.openToObject(node.parentNode);
+                    let nodeBox = ioBox.openToObject(node.parentNode);
                     if (hasClass(nodeBox, "textNodeBox"))
                         nodeBox = Firebug.HTMLLib.getTextElementTextBox(nodeBox);
                     return nodeBox;
@@ -217,7 +217,7 @@ Firebug.HTMLLib =
         {
             setTimeout(bindFixed(function()
             {
-                var reMatch = match.match;
+                let reMatch = match.match;
                 this.selectNodeText(nodeBox, node, reMatch[0], reMatch.index, reverse, reMatch.caseSensitive);
                 dispatch([Firebug.A11yModel], 'onHTMLSearchMatchFound', [panelNode.ownerPanel, match]);
             }, this));
@@ -230,7 +230,7 @@ Firebug.HTMLLib =
          */
         this.selectNodeText = function(nodeBox, node, text, index, reverse, caseSensitive)
         {
-            var row;
+            let row;
 
             // If we are still inside the same node as the last search, advance the range
             // to the next substring within that node
@@ -250,11 +250,11 @@ Firebug.HTMLLib =
 
             if (row)
             {
-                var trueNodeBox = getAncestorByClass(nodeBox, "nodeBox");
+                let trueNodeBox = getAncestorByClass(nodeBox, "nodeBox");
                 setClass(trueNodeBox,'search-selection');
 
                 scrollIntoCenterView(row, panelNode);
-                var sel = panelNode.ownerDocument.defaultView.getSelection(); 
+                let sel = panelNode.ownerDocument.defaultView.getSelection(); 
                 sel.removeAllRanges();
                 sel.addRange(this.textSearch.range);
 
@@ -376,13 +376,13 @@ Firebug.HTMLLib =
      */
     DOMWalker: function(root)
     {
-        var walker;
-        var currentNode, attrIndex;
-        var pastStart, pastEnd;
-        var doc = root.ownerDocument;
+        let walker;
+        let currentNode, attrIndex;
+        let pastStart, pastEnd;
+        let doc = root.ownerDocument;
 
         function createWalker(docElement) {
-            var walk = doc.createTreeWalker(docElement, SHOW_ALL, null, true);
+            let walk = doc.createTreeWalker(docElement, SHOW_ALL, null, true);
             walker.unshift(walk);
         }
         function getLastAncestor() {
@@ -403,7 +403,7 @@ Firebug.HTMLLib =
             if (attrIndex) {
                 attrIndex--;
             } else {
-                var prevNode;
+                let prevNode;
                 if (currentNode == walker[0].root) {
                     if (walker.length > 1) {
                         walker.shift();
@@ -454,7 +454,7 @@ Firebug.HTMLLib =
                 attrIndex = 0;
             } else {
                 // First check attributes
-                var attrs = currentNode.attributes || [];
+                let attrs = currentNode.attributes || [];
                 if (attrIndex < attrs.length) {
                     attrIndex++;
                 } else if ((currentNode.nodeName || "").toUpperCase() == "IFRAME") {
@@ -464,7 +464,7 @@ Firebug.HTMLLib =
                     attrIndex = 0;
                 } else {
                     // Next node
-                    var nextNode = walker[0].nextNode();
+                    let nextNode = walker[0].nextNode();
                     while (!nextNode && walker.length > 1) {
                         walker.shift();
                         nextNode = walker[0].nextNode();
@@ -525,7 +525,7 @@ Firebug.HTMLLib =
      */
     isSourceElement: function(element)
     {
-        var tag = element.localName.toLowerCase();
+        let tag = element.localName.toLowerCase();
         return tag == "script" || tag == "link" || tag == "style"
             || (tag == "link" && element.getAttribute("rel") == "stylesheet");
     },
@@ -538,7 +538,7 @@ Firebug.HTMLLib =
      */
     getSourceHref: function(element)
     {
-        var tag = element.localName.toLowerCase();
+        let tag = element.localName.toLowerCase();
         if (tag == "script" && element.src)
             return element.src;
         else if (tag == "link")
@@ -555,7 +555,7 @@ Firebug.HTMLLib =
      */
     getSourceText: function(element)
     {
-        var tag = element.localName.toLowerCase();
+        let tag = element.localName.toLowerCase();
         if (tag == "script" && !element.src)
             return element.textContent;
         else if (tag == "style")
@@ -572,7 +572,7 @@ Firebug.HTMLLib =
      */
     isContainerElement: function(element)
     {
-        var tag = element.localName.toLowerCase();
+        let tag = element.localName.toLowerCase();
         switch (tag)
         {
             case "script":
@@ -605,10 +605,10 @@ Firebug.HTMLLib =
         /*
         if (element.ownerDocument instanceof Ci.nsIDOMDocumentXBL)
         {
-            var anonChildren = element.ownerDocument.getAnonymousNodes(element);
+            let anonChildren = element.ownerDocument.getAnonymousNodes(element);
             if (anonChildren)
             {
-                for (var i = 0; i < anonChildren.length; i++)
+                for (let i = 0; i < anonChildren.length; i++)
                 {
                     if (anonChildren[i].nodeType == Node.ELEMENT_NODE)
                         return false;
@@ -632,8 +632,8 @@ Firebug.HTMLLib =
     {
         if (element.hasChildNodes())
         {
-            var children = element.childNodes;
-            for (var i = 0; i < children.length; i++) 
+            let children = element.childNodes;
+            for (let i = 0; i < children.length; i++) 
             {
               if (children[i] instanceof Comment)
                  return true;
@@ -679,7 +679,7 @@ Firebug.HTMLLib =
         }
         else
         {
-            for (var child = element.firstChild; child; child = child.nextSibling)
+            for (let child = element.firstChild; child; child = child.nextSibling)
             {
                 if (!Firebug.HTMLLib.isWhitespaceText(child))
                     return false;
@@ -704,7 +704,7 @@ Firebug.HTMLLib =
         else
         {
             // only return a non-whitespace node
-            for (var child = node.nextSibling; child; child = child.nextSibling)
+            for (let child = node.nextSibling; child; child = child.nextSibling)
             {
                 if (!Firebug.HTMLLib.isWhitespaceText(child))
                     return child;
@@ -727,7 +727,7 @@ Firebug.HTMLLib =
      */
     findNodeAttrBox: function(objectNodeBox, attrName)
     {
-        var child = objectNodeBox.firstChild.lastChild.firstChild;
+        let child = objectNodeBox.firstChild.lastChild.firstChild;
         for (; child; child = child.nextSibling)
         {
             if (hasClass(child, "nodeAttr") && child.childNodes[1].firstChild
@@ -745,7 +745,7 @@ Firebug.HTMLLib =
      */
     getTextElementTextBox: function(nodeBox)
     {
-        var nodeLabelBox = nodeBox.firstChild.lastChild;
+        let nodeLabelBox = nodeBox.firstChild.lastChild;
         return getChildByClass(nodeLabelBox, "nodeText");
     }
 };

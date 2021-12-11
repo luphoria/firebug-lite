@@ -8,8 +8,8 @@ FBL.ns(function() { with (FBL) {
 ///    const PCMAP_SOURCETEXT = Ci.jsdIScript.PCMAP_SOURCETEXT;
 ///    const PCMAP_PRETTYPRINT = Ci.jsdIScript.PCMAP_PRETTYPRINT;
 
-var PCMAP_SOURCETEXT = -1;
-var PCMAP_PRETTYPRINT = -2;
+let PCMAP_SOURCETEXT = -1;
+let PCMAP_PRETTYPRINT = -2;
 
 
 //* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -37,15 +37,15 @@ Firebug.SourceFile.prototype =
 
     toString: function()
     {
-        var str = (this.compilation_unit_type?this.compilation_unit_type+" ":"")+this.href+" script.tags( ";
+        let str = (this.compilation_unit_type?this.compilation_unit_type+" ":"")+this.href+" script.tags( ";
         if (this.outerScript)
             str += (this.outerScript.isValid?this.outerScript.tag:"X") +"| ";
         if (this.innerScripts)
         {
-            var numberInvalid = 0;
-            for (var p in this.innerScripts)
+            let numberInvalid = 0;
+            for (let p in this.innerScripts)
             {
-                var script = this.innerScripts[p];
+                let script = this.innerScripts[p];
                 if (script.isValid)
                     str += p+" ";
                 else
@@ -63,10 +63,10 @@ Firebug.SourceFile.prototype =
              callback(this.outerScript);
          if (this.innerScripts)
          {
-             for (var p in this.innerScripts)
+             for (let p in this.innerScripts)
              {
-                 var script = this.innerScripts[p];
-                 var rc = callback(script);
+                 let script = this.innerScripts[p];
+                 let rc = callback(script);
                  if (rc)
                      return rc;
              }
@@ -75,10 +75,10 @@ Firebug.SourceFile.prototype =
 
      getLineRanges: function()
      {
-         var str = "";
+         let str = "";
          this.forEachScript(function appendARange(script)
          {
-             var endLineNumber = script.baseLineNumber + script.lineExtent;
+             let endLineNumber = script.baseLineNumber + script.lineExtent;
              str += " "+script.baseLineNumber +"-("+script.tag+")-"+endLineNumber;
          });
          return str;
@@ -111,20 +111,20 @@ Firebug.SourceFile.prototype =
          if (!this.outerScriptLineMap)
              this.outerScriptLineMap = [];
 
-         var lineCount = script.lineExtent + 1;
-         var offset = this.getBaseLineOffset();
+         let lineCount = script.lineExtent + 1;
+         let offset = this.getBaseLineOffset();
          if (FBTrace.DBG_LINETABLE)
          {
              FBTrace.sysout("lib.SourceFile.addToLineTable script.tag:"+script.tag+" lineExtent="+lineCount+" baseLineNumber="+script.baseLineNumber+" offset="+offset+" for "+this.compilation_unit_type+"\n");
-             var startTime = new Date().getTime();
+             let startTime = new Date().getTime();
          }
          if (lineCount > 100)
              lineCount = 100; // isLineExecutable requires about 1ms per line, so it can only be called for toy programs
 
-         for (var i = 0; i <= lineCount; i++)
+         for (let i = 0; i <= lineCount; i++)
          {
-             var scriptLineNo = i + script.baseLineNumber;  // the max is (i + script.baseLineNumber + script.lineExtent)
-             var mapLineNo = scriptLineNo - offset;
+             let scriptLineNo = i + script.baseLineNumber;  // the max is (i + script.baseLineNumber + script.lineExtent)
+             let mapLineNo = scriptLineNo - offset;
              try
              {
                  if (script.isLineExecutable(scriptLineNo, this.pcmap_type))
@@ -137,8 +137,8 @@ Firebug.SourceFile.prototype =
 
              if (FBTrace.DBG_LINETABLE)
              {
-                 var pcFromLine = script.lineToPc(scriptLineNo, this.pcmap_type);
-                 var lineFromPC = script.pcToLine(pcFromLine, this.pcmap_type);
+                 let pcFromLine = script.lineToPc(scriptLineNo, this.pcmap_type);
+                 let lineFromPC = script.pcToLine(pcFromLine, this.pcmap_type);
                  if (this.outerScriptLineMap.indexOf(mapLineNo) != -1)
                      FBTrace.sysout("lib.SourceFile.addToLineTable ["+mapLineNo+"]="+script.tag+" for scriptLineNo="+scriptLineNo+" vs "+lineFromPC+"=lineFromPC; lineToPc="+pcFromLine+" with map="+(this.pcmap_type==PCMAP_PRETTYPRINT?"PP":"SOURCE")+"\n");
                  else
@@ -147,8 +147,8 @@ Firebug.SourceFile.prototype =
          }
          if (FBTrace.DBG_LINETABLE)
          {
-             var endTime = new Date().getTime();
-             var delta = endTime - startTime ;
+             let endTime = new Date().getTime();
+             let delta = endTime - startTime ;
              if (delta > 0) FBTrace.sysout("SourceFile.addToLineTable processed "+lineCount+" lines in "+delta+" millisecs "+Math.round(lineCount/delta)+" lines per millisecond\n");
              FBTrace.sysout("SourceFile.addToLineTable: "+this.toString()+"\n");
          }
@@ -160,17 +160,17 @@ Firebug.SourceFile.prototype =
          if (!this.outerScriptLineMap)
              this.outerScriptLineMap = {};
 
-         var lineCount = script.lineExtent;
-         var offset = this.getBaseLineOffset();
+         let lineCount = script.lineExtent;
+         let offset = this.getBaseLineOffset();
          if (FBTrace.DBG_LINETABLE)
          {
              FBTrace.sysout("lib.SourceFile.addToLineTableByPCLoop script.tag:"+script.tag+" lineCount="+lineCount+" offset="+offset+" for "+this.compilation_unit_type+"\n");
-             var startTime = new Date().getTime();
+             let startTime = new Date().getTime();
          }
 
-         for (var i = 0; i <= 10*lineCount; i++)
+         for (let i = 0; i <= 10*lineCount; i++)
          {
-             var lineFromPC = script.pcToLine(i, this.pcmap_type);
+             let lineFromPC = script.pcToLine(i, this.pcmap_type);
              //FBTrace.sysout("lib.SourceFile.addToLineTableByPCLoop pc="+i+" line: "+lineFromPC+"\n");
              this.outerScriptLineMap[lineFromPC] = script;
              if (lineFromPC >= lineCount) break;
@@ -179,25 +179,25 @@ Firebug.SourceFile.prototype =
          if (FBTrace.DBG_LINETABLE)
          {
              FBTrace.sysout("SourceFile.addToLineTableByPCLoop: "+this.toString()+"\n");
-             var endTime = new Date().getTime();
-             var delta = endTime - startTime ;
+             let endTime = new Date().getTime();
+             let delta = endTime - startTime ;
              if (delta > 0) FBTrace.sysout("SourceFileaddToLineTableByPCLoop processed "+lineCount+" lines in "+delta+" millisecs "+Math.round(lineCount/delta)+" lines per millisecond\n");
          }
      },
 
      hasScriptAtLineNumber: function(lineNo, mustBeExecutableLine)
      {
-         var offset = this.getBaseLineOffset();
+         let offset = this.getBaseLineOffset();
 
          if (!this.innerScripts)
              return; // eg URLOnly
 
-         var targetLineNo = lineNo + offset;  // lineNo is user-viewed number, targetLineNo is jsd number
+         let targetLineNo = lineNo + offset;  // lineNo is user-viewed number, targetLineNo is jsd number
 
-         var scripts = [];
-         for (var p in this.innerScripts)
+         let scripts = [];
+         for (let p in this.innerScripts)
          {
-             var script = this.innerScripts[p];
+             let script = this.innerScripts[p];
              if (mustBeExecutableLine && !script.isValid)
                 continue;
 
@@ -215,17 +215,17 @@ Firebug.SourceFile.prototype =
 
      getScriptsAtLineNumber: function(lineNo, mustBeExecutableLine)
      {
-         var offset = this.getBaseLineOffset();
+         let offset = this.getBaseLineOffset();
 
          if (!this.innerScripts)
              return; // eg URLOnly
 
-         var targetLineNo = lineNo + offset;  // lineNo is user-viewed number, targetLineNo is jsd number
+         let targetLineNo = lineNo + offset;  // lineNo is user-viewed number, targetLineNo is jsd number
 
-         var scripts = [];
-         for (var p in this.innerScripts)
+         let scripts = [];
+         for (let p in this.innerScripts)
          {
-             var script = this.innerScripts[p];
+             let script = this.innerScripts[p];
              if (mustBeExecutableLine && !script.isValid) continue;
              this.addScriptAtLineNumber(scripts, script, targetLineNo, mustBeExecutableLine, offset);
          }
@@ -279,9 +279,9 @@ Firebug.SourceFile.prototype =
                  scripts.push(script);
                  if (FBTrace.DBG_LINETABLE)
                  {
-                     var checkExecutable = "";
+                     let checkExecutable = "";
                      if (mustBeExecutableLine)
-                         var checkExecutable = " isLineExecutable: "+script.isLineExecutable(targetLineNo, this.pcmap_type)+"@pc:"+script.lineToPc(targetLineNo, this.pcmap_type);
+                         let checkExecutable = " isLineExecutable: "+script.isLineExecutable(targetLineNo, this.pcmap_type)+"@pc:"+script.lineToPc(targetLineNo, this.pcmap_type);
                      FBTrace.sysout("getScriptsAtLineNumber found "+script.tag+", isValid: "+script.isValid+" targetLineNo:"+targetLineNo+checkExecutable+"\n");
                  }
              }
@@ -290,7 +290,7 @@ Firebug.SourceFile.prototype =
 
      scriptsIfLineCouldBeExecutable: function(lineNo)  // script may not be valid
      {
-         var scripts = this.getScriptsAtLineNumber(lineNo, true);
+         let scripts = this.getScriptsAtLineNumber(lineNo, true);
          if (FBTrace.DBG_LINETABLE && !scripts) FBTrace.sysout("lib.scriptsIfLineCouldBeExecutable this.outerScriptLineMap", this.outerScriptLineMap);
          if (!scripts && this.outerScriptLineMap && (this.outerScriptLineMap.indexOf(lineNo) != -1) )
              return [this.outerScript];
@@ -365,10 +365,10 @@ Firebug.SourceFile.prototype =
 
 Firebug.SourceFile.summarizeSourceLineArray = function(sourceLines, size)
 {
-    var buf  = "";
-    for (var i = 0; i < sourceLines.length; i++)
+    let buf  = "";
+    for (let i = 0; i < sourceLines.length; i++)
      {
-         var aLine = sourceLines[i].substr(0,240);  // avoid huge lines
+         let aLine = sourceLines[i].substr(0,240);  // avoid huge lines
          buf += aLine.replace(/\s/, " ", "g");
          if (buf.length > size || aLine.length > 240)
              break;
@@ -397,13 +397,13 @@ Firebug.SourceFile.NestedScriptAnalyzer.prototype =
     {
         if (frame)
         {
-            var name = frame.name;
-            var args = FBL.getFunctionArgValues(frame);
+            let name = frame.name;
+            let args = FBL.getFunctionArgValues(frame);
         }
         else
         {
-            var name = script.functionName;
-            var args = [];
+            let name = script.functionName;
+            let args = [];
         }
 
         if (name ==  "anonymous")
@@ -417,7 +417,7 @@ Firebug.SourceFile.NestedScriptAnalyzer.prototype =
     // link to source for this script.
     getSourceLinkForScript: function (script)
     {
-        var line = this.getBaseLineNumberByScript(script);
+        let line = this.getBaseLineNumberByScript(script);
         return new FBL.SourceLink(this.sourceFile.href, line, "js");
     },
 
@@ -433,10 +433,10 @@ Firebug.SourceFile.addScriptsToSourceFile = function(sourceFile, outerScript, in
     if (!sourceFile.innerScripts)
          sourceFile.innerScripts = {};
 
-     var total = 0;
+     let total = 0;
      while (innerScripts.hasMoreElements())
      {
-         var script = innerScripts.getNext();
+         let script = innerScripts.getNext();
          ///if (!script || ( (script instanceof Ci.jsdIScript) && !script.tag) )
          if (!script)
          {
@@ -494,7 +494,7 @@ Firebug.EvalLevelSourceFile.prototype =
              if (this.summary.length < 120)
                  this.summary = "eval("+this.summary + "...)=" + Firebug.SourceFile.summarizeSourceLineArray(this.source, 120 - this.summary.length);
          }
-         var containingFileDescription = FBL.splitURLBase(this.containingURL);
+         let containingFileDescription = FBL.splitURLBase(this.containingURL);
          if (FBTrace.DBG_SOURCEFILES)
              FBTrace.sysout("EvalLevelSourceFile this.evalExpression.substr(0, 240):"+(this.evalExpression?this.evalExpression.substr(0, 240):"null")+" summary", this.summary);
          return {path: containingFileDescription.path, name: containingFileDescription.name+"/eval: "+this.summary };
@@ -561,7 +561,7 @@ Firebug.EventSourceFile.prototype =    descend(new Firebug.SourceFile("event"), 
         if (!this.summary)
              this.summary = Firebug.SourceFile.summarizeSourceLineArray(this.source, 120);
 
-        var containingFileDescription = FBL.splitURLBase(this.containingURL);
+        let containingFileDescription = FBL.splitURLBase(this.containingURL);
 
         return {path: containingFileDescription.path, name: containingFileDescription.name+"/event: "+this.summary };
     },
@@ -583,8 +583,8 @@ Firebug.EventSourceFile.OuterScriptAnalyzer.prototype =
     // Adjust JSD line numbers based on origin of script
     getSourceLineFromFrame: function(context, frame)
     {
-        var script = frame.script;
-        var line = script.pcToLine(frame.pc, PCMAP_PRETTYPRINT);
+        let script = frame.script;
+        let line = script.pcToLine(frame.pc, PCMAP_PRETTYPRINT);
         return line - 1;
     },
     // Interpret frame to give fn(args)
@@ -592,13 +592,13 @@ Firebug.EventSourceFile.OuterScriptAnalyzer.prototype =
     {
         if (frame)
         {
-            var args = FBL.getFunctionArgValues(frame);
-            var name = getFunctionName(script, context, frame, true);
+            let args = FBL.getFunctionArgValues(frame);
+            let name = getFunctionName(script, context, frame, true);
         }
         else
         {
-            var args = [];
-            var name = getFunctionName(script, context);
+            let args = [];
+            let name = getFunctionName(script, context);
         }
         return {name: name, args: args};
     },
@@ -647,7 +647,7 @@ Firebug.TopLevelSourceFile.OuterScriptAnalyzer = {
     // Interpret frame to give fn(args)
     getFunctionDescription: function(script, context, frame)
     {
-        var file_name = FBL.getFileName(FBL.normalizeURL(script.fileName)); // this is more useful that just "top_level"
+        let file_name = FBL.getFileName(FBL.normalizeURL(script.fileName)); // this is more useful that just "top_level"
         file_name = file_name ? file_name: "__top_level__";
         return {name: file_name, args: []};
     },
@@ -735,7 +735,7 @@ Firebug.SourceFile.getSourceFileByScript = function(context, script)
     // Other algorithms are possible:
     //   We could store an index, context.sourceFileByTag
     //   Or we could build a tree keyed by url, with SpiderMonkey script.fileNames at the top and our urls below
-    var lucky = context.sourceFileMap[script.fileName];  // we won't be lucky for file:/ urls, no normalizeURL applied
+    let lucky = context.sourceFileMap[script.fileName];  // we won't be lucky for file:/ urls, no normalizeURL applied
     if (FBTrace.DBG_SOURCEFILES && lucky)
         FBTrace.sysout("getSourceFileByScript trying to be lucky for "+
             script.tag + " in "+lucky, script);
@@ -747,9 +747,9 @@ Firebug.SourceFile.getSourceFileByScript = function(context, script)
         FBTrace.sysout("getSourceFileByScript looking for "+script.tag+"@"+script.fileName+" in "+
             context.getName()+": ", context.sourceFileMap);
 
-    for (var url in context.sourceFileMap)
+    for (let url in context.sourceFileMap)
     {
-        var sourceFile = context.sourceFileMap[url];
+        let sourceFile = context.sourceFileMap[url];
         if (sourceFile.hasScript(script))
             return sourceFile;
     }
@@ -757,12 +757,12 @@ Firebug.SourceFile.getSourceFileByScript = function(context, script)
 
 Firebug.SourceFile.getScriptAnalyzer = function(context, script)
 {
-    var sourceFile = Firebug.SourceFile.getSourceFileByScript(context, script);
+    let sourceFile = Firebug.SourceFile.getSourceFileByScript(context, script);
     if (FBTrace.DBG_STACK)
          FBTrace.sysout("getScriptAnalyzer "+ (sourceFile?"finds sourceFile: ":"FAILS to find sourceFile"), sourceFile);
      if (sourceFile)
      {
-         var analyzer = sourceFile.getScriptAnalyzer(script);
+         let analyzer = sourceFile.getScriptAnalyzer(script);
          if (FBTrace.DBG_STACK)
              FBTrace.sysout("getScriptAnalyzer finds analyzer: ", analyzer);
 
@@ -773,28 +773,28 @@ Firebug.SourceFile.getScriptAnalyzer = function(context, script)
 
 Firebug.SourceFile.getSourceFileAndLineByScript= function(context, script, frame)
 {
-    var sourceFile = Firebug.SourceFile.getSourceFileByScript(context, script);
+    let sourceFile = Firebug.SourceFile.getSourceFileByScript(context, script);
     if (sourceFile)
     {
+        let line;
         if (sourceFile.pcmap_type)
-            var line = script.pcToLine(1, sourceFile.pcmap_type);
+            line = script.pcToLine(1, sourceFile.pcmap_type);
         else
-            var line = 1;
-
+            line = 1;
         return { sourceFile: sourceFile, lineNo: line };
     }
 };
 
 Firebug.SourceFile.guessEnclosingFunctionName = function(url, line, context)
 {
-    var sourceFile = context.sourceFileMap[url];
+    let sourceFile = context.sourceFileMap[url];
     if (sourceFile)
     {
-        var scripts = sourceFile.getScriptsAtLineNumber(line);
+        let scripts = sourceFile.getScriptsAtLineNumber(line);
         if (scripts)
         {
-            var script = scripts[0]; // TODO try others?
-            var analyzer = sourceFile.getScriptAnalyzer(script);
+            let script = scripts[0]; // TODO try others?
+            let analyzer = sourceFile.getScriptAnalyzer(script);
             line = analyzer.getBaseLineNumberByScript(script);
         }
     }

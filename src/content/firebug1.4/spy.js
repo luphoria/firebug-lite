@@ -9,7 +9,7 @@ FBL.ns(function() { with (FBL) {
 //const Ci = Components.interfaces;
 
 // List of contexts with XHR spy attached.
-var contexts = [];
+let contexts = [];
 
 // ************************************************************************************************
 // Spy Module
@@ -97,10 +97,10 @@ Firebug.Spy = extend(Firebug.Module,
         // but somehow seems not correct
         if (name == "showXMLHttpRequests")
         {
-            var tach = value ? this.attachObserver : this.detachObserver;
-            for (var i = 0; i < TabWatcher.contexts.length; ++i)
+            let tach = value ? this.attachObserver : this.detachObserver;
+            for (let i = 0; i < TabWatcher.contexts.length; ++i)
             {
-                var context = TabWatcher.contexts[i];
+                let context = TabWatcher.contexts[i];
                 iterateWindows(context.window, function(win)
                 {
                     tach.apply(this, [context, win]);
@@ -121,7 +121,7 @@ Firebug.Spy = extend(Firebug.Module,
             return true;
 
         // Don't attach spy to chrome.
-        var uri = safeGetWindowLocation(win);
+        let uri = safeGetWindowLocation(win);
         if (uri && (uri.indexOf("about:") == 0 || uri.indexOf("chrome:") == 0))
             return true;
     },
@@ -131,7 +131,7 @@ Firebug.Spy = extend(Firebug.Module,
         if (Firebug.Spy.skipSpy(win))
             return;
 
-        for (var i=0; i<contexts.length; ++i)
+        for (let i=0; i<contexts.length; ++i)
         {
             if ((contexts[i].context == context) && (contexts[i].win == win))
                 return;
@@ -152,7 +152,7 @@ Firebug.Spy = extend(Firebug.Module,
 
     detachObserver: function(context, win)
     {
-        for (var i=0; i<contexts.length; ++i)
+        for (let i=0; i<contexts.length; ++i)
         {
             if (contexts[i].context == context)
             {
@@ -188,7 +188,7 @@ Firebug.Spy = extend(Firebug.Module,
 
         try
         {
-            var callbacks = request.notificationCallbacks;
+            let callbacks = request.notificationCallbacks;
             return (callbacks ? callbacks.getInterface(Ci.nsIXMLHttpRequest) : null);
         }
         catch (exc)
@@ -214,12 +214,12 @@ Firebug.Spy = extend(Firebug.Module,
 /*
 function getSpyForXHR(request, xhrRequest, context, noCreate)
 {
-    var spy = null;
+    let spy = null;
 
     // Iterate all existing spy objects in this context and look for one that is
     // already created for this request.
-    var length = context.spies.length;
-    for (var i=0; i<length; i++)
+    let length = context.spies.length;
+    for (let i=0; i<length; i++)
     {
         spy = context.spies[i];
         if (spy.request == request)
@@ -232,8 +232,8 @@ function getSpyForXHR(request, xhrRequest, context, noCreate)
     spy = new Firebug.Spy.XMLHttpRequestSpy(request, xhrRequest, context);
     context.spies.push(spy);
 
-    var name = request.URI.asciiSpec;
-    var origName = request.originalURI.asciiSpec;
+    let name = request.URI.asciiSpec;
+    let origName = request.originalURI.asciiSpec;
 
     // Attach spy only to the original request. Notice that there can be more network requests
     // made by the same XHR if redirects are involved.
@@ -252,7 +252,7 @@ function getSpyForXHR(request, xhrRequest, context, noCreate)
 
 /**
  * @class This class represents a Spy object that is attached to XHR. This object
- * registers various listeners into the XHR in order to monitor various events fired
+ * registers letious listeners into the XHR in order to monitor letious events fired
  * during the request process (onLoad, onAbort, etc.)
  */
 /*
@@ -278,7 +278,7 @@ Firebug.Spy.XMLHttpRequestSpy = function(request, xhrRequest, context)
 {
     attach: function()
     {
-        var spy = this;
+        let spy = this;
         this.onReadyStateChange = function(event) { onHTTPSpyReadyStateChange(spy, event); };
         this.onLoad = function() { onHTTPSpyLoad(spy); };
         this.onError = function() { onHTTPSpyError(spy); };
@@ -368,13 +368,13 @@ function onHTTPSpyReadyStateChange(spy, event)
             " (multipart: " + spy.xhrRequest.multipart + ")");
 
     // Remember just in case spy is detached (readyState == 4).
-    var originalHandler = spy.onreadystatechange;
+    let originalHandler = spy.onreadystatechange;
 
     // Force response text to be updated in the UI (in case the console entry
     // has been already expanded and the response tab selected).
     if (spy.logRow && spy.xhrRequest.readyState >= 3)
     {
-        var netInfoBox = getChildByClass(spy.logRow, "spyHead", "netInfoBody");
+        let netInfoBox = getChildByClass(spy.logRow, "spyHead", "netInfoBody");
         if (netInfoBox)
         {
             netInfoBox.htmlPresented = false;
@@ -411,7 +411,7 @@ function onHTTPSpyReadyStateChange(spy, event)
 
         // Notify Net pane about a request beeing loaded.
         // xxxHonza: I don't think this is necessary.
-        var netProgress = spy.context.netProgress;
+        let netProgress = spy.context.netProgress;
         if (netProgress)
             netProgress.post(netProgress.stopFile, [spy.request, spy.endTime, spy.postText, spy.responseText]);
 
@@ -471,7 +471,7 @@ function onHTTPSpyAbort(spy)
 
     // Notify Net pane about a request beeing aborted.
     // xxxHonza: the net panel shoud find out this itself.
-    var netProgress = spy.context.netProgress;
+    let netProgress = spy.context.netProgress;
     if (netProgress)
         netProgress.post(netProgress.abortFile, [spy.request, spy.endTime, spy.postText, spy.responseText]);
 }
@@ -531,7 +531,7 @@ Firebug.Spy.XHR = domplate(Firebug.Rep,
 
     getStatus: function(spy)
     {
-        var text = "";
+        let text = "";
         if (spy.statusCode)
             text += spy.statusCode + " ";
 
@@ -543,15 +543,15 @@ Firebug.Spy.XHR = domplate(Firebug.Rep,
 
     onToggleBody: function(event)
     {
-        var target = event.currentTarget || event.srcElement;
-        var logRow = getAncestorByClass(target, "logRow-spy");
+        let target = event.currentTarget || event.srcElement;
+        let logRow = getAncestorByClass(target, "logRow-spy");
 
         if (isLeftClick(event))
         {
             toggleClass(logRow, "opened");
 
-            var spy = getChildByClass(logRow, "spyHead").repObject;
-            var spyHeadTable = getAncestorByClass(target, "spyHeadTable");
+            let spy = getChildByClass(logRow, "spyHead").repObject;
+            let spyHeadTable = getAncestorByClass(target, "spyHeadTable");
 
             if (hasClass(logRow, "opened"))
             {
@@ -561,7 +561,7 @@ Firebug.Spy.XHR = domplate(Firebug.Rep,
             }
             else
             {
-                //var netInfoBox = getChildByClass(spy.logRow, "spyHead", "netInfoBody");
+                //let netInfoBox = getChildByClass(spy.logRow, "spyHead", "netInfoBody");
                 //dispatch(Firebug.NetMonitor.NetInfoBody.fbListeners, "destroyTabBody", [netInfoBox, spy]);
                 //if (spyHeadTable)
                 //    spyHeadTable.setAttribute('aria-expanded', 'false');
@@ -578,11 +578,11 @@ Firebug.Spy.XHR = domplate(Firebug.Rep,
 
     copyParams: function(spy)
     {
-        var text = spy.postText;
+        let text = spy.postText;
         if (!text)
             return;
 
-        var url = reEncodeURL(spy, text, true);
+        let url = reEncodeURL(spy, text, true);
         copyToClipboard(url);
     },
 
@@ -608,7 +608,7 @@ Firebug.Spy.XHR = domplate(Firebug.Rep,
 
     browseObject: function(spy, context)
     {
-        var url = spy.getURL();
+        let url = spy.getURL();
         openNewTab(url);
         return true;
     },
@@ -620,7 +620,7 @@ Firebug.Spy.XHR = domplate(Firebug.Rep,
 
     getContextMenuItems: function(spy)
     {
-        var items = [
+        let items = [
             {label: "CopyLocation", command: bindFixed(this.copyURL, this, spy) }
         ];
 
@@ -645,7 +645,7 @@ Firebug.Spy.XHR = domplate(Firebug.Rep,
 
 function updateTime(spy)
 {
-    var timeBox = spy.logRow.getElementsByClassName("spyTime").item(0);
+    let timeBox = spy.logRow.getElementsByClassName("spyTime").item(0);
     if (spy.responseTime)
         timeBox.textContent = " " + formatTime(spy.responseTime);
 }
@@ -654,7 +654,7 @@ function updateLogRow(spy)
 {
     updateTime(spy);
 
-    var statusBox = spy.logRow.getElementsByClassName("spyStatus").item(0);
+    let statusBox = spy.logRow.getElementsByClassName("spyStatus").item(0);
     statusBox.textContent = Firebug.Spy.XHR.getStatus(spy);
 
     removeClass(spy.logRow, "loading");
@@ -662,7 +662,7 @@ function updateLogRow(spy)
 
     try
     {
-        var errorRange = Math.floor(spy.xhrRequest.status/100);
+        let errorRange = Math.floor(spy.xhrRequest.status/100);
         if (errorRange == 4 || errorRange == 5)
             setClass(spy.logRow, "error");
     }
@@ -671,7 +671,7 @@ function updateLogRow(spy)
     }
 }
 
-var updateHttpSpyInfo = function updateHttpSpyInfo(spy, logRow)
+let updateHttpSpyInfo = function updateHttpSpyInfo(spy, logRow)
 {
     if (!spy.logRow && logRow)
         spy.logRow = logRow;
@@ -689,11 +689,11 @@ var updateHttpSpyInfo = function updateHttpSpyInfo(spy, logRow)
     if (!spy.responseHeaders && spy.loaded)
         spy.responseHeaders = getResponseHeaders(spy);
 
-    var template = Firebug.NetMonitor.NetInfoBody;
-    var netInfoBox = getChildByClass(spy.logRow, "spyHead", "netInfoBody");
+    let template = Firebug.NetMonitor.NetInfoBody;
+    let netInfoBox = getChildByClass(spy.logRow, "spyHead", "netInfoBody");
     if (!netInfoBox)
     {
-        var head = getChildByClass(spy.logRow, "spyHead");
+        let head = getChildByClass(spy.logRow, "spyHead");
         netInfoBox = template.tag.append({"file": spy}, head);
         dispatch(template.fbListeners, "initTabBody", [netInfoBox, spy]);
         template.selectTabByName(netInfoBox, "Response");
@@ -710,9 +710,9 @@ var updateHttpSpyInfo = function updateHttpSpyInfo(spy, logRow)
 
 function getRequestHeaders(spy)
 {
-    var headers = [];
+    let headers = [];
 
-    var channel = spy.xhrRequest.channel;
+    let channel = spy.xhrRequest.channel;
     if (channel instanceof Ci.nsIHttpChannel)
     {
         channel.visitRequestHeaders({
@@ -728,11 +728,11 @@ function getRequestHeaders(spy)
 
 function getResponseHeaders(spy)
 {
-    var headers = [];
+    let headers = [];
 
     try
     {
-        var channel = spy.xhrRequest.channel;
+        let channel = spy.xhrRequest.channel;
         if (channel instanceof Ci.nsIHttpChannel)
         {
             channel.visitResponseHeaders({

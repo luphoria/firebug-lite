@@ -5,7 +5,7 @@ FBL.FBTrace = {};
 (function() {
 // ************************************************************************************************
 
-var traceOptions = {
+let traceOptions = {
     DBG_TIMESTAMP: 1,
     DBG_INITIALIZE: 1,
     DBG_CHROME: 1,
@@ -21,7 +21,7 @@ this.initialize = function()
     if (!this.messageQueue)
         this.messageQueue = [];
     
-    for (var name in traceOptions)
+    for (let name in traceOptions)
         this[name] = traceOptions[name]; 
 };
 
@@ -47,10 +47,10 @@ this.flush = function(module)
 {
     this.module = module;
     
-    var queue = this.messageQueue;
+    let queue = this.messageQueue;
     this.messageQueue = [];
     
-    for (var i = 0; i < queue.length; ++i)
+    for (let i = 0; i < queue.length; ++i)
         this.writeMessage(queue[i][0], queue[i][1], queue[i][2]);
 };
 
@@ -63,14 +63,14 @@ this.getPanel = function()
 
 this.logFormatted = function(objects, className)
 {
-    var html = this.DBG_TIMESTAMP ? [getTimestamp(), " | "] : [];
-    var length = objects.length;
+    let html = this.DBG_TIMESTAMP ? [getTimestamp(), " | "] : [];
+    let length = objects.length;
     
-    for (var i = 0; i < length; ++i)
+    for (let i = 0; i < length; ++i)
     {
         appendText(" ", html);
         
-        var object = objects[i];
+        let object = objects[i];
         
         if (i == 0)
         {
@@ -87,7 +87,7 @@ this.logFormatted = function(objects, className)
 
 this.logRow = function(message, className)
 {
-    var panel = this.getPanel();
+    let panel = this.getPanel();
     
     if (panel && panel.panelNode)
         this.writeMessage(message, className);
@@ -101,8 +101,8 @@ this.logRow = function(message, className)
 
 this.writeMessage = function(message, className)
 {
-    var container = this.getPanel().containerNode;
-    var isScrolledToBottom =
+    let container = this.getPanel().containerNode;
+    let isScrolledToBottom =
         container.scrollTop + container.offsetHeight >= container.scrollHeight;
     
     this.writeRow.call(this, message, className);
@@ -113,13 +113,13 @@ this.writeMessage = function(message, className)
 
 this.appendRow = function(row)
 {
-    var container = this.getPanel().panelNode;
+    let container = this.getPanel().panelNode;
     container.appendChild(row);
 };
 
 this.writeRow = function(message, className)
 {
-    var row = this.getPanel().panelNode.ownerDocument.createElement("div");
+    let row = this.getPanel().panelNode.ownerDocument.createElement("div");
     row.className = "logRow" + (className ? " logRow-"+className : "");
     row.innerHTML = message.join("");
     this.appendRow(row);
@@ -134,8 +134,8 @@ function appendText(object, html)
 
 function getTimestamp()
 {
-    var now = new Date();
-    var ms = "" + (now.getMilliseconds() / 1000).toFixed(3);
+    let now = new Date();
+    let ms = "" + (now.getMilliseconds() / 1000).toFixed(3);
     ms = ms.substr(2);
     
     return now.toLocaleTimeString() + "." + ms;
@@ -143,7 +143,7 @@ function getTimestamp()
 
 //*************************************************************************************************
 
-var HTMLtoEntity =
+let HTMLtoEntity =
 {
     "<": "&lt;",
     ">": "&gt;",

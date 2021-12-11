@@ -5,12 +5,12 @@ FBL.ns(function() { with (FBL) {
 // ************************************************************************************************
 // Constants
 
-var throttleTimeWindow = 200;
-var throttleMessageLimit = 30;
-var throttleInterval = 30;
-var throttleFlushCount = 20;
+let throttleTimeWindow = 200;
+let throttleMessageLimit = 30;
+let throttleInterval = 30;
+let throttleFlushCount = 20;
 
-var refreshDelay = 300;
+let refreshDelay = 300;
 
 // ************************************************************************************************
 
@@ -64,10 +64,10 @@ Firebug.TabContext.prototype =
     {
         if (!this.name || this.name === "about:blank")
         {
-            var url = this.getWindowLocation().toString();
+            let url = this.getWindowLocation().toString();
             if (isDataURL(url))
             {
-                var props = splitDataURL(url);
+                let props = splitDataURL(url);
                 if (props.fileName)
                      this.name = "data url from "+props.fileName;
             }
@@ -115,13 +115,13 @@ Firebug.TabContext.prototype =
     
     reattach: function(oldChrome, newChrome)
     {
-        for (var panelName in this.panelMap)
+        for (let panelName in this.panelMap)
         {
-            var panel = this.panelMap[panelName];
+            let panel = this.panelMap[panelName];
             panel.detach(oldChrome, newChrome);
             panel.invalid = true;// this will cause reattach on next use
 
-            var panelNode = panel.panelNode;  // delete panel content
+            let panelNode = panel.panelNode;  // delete panel content
             if (panelNode && panelNode.parentNode)
                 panelNode.parentNode.removeChild(panelNode);
         }
@@ -132,14 +132,14 @@ Firebug.TabContext.prototype =
         // All existing timeouts need to be cleared
         if (this.timeouts)
         {
-            for (var timeout in this.timeouts)
+            for (let timeout in this.timeouts)
                 clearTimeout(timeout);
         }
 
         // Also all waiting intervals must be cleared.
         if (this.intervals)
         {
-            for (var timeout in this.intervals)
+            for (let timeout in this.intervals)
                 clearInterval(timeout);
         }
 
@@ -151,14 +151,14 @@ Firebug.TabContext.prototype =
         // Inherit panelStates that have not been restored yet
         if (this.persistedState)
         {
-            for (var panelName in this.persistedState.panelState)
+            for (let panelName in this.persistedState.panelState)
                 state.panelState[panelName] = this.persistedState.panelState[panelName];
         }
 
         // Destroy all panels in this context.
-        for (var panelName in this.panelMap)
+        for (let panelName in this.panelMap)
         {
-            var panelType = Firebug.getPanelType(panelName);
+            let panelType = Firebug.getPanelType(panelName);
             this.destroyPanel(panelType, state);
         }
 
@@ -189,11 +189,11 @@ Firebug.TabContext.prototype =
 
         this.initPanelTypes();
 
-        var name = createPanelName(url);
+        let name = createPanelName(url);
         while (name in this.panelTypeMap)
             name += "_";
 
-        var panelType = createPanelType(name, url, title, parentPanel);
+        let panelType = createPanelType(name, url, title, parentPanel);
 
         this.panelTypes.push(panelType);
         this.panelTypeMap[name] = panelType;
@@ -205,7 +205,7 @@ Firebug.TabContext.prototype =
     {
         this.initPanelTypes();
         this.panelTypes.push(panelType);
-        var name = panelType.prototype.name;
+        let name = panelType.prototype.name;
         this.panelTypeMap[name] = panelType;
     },
 
@@ -217,7 +217,7 @@ Firebug.TabContext.prototype =
     getPanel: function(panelName, noCreate)
     {
         // Get "global" panelType, registered using Firebug.registerPanel
-        var panelType = Firebug.getPanelType(panelName);
+        let panelType = Firebug.getPanelType(panelName);
 
         // The panelType cane be "local", available only within the context.
         if (!panelType && this.panelTypeMap)
@@ -226,7 +226,7 @@ Firebug.TabContext.prototype =
         if (!panelType)
             return null;
 
-        var enabled = panelType.prototype.isEnabled ? panelType.prototype.isEnabled() : true;
+        let enabled = panelType.prototype.isEnabled ? panelType.prototype.isEnabled() : true;
 
         // Create instance of the panelType only if it's enabled.
         if (enabled)
@@ -240,15 +240,15 @@ Firebug.TabContext.prototype =
         if (!panelType || !this.panelMap)
             return null;
 
-        var panelName = panelType.prototype.name;
+        let panelName = panelType.prototype.name;
         if ( this.panelMap.hasOwnProperty(panelName) )
         {
-            var panel = this.panelMap[panelName];
+            let panel = this.panelMap[panelName];
             //if (FBTrace.DBG_PANELS)
             //    FBTrace.sysout("tabContext.getPanelByType panel in panelMap, .invalid="+panel.invalid+"\n");
             if (panel.invalid)
             {
-                var doc = this.chrome.getPanelDocument(panelType);
+                let doc = this.chrome.getPanelDocument(panelType);
                 panel.reattach(doc);
                 delete panel.invalid;
             }
@@ -263,12 +263,12 @@ Firebug.TabContext.prototype =
 
     eachPanelInContext: function(callback)
     {
-        for (var panelName in this.panelMap)
+        for (let panelName in this.panelMap)
         {
             if (this.panelMap.hasOwnProperty(panelName))
             {
-                var panel = this.panelMap[panelName];
-                var rc = callback(panel);
+                let panel = this.panelMap[panelName];
+                let rc = callback(panel);
                 if (rc)
                     return rc;
             }
@@ -278,7 +278,7 @@ Firebug.TabContext.prototype =
     createPanel: function(panelType)
     {
         // Instantiate a panel object. This is why panels are defined by prototype inheritance
-        var panel = new panelType();
+        let panel = new panelType();
         this.panelMap[panel.name] = panel;
 
         if (FBTrace.DBG_PANELS)
@@ -293,7 +293,7 @@ Firebug.TabContext.prototype =
             panel.mainPanel.addListener(panel); // wire the side panel to get UI events from the main panel
         }
             
-        var doc = this.chrome.getPanelDocument(panelType);
+        let doc = this.chrome.getPanelDocument(panelType);
         panel.initialize(this, doc);
 
         return panel;
@@ -301,19 +301,19 @@ Firebug.TabContext.prototype =
 
     destroyPanel: function(panelType, state)
     {
-        var panelName = panelType.prototype.name;
-        var panel = this.panelMap[panelName];
+        let panelName = panelType.prototype.name;
+        let panel = this.panelMap[panelName];
         if (!panel)
             return;
 
         // Create an object to persist state, re-using old one if it was never restored
-        var panelState = panelName in state.panelState ? state.panelState[panelName] : {};
+        let panelState = panelName in state.panelState ? state.panelState[panelName] : {};
         state.panelState[panelName] = panelState;
 
         try
         {
             // Destroy the panel and allow it to persist extra info to the state object
-            var dontRemove = panel.destroy(panelState);
+            let dontRemove = panel.destroy(panelState);
             delete this.panelMap[panelName];
 
             if (dontRemove)
@@ -329,7 +329,7 @@ Firebug.TabContext.prototype =
         }
 
         // Remove the panel node from the DOM and so delet its content.
-        var panelNode = panel.panelNode;
+        let panelNode = panel.panelNode;
         if (panelNode && panelNode.parentNode)
             panelNode.parentNode.removeChild(panelNode);
     },
@@ -347,10 +347,10 @@ Firebug.TabContext.prototype =
         if (!this.invalidPanels)
             this.invalidPanels = {};
 
-        for (var i = 0; i < arguments.length; ++i)
+        for (let i = 0; i < arguments.length; ++i)
         {
-            var panelName = arguments[i];
-            var panel = this.getPanel(panelName, true);
+            let panelName = arguments[i];
+            let panel = this.getPanel(panelName, true);
             if (panel && !panel.noRefresh)
                 this.invalidPanels[panelName] = 1;
         }
@@ -363,11 +363,11 @@ Firebug.TabContext.prototype =
 
         this.refreshTimeout = this.setTimeout(bindFixed(function()
         {
-            var invalids = [];
+            let invalids = [];
 
-            for (var panelName in this.invalidPanels)
+            for (let panelName in this.invalidPanels)
             {
-                var panel = this.getPanel(panelName, true);
+                let panel = this.getPanel(panelName, true);
                 if (panel)
                 {
                     if (panel.visible && !panel.editing)
@@ -397,7 +397,7 @@ Firebug.TabContext.prototype =
     {
         if (setTimeout == this.setTimeout)
             throw new Error("setTimeout recursion");
-        var timeout = setTimeout.apply(top, arguments);
+        let timeout = setTimeout.apply(top, arguments);
 
         if (!this.timeouts)
             this.timeouts = {};
@@ -417,7 +417,7 @@ Firebug.TabContext.prototype =
 
     setInterval: function()
     {
-        var timeout = setInterval.apply(top, arguments);
+        let timeout = setInterval.apply(top, arguments);
 
         if (!this.intervals)
             this.intervals = {};
@@ -461,7 +461,7 @@ Firebug.TabContext.prototype =
             }
 
             // Count how many messages have been logged during the throttle period
-            var logTime = new Date().getTime();
+            let logTime = new Date().getTime();
             if (logTime - this.lastMessageTime < throttleTimeWindow)
                 ++this.throttleBuildup;
             else
@@ -483,7 +483,7 @@ Firebug.TabContext.prototype =
         if (this.throttleTimeout)
             this.clearTimeout(this.throttleTimeout);
 
-        var self = this;
+        let self = this;
         this.throttleTimeout =
             this.setTimeout(function() { self.flushThrottleQueue(); }, throttleInterval);
         return true;
@@ -491,23 +491,23 @@ Firebug.TabContext.prototype =
 
     flushThrottleQueue: function()
     {
-        var queue = this.throttleQueue;
+        let queue = this.throttleQueue;
 
         if (!queue[0])
             FBTrace.sysout("tabContext.flushThrottleQueue no queue[0]", queue);
 
-        var max = throttleFlushCount * 3;
+        let max = throttleFlushCount * 3;
         if (max > queue.length)
             max = queue.length;
 
-        for (var i = 0; i < max; i += 3)
+        for (let i = 0; i < max; i += 3)
             queue[i].apply(queue[i+1], queue[i+2]);
 
         queue.splice(0, throttleFlushCount*3);
 
         if (queue.length)
         {
-            var self = this;
+            let self = this;
             this.throttleTimeout =
                 this.setTimeout(function f() { self.flushThrottleQueue(); }, throttleInterval);
         }
@@ -521,7 +521,7 @@ Firebug.TabContext.prototype =
 
 function createPanelType(name, url, title, parentPanel)
 {
-    var panelType = new Function("");
+    let panelType = new Function("");
     panelType.prototype = extend(new Firebug.PluginPanel(),
     {
         name: name,

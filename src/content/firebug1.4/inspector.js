@@ -6,9 +6,9 @@ FBL.ns(function() { with (FBL) {
 // ************************************************************************************************
 // Inspector Module
 
-var ElementCache = Firebug.Lite.Cache.Element;
+let ElementCache = Firebug.Lite.Cache.Element;
 
-var inspectorTS, inspectorTimer, isInspecting;
+let inspectorTS, inspectorTimer, isInspecting;
 
 Firebug.Inspector =
 {
@@ -52,7 +52,7 @@ Firebug.Inspector =
         
         createInspectorFrame();
         
-        var size = Firebug.browser.getWindowScrollSize();
+        let size = Firebug.browser.getWindowScrollSize();
         
         fbInspectFrame.style.width = size.width + "px";
         fbInspectFrame.style.height = size.height + "px";
@@ -82,11 +82,11 @@ Firebug.Inspector =
     onInspectingClick: function(e)
     {
         fbInspectFrame.style.display = "none";
-        var targ = Firebug.browser.getElementFromPoint(e.clientX, e.clientY);
+        let targ = Firebug.browser.getElementFromPoint(e.clientX, e.clientY);
         fbInspectFrame.style.display = "block";
 
         // Avoid inspecting the outline, and the FirebugUI
-        var id = targ.id;
+        let id = targ.id;
         if (id && /^fbOutline\w$/.test(id)) return;
         if (id == "FirebugUI") return;
 
@@ -102,11 +102,11 @@ Firebug.Inspector =
         if (new Date().getTime() - lastInspecting > 30)
         {
             fbInspectFrame.style.display = "none";
-            var targ = Firebug.browser.getElementFromPoint(e.clientX, e.clientY);
+            let targ = Firebug.browser.getElementFromPoint(e.clientX, e.clientY);
             fbInspectFrame.style.display = "block";
     
             // Avoid inspecting the outline, and the FirebugUI
-            var id = targ.id;
+            let id = targ.id;
             if (id && /^fbOutline\w$/.test(id)) return;
             if (id == "FirebugUI") return;
             
@@ -120,8 +120,8 @@ Firebug.Inspector =
             
             if (ElementCache(targ))
             {
-                var target = ""+ElementCache.key(targ);
-                var lazySelect = function()
+                let target = ""+ElementCache.key(targ);
+                let lazySelect = function()
                 {
                     inspectorTS = new Date().getTime();
                     
@@ -149,10 +149,10 @@ Firebug.Inspector =
     {
         if (new Date().getTime() - lastInspecting > 30)
         {
-            var targ = e.target;
+            let targ = e.target;
     
             // Avoid inspecting the outline, and the FirebugUI
-            var id = targ.id;
+            let id = targ.id;
             if (id && /^fbOutline\w$/.test(id)) return;
             if (id == "FirebugUI") return;
             
@@ -182,32 +182,32 @@ Firebug.Inspector =
      */
     drawOutline: function(el)
     {
-        var border = 2;
-        var scrollbarSize = 17;
+        let border = 2;
+        let scrollbarSize = 17;
         
-        var windowSize = Firebug.browser.getWindowSize();
-        var scrollSize = Firebug.browser.getWindowScrollSize();
-        var scrollPosition = Firebug.browser.getWindowScrollPosition();
+        let windowSize = Firebug.browser.getWindowSize();
+        let scrollSize = Firebug.browser.getWindowScrollSize();
+        let scrollPosition = Firebug.browser.getWindowScrollPosition();
         
-        var box = Firebug.browser.getElementBox(el);
+        let box = Firebug.browser.getElementBox(el);
         
-        var top = box.top;
-        var left = box.left;
-        var height = box.height;
-        var width = box.width;
+        let top = box.top;
+        let left = box.left;
+        let height = box.height;
+        let width = box.width;
         
-        var freeHorizontalSpace = scrollPosition.left + windowSize.width - left - width - 
+        let freeHorizontalSpace = scrollPosition.left + windowSize.width - left - width - 
                 (!isIE && scrollSize.height > windowSize.height ? // is *vertical* scrollbar visible
                  scrollbarSize : 0);
         
-        var freeVerticalSpace = scrollPosition.top + windowSize.height - top - height -
+        let freeVerticalSpace = scrollPosition.top + windowSize.height - top - height -
                 (!isIE && scrollSize.width > windowSize.width ? // is *horizontal* scrollbar visible
                 scrollbarSize : 0);
         
-        var numVerticalBorders = freeVerticalSpace > 0 ? 2 : 1;
+        let numVerticalBorders = freeVerticalSpace > 0 ? 2 : 1;
         
-        var o = outlineElements;
-        var style;
+        let o = outlineElements;
+        let style;
         
         style = o.fbOutlineT.style;
         style.top = top-border + "px";
@@ -260,7 +260,7 @@ Firebug.Inspector =
     {
         if (!outlineVisible) return;
         
-        for (var name in outline)
+        for (let name in outline)
             offlineFragment.appendChild(outlineElements[name]);
 
         outlineVisible = false;
@@ -272,7 +272,7 @@ Firebug.Inspector =
         
         if (boxModelVisible) this.hideBoxModel();
         
-        for (var name in outline)
+        for (let name in outline)
             Firebug.browser.document.getElementsByTagName("body")[0].appendChild(outlineElements[name]);
         
         outlineVisible = true;
@@ -287,13 +287,13 @@ Firebug.Inspector =
         if (!el || !el.parentNode)
             return;
         
-        var box = Firebug.browser.getElementBox(el);
+        let box = Firebug.browser.getElementBox(el);
         
-        var windowSize = Firebug.browser.getWindowSize();
-        var scrollPosition = Firebug.browser.getWindowScrollPosition();
+        let windowSize = Firebug.browser.getWindowSize();
+        let scrollPosition = Firebug.browser.getWindowScrollPosition();
         
         // element may be occluded by the chrome, when in frame mode
-        var offsetHeight = Firebug.chrome.type == "frame" ? FirebugChrome.height : 0;
+        let offsetHeight = Firebug.chrome.type == "frame" ? FirebugChrome.height : 0;
         
         // if element box is not inside the viewport, don't draw the box model
         if (box.top > scrollPosition.top + windowSize.height - offsetHeight ||
@@ -302,14 +302,14 @@ Firebug.Inspector =
             scrollPosition.left > box.left + box.width )
             return;
         
-        var top = box.top;
-        var left = box.left;
-        var height = box.height;
-        var width = box.width;
+        let top = box.top;
+        let left = box.left;
+        let height = box.height;
+        let width = box.width;
         
-        var margin = Firebug.browser.getMeasurementBox(el, "margin");
-        var padding = Firebug.browser.getMeasurementBox(el, "padding");
-        var border = Firebug.browser.getMeasurementBox(el, "border");
+        let margin = Firebug.browser.getMeasurementBox(el, "margin");
+        let padding = Firebug.browser.getMeasurementBox(el, "padding");
+        let border = Firebug.browser.getMeasurementBox(el, "border");
         
         boxModelStyle.top = top - margin.top + "px";
         boxModelStyle.left = left - margin.left + "px";
@@ -359,18 +359,18 @@ Firebug.Inspector =
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// Shared variables
+// Shared letiables
 
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// Internal variables
+// Internal letiables
 
-var offlineFragment = null;
+let offlineFragment = null;
 
-var boxModelVisible = false;
+let boxModelVisible = false;
 
-var boxModel, boxModelStyle, 
+let boxModel, boxModelStyle, 
     boxMargin, boxMarginStyle,
     boxBorder, boxBorderStyle,
     boxPadding, boxPaddingStyle, 
@@ -378,39 +378,39 @@ var boxModel, boxModelStyle,
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var resetStyle = "margin:0; padding:0; border:0; position:absolute; overflow:hidden; display:block;";
-var offscreenStyle = resetStyle + "top:-1234px; left:-1234px;";
+let resetStyle = "margin:0; padding:0; border:0; position:absolute; overflow:hidden; display:block;";
+let offscreenStyle = resetStyle + "top:-1234px; left:-1234px;";
 
-var inspectStyle = resetStyle + "z-index: 2147483500;";
-var inspectFrameStyle = resetStyle + "z-index: 2147483550; top:0; left:0; background:url(" +
+let inspectStyle = resetStyle + "z-index: 2147483500;";
+let inspectFrameStyle = resetStyle + "z-index: 2147483550; top:0; left:0; background:url(" +
                         Env.Location.skinDir + "pixel_transparent.gif);";
 
 //if (Env.Options.enableTrace) inspectFrameStyle = resetStyle + "z-index: 2147483550; top: 0; left: 0; background: #ff0; opacity: 0.05; _filter: alpha(opacity=5);";
 
-var inspectModelOpacity = isIE ? "filter:alpha(opacity=80);" : "opacity:0.8;";
-var inspectModelStyle = inspectStyle + inspectModelOpacity;
-var inspectMarginStyle = inspectStyle + "background: #EDFF64; height:100%; width:100%;";
-var inspectBorderStyle = inspectStyle + "background: #666;";
-var inspectPaddingStyle = inspectStyle + "background: SlateBlue;";
-var inspectContentStyle = inspectStyle + "background: SkyBlue;";
+let inspectModelOpacity = isIE ? "filter:alpha(opacity=80);" : "opacity:0.8;";
+let inspectModelStyle = inspectStyle + inspectModelOpacity;
+let inspectMarginStyle = inspectStyle + "background: #EDFF64; height:100%; width:100%;";
+let inspectBorderStyle = inspectStyle + "background: #666;";
+let inspectPaddingStyle = inspectStyle + "background: SlateBlue;";
+let inspectContentStyle = inspectStyle + "background: SkyBlue;";
 
 
-var outlineStyle = { 
+let outlineStyle = { 
     fbHorizontalLine: "background: #3875D7;height: 2px;",
     fbVerticalLine: "background: #3875D7;width: 2px;"
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var lastInspecting = 0;
-var fbInspectFrame = null;
+let lastInspecting = 0;
+let fbInspectFrame = null;
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var outlineVisible = false;
-var outlineElements = {};
-var outline = {
+let outlineVisible = false;
+let outlineElements = {};
+let outline = {
   "fbOutlineT": "fbHorizontalLine",
   "fbOutlineL": "fbVerticalLine",
   "fbOutlineB": "fbHorizontalLine",
@@ -418,7 +418,7 @@ var outline = {
 };
 
 
-var getInspectingTarget = function()
+let getInspectingTarget = function()
 {
     
 };
@@ -426,7 +426,7 @@ var getInspectingTarget = function()
 // ************************************************************************************************
 // Section
 
-var createInspectorFrame = function createInspectorFrame()
+let createInspectorFrame = function createInspectorFrame()
 {
     fbInspectFrame = createGlobalElement("div");
     fbInspectFrame.id = "fbInspectFrame";
@@ -435,7 +435,7 @@ var createInspectorFrame = function createInspectorFrame()
     Firebug.browser.document.getElementsByTagName("body")[0].appendChild(fbInspectFrame);
 };
 
-var destroyInspectorFrame = function destroyInspectorFrame()
+let destroyInspectorFrame = function destroyInspectorFrame()
 {
     if (fbInspectFrame)
     {
@@ -444,11 +444,11 @@ var destroyInspectorFrame = function destroyInspectorFrame()
     }
 };
 
-var createOutlineInspector = function createOutlineInspector()
+let createOutlineInspector = function createOutlineInspector()
 {
-    for (var name in outline)
+    for (let name in outline)
     {
-        var el = outlineElements[name] = createGlobalElement("div");
+        let el = outlineElements[name] = createGlobalElement("div");
         el.id = name;
         el.firebugIgnore = true;
         el.style.cssText = inspectStyle + outlineStyle[outline[name]];
@@ -456,16 +456,16 @@ var createOutlineInspector = function createOutlineInspector()
     }
 };
 
-var destroyOutlineInspector = function destroyOutlineInspector()
+let destroyOutlineInspector = function destroyOutlineInspector()
 {
-    for (var name in outline)
+    for (let name in outline)
     {
-        var el = outlineElements[name];
+        let el = outlineElements[name];
         el.parentNode.removeChild(el);
     }
 };
 
-var createBoxModelInspector = function createBoxModelInspector()
+let createBoxModelInspector = function createBoxModelInspector()
 {
     boxModel = createGlobalElement("div");
     boxModel.id = "fbBoxModel";
@@ -500,7 +500,7 @@ var createBoxModelInspector = function createBoxModelInspector()
     offlineFragment.appendChild(boxModel);
 };
 
-var destroyBoxModelInspector = function destroyBoxModelInspector()
+let destroyBoxModelInspector = function destroyBoxModelInspector()
 {
     boxModel.parentNode.removeChild(boxModel);
 };

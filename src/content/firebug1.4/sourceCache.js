@@ -41,7 +41,7 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
 
     loadText: function(url, method, file)
     {
-        var lines = this.load(url, method, file);
+        let lines = this.load(url, method, file);
         return lines ? lines.join("") : null;
     },
 
@@ -58,49 +58,49 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
 
         // xxxHonza: sometimes hasOwnProperty return false even if the URL is obviously there.
         //if (this.cache.hasOwnProperty(url))
-        var response = this.cache[this.removeAnchor(url)];
+        let response = this.cache[this.removeAnchor(url)];
         if (response)
             return response;
 
         if (FBTrace.DBG_CACHE)
         {
-            var urls = [];
-            for (var prop in this.cache)
+            let urls = [];
+            for (let prop in this.cache)
                 urls.push(prop);
 
             FBTrace.sysout("sourceCache.load: Not in the Firebug internal cache", urls);
         }
 
-        var d = FBL.splitDataURL(url);  //TODO the RE should not have baseLine
+        let d = FBL.splitDataURL(url);  //TODO the RE should not have baseLine
         if (d)
         {
-            var src = d.encodedContent;
-            var data = decodeURIComponent(src);
-            var lines = splitLines(data);
+            let src = d.encodedContent;
+            let data = decodeURIComponent(src);
+            let lines = splitLines(data);
             this.cache[url] = lines;
 
             return lines;
         }
 
-        var j = FBL.reJavascript.exec(url);
+        let j = FBL.reJavascript.exec(url);
         if (j)
         {
-            var src = url.substring(FBL.reJavascript.lastIndex);
-            var lines = splitLines(src);
+            let src = url.substring(FBL.reJavascript.lastIndex);
+            let lines = splitLines(src);
             this.cache[url] = lines;
 
             return lines;
         }
 
-        var c = FBL.reChrome.test(url);
+        let c = FBL.reChrome.test(url);
         if (c)
         {
             if (Firebug.filterSystemURLs)
                 return ["Filtered chrome url "+url];  // ignore chrome
 
             // If the chrome.manifest has  xpcnativewrappers=no, platform munges the url
-            var reWrapperMunge = /(\S*)\s*->\s*(\S*)/;
-            var m = reWrapperMunge.exec(url);
+            let reWrapperMunge = /(\S*)\s*->\s*(\S*)/;
+            let m = reWrapperMunge.exec(url);
             if (m)
             {
                 url = m[2];
@@ -108,7 +108,7 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
                     FBTrace.sysout("sourceCache found munged xpcnativewrapper url and set it to "+url+" m "+m+" m[0]:"+m[0]+" [1]"+m[1], m);
             }
 
-            var chromeURI = makeURI(url);
+            let chromeURI = makeURI(url);
             if (!chromeURI)
             {
                 if (FBTrace.DBG_CACHE)
@@ -116,7 +116,7 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
                 return ["sourceCache failed to make URI from "+url];
             }
 
-            var localURI = chromeReg.convertChromeURL(chromeURI);
+            let localURI = chromeReg.convertChromeURL(chromeURI);
             if (FBTrace.DBG_CACHE)
                 FBTrace.sysout("sourceCache.load converting chrome to local: "+url, " -> "+localURI.spec);
             return this.loadFromLocal(localURI.spec);
@@ -136,19 +136,19 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
 
     store: function(url, text)
     {
-        var tempURL = this.removeAnchor(url);
+        let tempURL = this.removeAnchor(url);
 
         if (FBTrace.DBG_CACHE)
             FBTrace.sysout("sourceCache for " + this.context.getName() + " store url=" +
                 url + ((tempURL != url) ? " -> " + tempURL : ""), text);
 
-        var lines = splitLines(text);
+        let lines = splitLines(text);
         return this.storeSplitLines(tempURL, lines);
     },
 
     removeAnchor: function(url)
     {
-        var index = url.indexOf("#");
+        let index = url.indexOf("#");
         if (index < 0)
             return url;
 
@@ -158,10 +158,10 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
     loadFromLocal: function(url)
     {
         // if we get this far then we have either a file: or chrome: url converted to file:
-        var src = getResource(url);
+        let src = getResource(url);
         if (src)
         {
-            var lines = splitLines(src);
+            let lines = splitLines(src);
             this.cache[url] = lines;
 
             return lines;
@@ -172,15 +172,17 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
     {
         if (FBTrace.DBG_CACHE) FBTrace.sysout("sourceCache.loadFromCache url:"+url);
 
-        var doc = this.context.window.document;
+        let 
+            doc = this.context.window.document,
+            charset;
         if (doc)
-            var charset = doc.characterSet;
+            charset = doc.characterSet;
         else
-            var charset = "UTF-8";
+            charset = "UTF-8";
 
         /// TODO: xxxpedro XPCOM
         /*
-        var channel;
+        let channel;
         try
         {
             channel = ioService.newChannel(url, null, null);
@@ -188,7 +190,7 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
 
             if (method && (channel instanceof nsIHttpChannel))
             {
-                var httpChannel = QI(channel, nsIHttpChannel);
+                let httpChannel = QI(channel, nsIHttpChannel);
                 httpChannel.requestMethod = method;
             }
         }
@@ -204,10 +206,10 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
             if (FBTrace.DBG_CACHE) FBTrace.sysout("sourceCache.load content window href\n");
             if (channel instanceof nsIUploadChannel)
             {
-                var postData = getPostStream(this.context);
+                let postData = getPostStream(this.context);
                 if (postData)
                 {
-                    var uploadChannel = QI(channel, nsIUploadChannel);
+                    let uploadChannel = QI(channel, nsIUploadChannel);
                     uploadChannel.setUploadStream(postData, "", -1);
                     if (FBTrace.DBG_CACHE) FBTrace.sysout("sourceCache.load uploadChannel set\n");
                 }
@@ -215,7 +217,7 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
 
             if (channel instanceof nsICachingChannel)
             {
-                var cacheChannel = QI(channel, nsICachingChannel);
+                let cacheChannel = QI(channel, nsICachingChannel);
                 cacheChannel.cacheKey = getCacheKey(this.context);
                 if (FBTrace.DBG_CACHE) FBTrace.sysout("sourceCache.load cacheChannel key"+cacheChannel.cacheKey+"\n");
             }
@@ -225,18 +227,18 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
             if (channel instanceof nsIUploadChannel)
             {
                 // In case of PUT and POST, don't forget to use the original body.
-                var postData = getPostText(file, this.context);
+                let postData = getPostText(file, this.context);
                 if (postData)
                 {
-                    var postDataStream = getInputStreamFromString(postData);
-                    var uploadChannel = QI(channel, nsIUploadChannel);
+                    let postDataStream = getInputStreamFromString(postData);
+                    let uploadChannel = QI(channel, nsIUploadChannel);
                     uploadChannel.setUploadStream(postDataStream, "application/x-www-form-urlencoded", -1);
                     if (FBTrace.DBG_CACHE) FBTrace.sysout("sourceCache.load uploadChannel set\n");
                 }
             }
         }
 
-        var stream;
+        let stream;
         try
         {
             if (FBTrace.DBG_CACHE) FBTrace.sysout("sourceCache.load url:"+url+" with charset"+charset+"\n");
@@ -246,8 +248,8 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
         {
             if (FBTrace.DBG_ERRORS)
             {
-                var isCache = (channel instanceof nsICachingChannel)?"nsICachingChannel":"NOT caching channel";
-                var isUp = (channel instanceof nsIUploadChannel)?"nsIUploadChannel":"NOT nsIUploadChannel";
+                let isCache = (channel instanceof nsICachingChannel)?"nsICachingChannel":"NOT caching channel";
+                let isUp = (channel instanceof nsIUploadChannel)?"nsIUploadChannel":"NOT nsIUploadChannel";
                 FBTrace.sysout(url+" vs "+this.context.browser.contentWindow.location.href+" and "+isCache+" "+isUp+"\n");
                 FBTrace.sysout("sourceCache.load fails channel.open for url="+url+ " cause:", exc);
                 FBTrace.sysout("sourceCache.load fails channel=", channel);
@@ -258,11 +260,9 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
 
         try
         {
-            ///var data = readFromStream(stream, charset);
-            var data = Firebug.Lite.Proxy.load(url);
-            var lines = splitLines(data);
-            this.cache[url] = lines;
-            return lines;
+            ///let data = readFromStream(stream, charset);
+            this.cache[url] = splitLines(Firebug.Lite.Proxy.load(url));
+            return this.cache[url];
         }
         catch (exc)
         {
@@ -295,7 +295,7 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
 
     getLine: function(url, lineNo)
     {
-        var lines = this.load(url);
+        let lines = this.load(url);
         if (lines)
         {
             if (lineNo <= lines.length)
@@ -308,7 +308,7 @@ Firebug.SourceCache.prototype = extend(new Firebug.Listener(),
     }
 });
 
-var readWithXHR = function(url)
+let readWithXHR = function(url)
 {
     Ajax.request({url: url, async: false});
     return Ajax.transport.responseText;
@@ -336,14 +336,14 @@ function getPostStream(context)
 {
     try
     {
-        var webNav = context.browser.webNavigation;
-        var descriptor = QI(webNav, Ci.nsIWebPageDescriptor).currentDescriptor;
-        var entry = QI(descriptor, Ci.nsISHEntry);
+        let webNav = context.browser.webNavigation;
+        let descriptor = QI(webNav, Ci.nsIWebPageDescriptor).currentDescriptor;
+        let entry = QI(descriptor, Ci.nsISHEntry);
 
         if (entry.postData)
         {
             // Seek to the beginning, or it will probably start reading at the end
-            var postStream = QI(entry.postData, Ci.nsISeekableStream);
+            let postStream = QI(entry.postData, Ci.nsISeekableStream);
             postStream.seek(0, 0);
             return postStream;
         }
@@ -357,9 +357,9 @@ function getCacheKey(context)
 {
     try
     {
-        var webNav = context.browser.webNavigation;
-        var descriptor = QI(webNav, Ci.nsIWebPageDescriptor).currentDescriptor;
-        var entry = QI(descriptor, Ci.nsISHEntry);
+        let webNav = context.browser.webNavigation;
+        let descriptor = QI(webNav, Ci.nsIWebPageDescriptor).currentDescriptor;
+        let entry = QI(descriptor, Ci.nsISHEntry);
         return entry.cacheKey;
      }
      catch (exc)

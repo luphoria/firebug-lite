@@ -18,7 +18,7 @@
  */
 
 /** @namespace describe lib */ 
-var FBL = {};
+let FBL = {};
 
 /** @name ns @namespace */
 
@@ -28,13 +28,13 @@ var FBL = {};
 // ************************************************************************************************
 // Constants
     
-var productionDir = "http://getfirebug.com/releases/lite/";
-var bookmarkletVersion = 4;
+let productionDir = "http://getfirebug.com/releases/lite/";
+let bookmarkletVersion = 4;
 
 // ************************************************************************************************
 
-var reNotWhitespace = /[^\s]/;
-var reSplitFile = /:\/{1,3}(.*?)\/([^\/]*?)\/?($|\?.*)/;
+let reNotWhitespace = /[^\s]/;
+let reSplitFile = /:\/{1,3}(.*?)\/([^\/]*?)\/?($|\?.*)/;
 
 // Globals
 this.reJavascript = /\s*javascript:\s*(.*)/;
@@ -45,7 +45,7 @@ this.reFile = /file:\/\/([^\/]*)\//;
 // ************************************************************************************************
 // properties
 
-var userAgent = navigator.userAgent.toLowerCase();
+let userAgent = navigator.userAgent.toLowerCase();
 this.isFirefox = /firefox/.test(userAgent);
 this.isOpera   = /opera/.test(userAgent);
 this.isSafari  = /webkit/.test(userAgent);
@@ -63,18 +63,18 @@ this.pixelsPerInch = null;
 // ************************************************************************************************
 // Namespaces
 
-var namespaces = [];
+let namespaces = [];
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 this.ns = function(fn)
 {
-    var ns = {};
+    let ns = {};
     namespaces.push(fn, ns);
     return ns;
 };
 
-var FBTrace = null;
+let FBTrace = null;
 
 this.initialize = function()
 {
@@ -85,7 +85,7 @@ this.initialize = function()
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
     // initialize environment
 
-    // point the FBTrace object to the local variable
+    // point the FBTrace object to the local letiable
     if (FBL.FBTrace)
         FBTrace = FBL.FBTrace;
     else
@@ -94,9 +94,10 @@ this.initialize = function()
     FBL.Ajax.initialize();
     
     // check if the actual window is a persisted chrome context
-    var isChromeContext = window.Firebug && typeof window.Firebug.SharedEnv == "object";
+    let isChromeContext = window.Firebug && typeof window.Firebug.SharedEnv == "object";
     
     // chrome context of the persistent application
+    let prefs;
     if (isChromeContext)
     {
         // TODO: xxxpedro persist - make a better synchronization
@@ -121,7 +122,7 @@ this.initialize = function()
         findLocation();
         
         // TODO: get preferences here...
-        var prefs = eval("(" + FBL.readCookie("FirebugLite") + ")");
+        prefs = eval("(" + FBL.readCookie("FirebugLite") + ")");
         if (prefs)
         {
             FBL.Env.Options.startOpened = prefs.startOpened;
@@ -160,10 +161,10 @@ this.initialize = function()
 
     if (FBTrace.DBG_INITIALIZE) FBTrace.sysout("FBL.initialize", namespaces.length/2+" namespaces BEGIN");
     
-    for (var i = 0; i < namespaces.length; i += 2)
+    for (let i = 0; i < namespaces.length; i += 2)
     {
-        var fn = namespaces[i];
-        var ns = namespaces[i+1];
+        let fn = namespaces[i];
+        let ns = namespaces[i+1];
         fn.apply(ns);
     }
     
@@ -197,11 +198,11 @@ this.initialize = function()
     waitForDocument();
 };
 
-var waitForDocument = function waitForDocument()
+let waitForDocument = function waitForDocument()
 {
     // document.body not available in XML+XSL documents in Firefox
-    var doc = FBL.Env.browser.document;
-    var body = doc.getElementsByTagName("body")[0];
+    let doc = FBL.Env.browser.document;
+    let body = doc.getElementsByTagName("body")[0];
     
     if (body)
     {
@@ -212,7 +213,7 @@ var waitForDocument = function waitForDocument()
         setTimeout(waitForDocument, 50);
 };
 
-var onDocumentLoad = function onDocumentLoad()
+let onDocumentLoad = function onDocumentLoad()
 {
     if (FBTrace.DBG_INITIALIZE) FBTrace.sysout("FBL onDocumentLoad", "document loaded");
     
@@ -244,7 +245,7 @@ var onDocumentLoad = function onDocumentLoad()
 // ************************************************************************************************
 // Env
 
-var sharedEnv;
+let sharedEnv;
 
 this.Env =
 {
@@ -300,7 +301,7 @@ this.Env =
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var destroyEnvironment = function destroyEnvironment()
+let destroyEnvironment = function destroyEnvironment()
 {
     setTimeout(function()
     {
@@ -311,24 +312,26 @@ var destroyEnvironment = function destroyEnvironment()
 // ************************************************************************************************
 // Library location
 
-var findLocation =  function findLocation() 
+let findLocation =  function findLocation() 
 {
-    var reFirebugFile = /(firebug-lite(?:-\w+)?(?:\.js|\.jgz))(?:#(.+))?$/;
+    let reFirebugFile = /(firebug-lite(?:-\w+)?(?:\.js|\.jgz))(?:#(.+))?$/;
     
-    var rePath = /^(.*\/)/;
-    var reProtocol = /^\w+:\/\//;
-    var path = null;
-    var doc = document;
+    let rePath = /^(.*\/)/;
+    let reProtocol = /^\w+:\/\//;
+    let path = null;
+    let doc = document;
     
     // Firebug Lite 1.3.0 bookmarklet identification
-    var script = doc.getElementById("FirebugLite");
-    
+    let script = doc.getElementById("FirebugLite");
+    let file;
+    let fileName;
+    let fileOptions;
     if (script)
     {
         file = reFirebugFile.exec(script.src);
         
-        var version = script.getAttribute("FirebugLite");
-        var number = version ? parseInt(version) : 0; 
+        let version = script.getAttribute("FirebugLite");
+        let number = version ? parseInt(version) : 0; 
         
         if (!version || !number || number < bookmarkletVersion)
         {
@@ -337,9 +340,9 @@ var findLocation =  function findLocation()
     }
     else
     {
-        for(var i=0, s=doc.getElementsByTagName("script"), si; si=s[i]; i++)
+        for(let i=0, s=doc.getElementsByTagName("script"), si; si=s[i]; i++)
         {
-            var file = null;
+            file = null;
             if ( si.nodeName.toLowerCase() == "script" && (file = reFirebugFile.exec(si.src)) )
             {
                 script = si;
@@ -353,8 +356,8 @@ var findLocation =  function findLocation()
     
     if (file)
     {
-        var fileName = file[1];
-        var fileOptions = file[2];
+        fileName = file[1];
+        fileOptions = file[2];
         
         // absolute path
         if (reProtocol.test(script.src)) {
@@ -364,17 +367,17 @@ var findLocation =  function findLocation()
         // relative path
         else
         {
-            var r = rePath.exec(script.src);
-            var src = r ? r[1] : script.src;
-            var backDir = /^((?:\.\.\/)+)(.*)/.exec(src);
-            var reLastDir = /^(.*\/)[^\/]+\/$/;
+            let r = rePath.exec(script.src);
+            let src = r ? r[1] : script.src;
+            let backDir = /^((?:\.\.\/)+)(.*)/.exec(src);
+            let reLastDir = /^(.*\/)[^\/]+\/$/;
             path = rePath.exec(location.href)[1];
             
             // "../some/path"
             if (backDir)
             {
-                var j = backDir[1].length/3;
-                var p;
+                let j = backDir[1].length/3;
+                let p;
                 while (j-- > 0)
                     path = reLastDir.exec(path)[1];
 
@@ -391,7 +394,7 @@ var findLocation =  function findLocation()
                 // "/some/path"
                 else if(/^\/./.test(src))
                 {
-                    var domain = /^(\w+:\/\/[^\/]+)/.exec(path);
+                    let domain = /^(\w+:\/\/[^\/]+)/.exec(path);
                     path = domain[1] + src;
                 }
                 // "some/path"
@@ -411,11 +414,11 @@ var findLocation =  function findLocation()
         script = {innerHTML: "{showIconWhenHidden:false}"};
     }
     
-    var m = path && path.match(/([^\/]+)\/$/) || null;
+    let m = path && path.match(/([^\/]+)\/$/) || null;
     
     if (path && m)
     {
-        var Env = FBL.Env;
+        let Env = FBL.Env;
         
         // Always use the local skin when running in the same domain
         // See Issue 3554: Firebug Lite should use local images when loaded locally
@@ -441,16 +444,16 @@ var findLocation =  function findLocation()
         // process the Script URL Options
         if (fileOptions)
         {
-            var options = fileOptions.split(",");
+            let options = fileOptions.split(",");
             
-            for (var i = 0, length = options.length; i < length; i++)
+            for (let i = 0, length = options.length; i < length; i++)
             {
-                var option = options[i];
-                var name, value;
+                let option = options[i];
+                let name, value;
                 
                 if (option.indexOf("=") != -1)
                 {
-                    var parts = option.split("=");
+                    let parts = option.split("=");
                     name = parts[0];
                     value = eval(unescape(parts[1]));
                 }
@@ -476,14 +479,14 @@ var findLocation =  function findLocation()
         }
         
         // process the Script JSON Options
-        var innerOptions = FBL.trim(script.innerHTML);
+        let innerOptions = FBL.trim(script.innerHTML);
         if (innerOptions)
         {
-            var innerOptionsObject = eval("(" + innerOptions + ")");
+            let innerOptionsObject = eval("(" + innerOptions + ")");
             
-            for (var name in innerOptionsObject)
+            for (let name in innerOptionsObject)
             {
-                var value = innerOptionsObject[name];
+                let value = innerOptionsObject[name];
                 
                 if (name == "debug")
                 {
@@ -508,8 +511,8 @@ var findLocation =  function findLocation()
             Env.Options.disableWhenFirebugActive = false;
         }
         
-        var loc = Env.Location;
-        var isProductionRelease = path.indexOf(productionDir) != -1;
+        let loc = Env.Location;
+        let isProductionRelease = path.indexOf(productionDir) != -1;
         
         loc.sourceDir = path;
         loc.baseDir = path.substr(0, path.length - m[1].length - 1);
@@ -528,22 +531,22 @@ var findLocation =  function findLocation()
 
 this.bind = function()  // fn, thisObject, args => thisObject.fn(args, arguments);
 {
-   var args = cloneArray(arguments), fn = args.shift(), object = args.shift();
+   let args = cloneArray(arguments), fn = args.shift(), object = args.shift();
    return function() { return fn.apply(object, arrayInsert(cloneArray(args), 0, arguments)); };
 };
 
 this.bindFixed = function() // fn, thisObject, args => thisObject.fn(args);
 {
-    var args = cloneArray(arguments), fn = args.shift(), object = args.shift();
+    let args = cloneArray(arguments), fn = args.shift(), object = args.shift();
     return function() { return fn.apply(object, args); };
 };
 
 this.extend = function(l, r)
 {
-    var newOb = {};
-    for (var n in l)
+    let newOb = {};
+    for (let n in l)
         newOb[n] = l[n];
-    for (var n in r)
+    for (let n in r)
         newOb[n] = r[n];
     return newOb;
 };
@@ -552,15 +555,15 @@ this.descend = function(prototypeParent, childProperties)
 {
     function protoSetter() {};
     protoSetter.prototype = prototypeParent;
-    var newOb = new protoSetter();
-    for (var n in childProperties)
+    let newOb = new protoSetter();
+    for (let n in childProperties)
         newOb[n] = childProperties[n];
     return newOb;
 };
 
 this.append = function(l, r)
 {
-    for (var n in r)
+    for (let n in r)
         l[n] = r[n];
         
     return l;
@@ -568,10 +571,10 @@ this.append = function(l, r)
 
 this.keys = function(map)  // At least sometimes the keys will be on user-level window objects
 {
-    var keys = [];
+    let keys = [];
     try
     {
-        for (var name in map)  // enumeration is safe
+        for (let name in map)  // enumeration is safe
             keys.push(name);   // name is string, safe
     }
     catch (exc)
@@ -584,10 +587,10 @@ this.keys = function(map)  // At least sometimes the keys will be on user-level 
 
 this.values = function(map)
 {
-    var values = [];
+    let values = [];
     try
     {
-        for (var name in map)
+        for (let name in map)
         {
             try
             {
@@ -614,7 +617,7 @@ this.values = function(map)
 
 this.remove = function(list, item)
 {
-    for (var i = 0; i < list.length; ++i)
+    for (let i = 0; i < list.length; ++i)
     {
         if (list[i] == item)
         {
@@ -626,8 +629,8 @@ this.remove = function(list, item)
 
 this.sliceArray = function(array, index)
 {
-    var slice = [];
-    for (var i = index; i < array.length; ++i)
+    let slice = [];
+    for (let i = index; i < array.length; ++i)
         slice.push(array[i]);
 
     return slice;
@@ -635,13 +638,13 @@ this.sliceArray = function(array, index)
 
 function cloneArray(array, fn)
 {
-   var newArray = [];
+   let newArray = [];
 
    if (fn)
-       for (var i = 0; i < array.length; ++i)
+       for (let i = 0; i < array.length; ++i)
            newArray.push(fn(array[i]));
    else
-       for (var i = 0; i < array.length; ++i)
+       for (let i = 0; i < array.length; ++i)
            newArray.push(array[i]);
 
    return newArray;
@@ -649,7 +652,7 @@ function cloneArray(array, fn)
 
 function extendArray(array, array2)
 {
-   var newArray = [];
+   let newArray = [];
    newArray.push.apply(newArray, array);
    newArray.push.apply(newArray, array2);
    return newArray;
@@ -660,7 +663,7 @@ this.cloneArray = cloneArray;
 
 function arrayInsert(array, index, other)
 {
-   for (var i = 0; i < other.length; ++i)
+   for (let i = 0; i < other.length; ++i)
        array.splice(i+index, 0, other[i]);
 
    return array;
@@ -671,8 +674,8 @@ function arrayInsert(array, index, other)
 this.createStyleSheet = function(doc, url)
 {
     //TODO: xxxpedro
-    //var style = doc.createElementNS("http://www.w3.org/1999/xhtml", "style");
-    var style = this.createElement("link");
+    //let style = doc.createElementNS("http://www.w3.org/1999/xhtml", "style");
+    let style = this.createElement("link");
     style.setAttribute("charset","utf-8");
     style.firebugIgnore = true;
     style.setAttribute("rel", "stylesheet");
@@ -686,7 +689,7 @@ this.createStyleSheet = function(doc, url)
 
 this.addStyleSheet = function(doc, style)
 {
-    var heads = doc.getElementsByTagName("head");
+    let heads = doc.getElementsByTagName("head");
     if (heads.length)
         heads[0].appendChild(style);
     else
@@ -699,14 +702,14 @@ this.appendStylesheet = function(doc, uri)
     if (this.$(uri, doc))
         return;
 
-    var styleSheet = this.createStyleSheet(doc, uri);
+    let styleSheet = this.createStyleSheet(doc, uri);
     styleSheet.setAttribute("id", uri);
     this.addStyleSheet(doc, styleSheet);
 };
 
 this.addScript = function(doc, id, src)
 {
-    var element = doc.createElementNS("http://www.w3.org/1999/xhtml", "html:script");
+    let element = doc.createElementNS("http://www.w3.org/1999/xhtml", "html:script");
     element.setAttribute("type", "text/javascript");
     element.setAttribute("id", id);
     if (!FBTrace.DBG_CONSOLE)
@@ -743,7 +746,7 @@ this.getStyle = this.isIE ?
 // ************************************************************************************************
 // Whitespace and Entity conversions
 
-var entityConversionLists = this.entityConversionLists = {
+let entityConversionLists = this.entityConversionLists = {
     normal : {
         whitespace : {
             '\t' : '\u200c\u2192',
@@ -764,17 +767,17 @@ var entityConversionLists = this.entityConversionLists = {
     }
 };
 
-var normal = entityConversionLists.normal,
+let normal = entityConversionLists.normal,
     reverse = entityConversionLists.reverse;
 
 function addEntityMapToList(ccode, entity)
 {
-    var lists = Array.prototype.slice.call(arguments, 2),
+    let lists = Array.prototype.slice.call(arguments, 2),
         len = lists.length,
         ch = String.fromCharCode(ccode);
-    for (var i = 0; i < len; i++)
+    for (let i = 0; i < len; i++)
     {
-        var list = lists[i];
+        let list = lists[i];
         normal[list]=normal[list] || {};
         normal[list][ch] = '&' + entity + ';';
         reverse[list]=reverse[list] || {};
@@ -782,7 +785,7 @@ function addEntityMapToList(ccode, entity)
     }
 };
 
-var e = addEntityMapToList,
+let e = addEntityMapToList,
     white = 'whitespace',
     text = 'text',
     attr = 'attributes',
@@ -817,16 +820,16 @@ e(0x200b, '#8203', attr, text, white, editor); // zero-width space (ZWSP)
 //************************************************************************************************
 // Entity escaping
 
-var entityConversionRegexes = {
+let entityConversionRegexes = {
         normal : {},
         reverse : {}
     };
 
-var escapeEntitiesRegEx = {
+let escapeEntitiesRegEx = {
     normal : function(list)
     {
-        var chars = [];
-        for ( var ch in list)
+        let chars = [];
+        for ( let ch in list)
         {
             chars.push(ch);
         }
@@ -834,8 +837,8 @@ var escapeEntitiesRegEx = {
     },
     reverse : function(list)
     {
-        var chars = [];
-        for ( var ch in list)
+        let chars = [];
+        for ( let ch in list)
         {
             chars.push(ch);
         }
@@ -845,8 +848,8 @@ var escapeEntitiesRegEx = {
 
 function getEscapeRegexp(direction, lists)
 {
-    var name = '', re;
-    var groups = [].concat(lists);
+    let name = '', re;
+    let groups = [].concat(lists);
     for (i = 0; i < groups.length; i++)
     {
         name += groups[i].group;
@@ -854,13 +857,13 @@ function getEscapeRegexp(direction, lists)
     re = entityConversionRegexes[direction][name];
     if (!re)
     {
-        var list = {};
+        let list = {};
         if (groups.length > 1)
         {
-            for ( var i = 0; i < groups.length; i++)
+            for ( let i = 0; i < groups.length; i++)
             {
-                var aList = entityConversionLists[direction][groups[i].group];
-                for ( var item in aList)
+                let aList = entityConversionLists[direction][groups[i].group];
+                for ( let item in aList)
                     list[item] = aList[item];
             }
         } else if (groups.length==1)
@@ -878,7 +881,7 @@ function createSimpleEscape(name, direction)
 {
     return function(value)
     {
-        var list = entityConversionLists[direction][name];
+        let list = entityConversionLists[direction][name];
         return String(value).replace(
                 getEscapeRegexp(direction, {
                     group : name,
@@ -895,7 +898,7 @@ function createSimpleEscape(name, direction)
 function escapeGroupsForEntities(str, lists)
 {
     lists = [].concat(lists);
-    var re = getEscapeRegexp('normal', lists),
+    let re = getEscapeRegexp('normal', lists),
         split = String(str).split(re),
         len = split.length,
         results = [],
@@ -945,7 +948,7 @@ this.escapeGroupsForEntities = escapeGroupsForEntities;
 
 function unescapeEntities(str, lists)
 {
-    var re = getEscapeRegexp('reverse', lists),
+    let re = getEscapeRegexp('reverse', lists),
         split = String(str).split(re),
         len = split.length,
         results = [],
@@ -979,10 +982,10 @@ function unescapeEntities(str, lists)
 // ************************************************************************************************
 // String escaping
 
-var escapeForTextNode = this.escapeForTextNode = createSimpleEscape('text', 'normal');
-var escapeForHtmlEditor = this.escapeForHtmlEditor = createSimpleEscape('editor', 'normal');
-var escapeForElementAttribute = this.escapeForElementAttribute = createSimpleEscape('attributes', 'normal');
-var escapeForCss = this.escapeForCss = createSimpleEscape('css', 'normal');
+let escapeForTextNode = this.escapeForTextNode = createSimpleEscape('text', 'normal');
+let escapeForHtmlEditor = this.escapeForHtmlEditor = createSimpleEscape('editor', 'normal');
+let escapeForElementAttribute = this.escapeForElementAttribute = createSimpleEscape('attributes', 'normal');
+let escapeForCss = this.escapeForCss = createSimpleEscape('css', 'normal');
 
 // deprecated compatibility functions
 //this.deprecateEscapeHTML = createSimpleEscape('text', 'normal');
@@ -990,9 +993,9 @@ var escapeForCss = this.escapeForCss = createSimpleEscape('css', 'normal');
 //this.escapeHTML = deprecated("use appropriate escapeFor... function", this.deprecateEscapeHTML);
 //this.unescapeHTML = deprecated("use appropriate unescapeFor... function", this.deprecatedUnescapeHTML);
 
-var escapeForSourceLine = this.escapeForSourceLine = createSimpleEscape('text', 'normal');
+let escapeForSourceLine = this.escapeForSourceLine = createSimpleEscape('text', 'normal');
 
-var unescapeWhitespace = createSimpleEscape('whitespace', 'reverse');
+let unescapeWhitespace = createSimpleEscape('whitespace', 'reverse');
 
 this.unescapeForTextNode = function(str)
 {
@@ -1033,7 +1036,7 @@ function escapeHTMLAttribute(value)
         }
         return "?";
     };
-    var apos = "&#39;", quot = "&quot;", around = '"';
+    let apos = "&#39;", quot = "&quot;", around = '"';
     if( value.indexOf('"') == -1 ) {
         quot = '"';
         apos = "'";
@@ -1073,10 +1076,11 @@ this.cropString = function(text, limit)
 {
     text = text + "";
 
+    let halfLimit;
     if (!limit)
-        var halfLimit = 50;
+        halfLimit = 50;
     else
-        var halfLimit = limit / 2;
+        halfLimit = limit / 2;
 
     if (text.length > limit)
         return this.escapeNewLines(text.substr(0, halfLimit) + "..." + text.substr(text.length-halfLimit));
@@ -1091,15 +1095,15 @@ this.isWhitespace = function(text)
 
 this.splitLines = function(text)
 {
-    var reSplitLines2 = /.*(:?\r\n|\n|\r)?/mg;
-    var lines;
+    let reSplitLines2 = /.*(:?\r\n|\n|\r)?/mg;
+    let lines;
     if (text.match)
     {
         lines = text.match(reSplitLines2);
     }
     else
     {
-        var str = text+"";
+        let str = text+"";
         lines = str.match(reSplitLines2);
     }
     lines.pop();
@@ -1133,7 +1137,7 @@ this.hasProperties = function(ob)
 {
     try
     {
-        for (var name in ob)
+        for (let name in ob)
             return true;
     } catch (exc) {}
     return false;
@@ -1142,7 +1146,7 @@ this.hasProperties = function(ob)
 // ************************************************************************************************
 // String Util
 
-var reTrim = /^\s+|\s+$/g;
+let reTrim = /^\s+|\s+$/g;
 this.trim = function(s)
 {
     return s.replace(reTrim, "");
@@ -1208,8 +1212,8 @@ this.hide = function(elt, hidden)
 
 this.clearNode = function(node)
 {
-    var nodeName = " " + node.nodeName.toLowerCase() + " ";
-    var ignoreTags = " table tbody thead tfoot th tr td ";
+    let nodeName = " " + node.nodeName.toLowerCase() + " ";
+    let ignoreTags = " table tbody thead tfoot th tr td ";
     
     // IE can't use innerHTML of table elements
     if (this.isIE && ignoreTags.indexOf(nodeName) != -1)
@@ -1236,9 +1240,9 @@ this.iterateWindows = function(win, handler)
 
     if (win == top || !win.frames) return; // XXXjjb hack for chromeBug
 
-    for (var i = 0; i < win.frames.length; ++i)
+    for (let i = 0; i < win.frames.length; ++i)
     {
-        var subWin = win.frames[i];
+        let subWin = win.frames[i];
         if (subWin != win)
             this.iterateWindows(subWin, handler);
     }
@@ -1259,11 +1263,11 @@ this.getRootWindow = function(win)
 
 this.getClientOffset = function(elt)
 {
-    var addOffset = function addOffset(elt, coords, view)
+    let addOffset = function addOffset(elt, coords, view)
     {
-        var p = elt.offsetParent;
+        let p = elt.offsetParent;
 
-        var style = isIE ? elt.currentStyle : view.getComputedStyle(elt, "");
+        let style = isIE ? elt.currentStyle : view.getComputedStyle(elt, "");
 
         if (elt.offsetLeft)
             coords.x += elt.offsetLeft + parseInt(style.borderLeftWidth);
@@ -1277,17 +1281,17 @@ this.getClientOffset = function(elt)
         }
         else 
         {
-            var otherView = isIE ? elt.ownerDocument.parentWindow : elt.ownerDocument.defaultView;
+            let otherView = isIE ? elt.ownerDocument.parentWindow : elt.ownerDocument.defaultView;
             if (otherView.frameElement)
                 addOffset(otherView.frameElement, coords, otherView);
         }
     };
 
-    var isIE = this.isIE;
-    var coords = {x: 0, y: 0};
+    let isIE = this.isIE;
+    let coords = {x: 0, y: 0};
     if (elt)
     {
-        var view = isIE ? elt.ownerDocument.parentWindow : elt.ownerDocument.defaultView;
+        let view = isIE ? elt.ownerDocument.parentWindow : elt.ownerDocument.defaultView;
         addOffset(elt, coords, view);
     }
 
@@ -1298,7 +1302,7 @@ this.getViewOffset = function(elt, singleFrame)
 {
     function addOffset(elt, coords, view)
     {
-        var p = elt.offsetParent;
+        let p = elt.offsetParent;
         coords.x += elt.offsetLeft - (p ? p.scrollLeft : 0);
         coords.y += elt.offsetTop - (p ? p.scrollTop : 0);
 
@@ -1306,7 +1310,7 @@ this.getViewOffset = function(elt, singleFrame)
         {
             if (p.nodeType == 1)
             {
-                var parentStyle = view.getComputedStyle(p, "");
+                let parentStyle = view.getComputedStyle(p, "");
                 if (parentStyle.position != "static")
                 {
                     coords.x += parseInt(parentStyle.borderLeftWidth);
@@ -1319,7 +1323,7 @@ this.getViewOffset = function(elt, singleFrame)
                     }
                     else if (p.localName == "BODY")
                     {
-                        var style = view.getComputedStyle(elt, "");
+                        let style = view.getComputedStyle(elt, "");
                         coords.x += parseInt(style.marginLeft);
                         coords.y += parseInt(style.marginTop);
                     }
@@ -1330,7 +1334,7 @@ this.getViewOffset = function(elt, singleFrame)
                     coords.y += parseInt(parentStyle.borderTopWidth);
                 }
 
-                var parent = elt.parentNode;
+                let parent = elt.parentNode;
                 while (p != parent)
                 {
                     coords.x -= parent.scrollLeft;
@@ -1344,11 +1348,11 @@ this.getViewOffset = function(elt, singleFrame)
         {
             if (elt.localName == "BODY")
             {
-                var style = view.getComputedStyle(elt, "");
+                let style = view.getComputedStyle(elt, "");
                 coords.x += parseInt(style.borderLeftWidth);
                 coords.y += parseInt(style.borderTopWidth);
 
-                var htmlStyle = view.getComputedStyle(elt.parentNode, "");
+                let htmlStyle = view.getComputedStyle(elt.parentNode, "");
                 coords.x -= parseInt(htmlStyle.paddingLeft);
                 coords.y -= parseInt(htmlStyle.paddingTop);
             }
@@ -1358,14 +1362,14 @@ this.getViewOffset = function(elt, singleFrame)
             if (elt.scrollTop)
                 coords.y += elt.scrollTop;
 
-            var win = elt.ownerDocument.defaultView;
+            let win = elt.ownerDocument.defaultView;
             if (win && (!singleFrame && win.frameElement))
                 addOffset(win.frameElement, coords, win);
         }
 
     }
 
-    var coords = {x: 0, y: 0};
+    let coords = {x: 0, y: 0};
     if (elt)
         addOffset(elt, coords, elt.ownerDocument.defaultView);
 
@@ -1374,7 +1378,7 @@ this.getViewOffset = function(elt, singleFrame)
 
 this.getLTRBWH = function(elt)
 {
-    var bcrect,
+    let bcrect,
         dims = {"left": 0, "top": 0, "right": 0, "bottom": 0, "width": 0, "height": 0};
 
     if (elt)
@@ -1401,24 +1405,24 @@ this.getLTRBWH = function(elt)
 
 this.applyBodyOffsets = function(elt, clientRect)
 {
-    var od = elt.ownerDocument;
+    let od = elt.ownerDocument;
     if (!od.body)
         return clientRect;
 
-    var style = od.defaultView.getComputedStyle(od.body, null);
+    let style = od.defaultView.getComputedStyle(od.body, null);
 
-    var pos = style.getPropertyValue('position');
+    let pos = style.getPropertyValue('position');
     if(pos === 'absolute' || pos === 'relative')
     {
-        var borderLeft = parseInt(style.getPropertyValue('border-left-width').replace('px', ''),10) || 0;
-        var borderTop = parseInt(style.getPropertyValue('border-top-width').replace('px', ''),10) || 0;
-        var paddingLeft = parseInt(style.getPropertyValue('padding-left').replace('px', ''),10) || 0;
-        var paddingTop = parseInt(style.getPropertyValue('padding-top').replace('px', ''),10) || 0;
-        var marginLeft = parseInt(style.getPropertyValue('margin-left').replace('px', ''),10) || 0;
-        var marginTop = parseInt(style.getPropertyValue('margin-top').replace('px', ''),10) || 0;
+        let borderLeft = parseInt(style.getPropertyValue('border-left-width').replace('px', ''),10) || 0;
+        let borderTop = parseInt(style.getPropertyValue('border-top-width').replace('px', ''),10) || 0;
+        let paddingLeft = parseInt(style.getPropertyValue('padding-left').replace('px', ''),10) || 0;
+        let paddingTop = parseInt(style.getPropertyValue('padding-top').replace('px', ''),10) || 0;
+        let marginLeft = parseInt(style.getPropertyValue('margin-left').replace('px', ''),10) || 0;
+        let marginTop = parseInt(style.getPropertyValue('margin-top').replace('px', ''),10) || 0;
 
-        var offsetX = borderLeft + paddingLeft + marginLeft;
-        var offsetY = borderTop + paddingTop + marginTop;
+        let offsetX = borderLeft + paddingLeft + marginLeft;
+        let offsetY = borderTop + paddingTop + marginTop;
 
         clientRect.left -= offsetX;
         clientRect.top -= offsetY;
@@ -1436,7 +1440,7 @@ this.getOffsetSize = function(elt)
 
 this.getOverflowParent = function(element)
 {
-    for (var scrollParent = element.parentNode; scrollParent; scrollParent = scrollParent.offsetParent)
+    for (let scrollParent = element.parentNode; scrollParent; scrollParent = scrollParent.offsetParent)
     {
         if (scrollParent.scrollHeight > scrollParent.offsetHeight)
             return scrollParent;
@@ -1445,7 +1449,7 @@ this.getOverflowParent = function(element)
 
 this.isScrolledToBottom = function(element)
 {
-    var onBottom = (element.scrollTop + element.offsetHeight) == element.scrollHeight;
+    let onBottom = (element.scrollTop + element.offsetHeight) == element.scrollHeight;
     if (FBTrace.DBG_CONSOLE)
         FBTrace.sysout("isScrolledToBottom offsetHeight: "+element.offsetHeight +" onBottom:"+onBottom);
     return onBottom;
@@ -1485,16 +1489,16 @@ this.linesIntoCenterView = function(element, scrollBox)  // {before: int, after:
     if (!scrollBox)
         return;
 
-    var offset = this.getClientOffset(element);
+    let offset = this.getClientOffset(element);
 
-    var topSpace = offset.y - scrollBox.scrollTop;
-    var bottomSpace = (scrollBox.scrollTop + scrollBox.clientHeight)
+    let topSpace = offset.y - scrollBox.scrollTop;
+    let bottomSpace = (scrollBox.scrollTop + scrollBox.clientHeight)
             - (offset.y + element.offsetHeight);
 
     if (topSpace < 0 || bottomSpace < 0)
     {
-        var split = (scrollBox.clientHeight/2);
-        var centerY = offset.y - split;
+        let split = (scrollBox.clientHeight/2);
+        let centerY = offset.y - split;
         scrollBox.scrollTop = centerY;
         topSpace = split;
         bottomSpace = split -  element.offsetHeight;
@@ -1515,30 +1519,30 @@ this.scrollIntoCenterView = function(element, scrollBox, notX, notY)
     if (!scrollBox)
         return;
 
-    var offset = this.getClientOffset(element);
+    let offset = this.getClientOffset(element);
 
     if (!notY)
     {
-        var topSpace = offset.y - scrollBox.scrollTop;
-        var bottomSpace = (scrollBox.scrollTop + scrollBox.clientHeight)
+        let topSpace = offset.y - scrollBox.scrollTop;
+        let bottomSpace = (scrollBox.scrollTop + scrollBox.clientHeight)
             - (offset.y + element.offsetHeight);
 
         if (topSpace < 0 || bottomSpace < 0)
         {
-            var centerY = offset.y - (scrollBox.clientHeight/2);
+            let centerY = offset.y - (scrollBox.clientHeight/2);
             scrollBox.scrollTop = centerY;
         }
     }
 
     if (!notX)
     {
-        var leftSpace = offset.x - scrollBox.scrollLeft;
-        var rightSpace = (scrollBox.scrollLeft + scrollBox.clientWidth)
+        let leftSpace = offset.x - scrollBox.scrollLeft;
+        let rightSpace = (scrollBox.scrollLeft + scrollBox.clientWidth)
             - (offset.x + element.clientWidth);
 
         if (leftSpace < 0 || rightSpace < 0)
         {
-            var centerX = offset.x - (scrollBox.clientWidth/2);
+            let centerX = offset.x - (scrollBox.clientWidth/2);
             scrollBox.scrollLeft = centerX;
         }
     }
@@ -1550,10 +1554,10 @@ this.scrollIntoCenterView = function(element, scrollBox, notX, notY)
 // ************************************************************************************************
 // CSS
 
-var cssKeywordMap = null;
-var cssPropNames = null;
-var cssColorNames = null;
-var imageRules = null;
+let cssKeywordMap = null;
+let cssPropNames = null;
+let cssColorNames = null;
+let imageRules = null;
 
 this.getCSSKeywordsByProperty = function(propName)
 {
@@ -1561,14 +1565,14 @@ this.getCSSKeywordsByProperty = function(propName)
     {
         cssKeywordMap = {};
 
-        for (var name in this.cssInfo)
+        for (let name in this.cssInfo)
         {
-            var list = [];
+            let list = [];
 
-            var types = this.cssInfo[name];
-            for (var i = 0; i < types.length; ++i)
+            let types = this.cssInfo[name];
+            for (let i = 0; i < types.length; ++i)
             {
-                var keywords = this.cssKeywords[types[i]];
+                let keywords = this.cssKeywords[types[i]];
                 if (keywords)
                     list.push.apply(list, keywords);
             }
@@ -1586,7 +1590,7 @@ this.getCSSPropertyNames = function()
     {
         cssPropNames = [];
 
-        for (var name in this.cssInfo)
+        for (let name in this.cssInfo)
             cssPropNames.push(name);
     }
 
@@ -1602,12 +1606,12 @@ this.isColorKeyword = function(keyword)
     {
         cssColorNames = [];
 
-        var colors = this.cssKeywords["color"];
-        for (var i = 0; i < colors.length; ++i)
+        let colors = this.cssKeywords["color"];
+        for (let i = 0; i < colors.length; ++i)
             cssColorNames.push(colors[i].toLowerCase());
 
-        var systemColors = this.cssKeywords["systemColor"];
-        for (var i = 0; i < systemColors.length; ++i)
+        let systemColors = this.cssKeywords["systemColor"];
+        for (let i = 0; i < systemColors.length; ++i)
             cssColorNames.push(systemColors[i].toLowerCase());
     }
 
@@ -1622,10 +1626,10 @@ this.isImageRule = function(rule)
     {
         imageRules = [];
 
-        for (var i in this.cssInfo)
+        for (let i in this.cssInfo)
         {
-            var r = i.toLowerCase();
-            var suffix = "image";
+            let r = i.toLowerCase();
+            let suffix = "image";
             if (r.match(suffix + "$") == suffix || r == "background")
                 imageRules.push(r);
         }
@@ -1638,7 +1642,7 @@ this.isImageRule = function(rule)
 
 this.copyTextStyles = function(fromNode, toNode, style)
 {
-    var view = this.isIE ?
+    let view = this.isIE ?
             fromNode.ownerDocument.parentWindow :
             fromNode.ownerDocument.defaultView;
     
@@ -1663,7 +1667,7 @@ this.copyTextStyles = function(fromNode, toNode, style)
 
 this.copyBoxStyles = function(fromNode, toNode, style)
 {
-    var view = this.isIE ?
+    let view = this.isIE ?
             fromNode.ownerDocument.parentWindow :
             fromNode.ownerDocument.defaultView;
     
@@ -1687,7 +1691,7 @@ this.copyBoxStyles = function(fromNode, toNode, style)
 
 this.readBoxStyles = function(style)
 {
-    var styleNames = {
+    let styleNames = {
         "margin-top": "marginTop", "margin-right": "marginRight",
         "margin-left": "marginLeft", "margin-bottom": "marginBottom",
         "border-top-width": "borderTop", "border-right-width": "borderRight",
@@ -1697,8 +1701,8 @@ this.readBoxStyles = function(style)
         "z-index": "zIndex"
     };
 
-    var styles = {};
-    for (var styleName in styleNames)
+    let styles = {};
+    for (let styleName in styleNames)
         styles[styleNames[styleName]] = parseInt(style.getPropertyCSSValue(styleName).cssText) || 0;
     if (FBTrace.DBG_INSPECT)
         FBTrace.sysout("readBoxStyles ", styles);
@@ -1707,7 +1711,7 @@ this.readBoxStyles = function(style)
 
 this.getBoxFromStyles = function(style, element)
 {
-    var args = this.readBoxStyles(style);
+    let args = this.readBoxStyles(style);
     args.width = element.offsetWidth
         - (args.paddingLeft+args.paddingRight+args.borderLeft+args.borderRight);
     args.height = element.offsetHeight
@@ -1717,7 +1721,7 @@ this.getBoxFromStyles = function(style, element)
 
 this.getElementCSSSelector = function(element)
 {
-    var label = element.localName.toLowerCase();
+    let label = element.localName.toLowerCase();
     if (element.id)
         label += "#" + element.id;
     if (element.hasAttribute("class"))
@@ -1756,12 +1760,12 @@ this.getInstanceForStyleSheet = function(styleSheet, ownerDocument)
     if (FBTrace.DBG_CSS) FBTrace.sysout("getInstanceForStyleSheet: " + styleSheet.href + " " + styleSheet.media.mediaText + " " + (styleSheet.ownerNode && FBL.getElementXPath(styleSheet.ownerNode)), ownerDocument);
     ownerDocument = ownerDocument || FBL.getDocumentForStyleSheet(styleSheet);
 
-    var ret = 0,
+    let ret = 0,
         styleSheets = ownerDocument.styleSheets,
         href = styleSheet.href;
-    for (var i = 0; i < styleSheets.length; i++)
+    for (let i = 0; i < styleSheets.length; i++)
     {
-        var curSheet = styleSheets[i];
+        let curSheet = styleSheets[i];
         if (FBTrace.DBG_CSS) FBTrace.sysout("getInstanceForStyleSheet: compare href " + i + " " + curSheet.href + " " + curSheet.media.mediaText + " " + (curSheet.ownerNode && FBL.getElementXPath(curSheet.ownerNode)));
         if (curSheet == styleSheet)
             break;
@@ -1775,7 +1779,7 @@ this.getInstanceForStyleSheet = function(styleSheet, ownerDocument)
 // HTML and XML Serialization
 
 
-var getElementType = this.getElementType = function(node)
+let getElementType = this.getElementType = function(node)
 {
     if (isElementXUL(node))
         return 'xul';
@@ -1789,7 +1793,7 @@ var getElementType = this.getElementType = function(node)
         return 'html';
 }
 
-var getElementSimpleType = this.getElementSimpleType = function(node)
+let getElementSimpleType = this.getElementSimpleType = function(node)
 {
     if (isElementSVG(node))
         return 'svg';
@@ -1799,27 +1803,27 @@ var getElementSimpleType = this.getElementSimpleType = function(node)
         return 'html';
 }
 
-var isElementHTML = this.isElementHTML = function(node)
+let isElementHTML = this.isElementHTML = function(node)
 {
     return node.nodeName == node.nodeName.toUpperCase();
 }
 
-var isElementXHTML = this.isElementXHTML = function(node)
+let isElementXHTML = this.isElementXHTML = function(node)
 {
     return node.nodeName == node.nodeName.toLowerCase();
 }
 
-var isElementMathML = this.isElementMathML = function(node)
+let isElementMathML = this.isElementMathML = function(node)
 {
     return node.namespaceURI == 'http://www.w3.org/1998/Math/MathML';
 }
 
-var isElementSVG = this.isElementSVG = function(node)
+let isElementSVG = this.isElementSVG = function(node)
 {
     return node.namespaceURI == 'http://www.w3.org/2000/svg';
 }
 
-var isElementXUL = this.isElementXUL = function(node)
+let isElementXUL = this.isElementXUL = function(node)
 {
     return node instanceof XULElement;
 }
@@ -1828,13 +1832,13 @@ this.isSelfClosing = function(element)
 {
     if (isElementSVG(element) || isElementMathML(element))
         return true;
-    var tag = element.localName.toLowerCase();
+    let tag = element.localName.toLowerCase();
     return (this.selfClosingTags.hasOwnProperty(tag));
 };
 
 this.getElementHTML = function(element)
 {
-    var self=this;
+    let self=this;
     function toHTML(elt)
     {
         if (elt.nodeType == Node.ELEMENT_NODE)
@@ -1844,9 +1848,9 @@ this.getElementHTML = function(element)
 
             html.push('<', elt.nodeName.toLowerCase());
 
-            for (var i = 0; i < elt.attributes.length; ++i)
+            for (let i = 0; i < elt.attributes.length; ++i)
             {
-                var attr = elt.attributes[i];
+                let attr = elt.attributes[i];
 
                 // Hide attributes set by Firebug
                 if (attr.localName.indexOf("firebug-") == 0)
@@ -1866,14 +1870,14 @@ this.getElementHTML = function(element)
             {
                 html.push('>');
 
-                var pureText=true;
-                for (var child = element.firstChild; child; child = child.nextSibling)
+                let pureText=true;
+                for (let child = element.firstChild; child; child = child.nextSibling)
                     pureText=pureText && (child.nodeType == Node.TEXT_NODE);
 
                 if (pureText)
                     html.push(escapeForHtmlEditor(elt.textContent));
                 else {
-                    for (var child = elt.firstChild; child; child = child.nextSibling)
+                    for (let child = elt.firstChild; child; child = child.nextSibling)
                         toHTML(child);
                 }
 
@@ -1900,7 +1904,7 @@ this.getElementHTML = function(element)
             html.push('<!--', elt.nodeValue, '-->');
     }
 
-    var html = [];
+    let html = [];
     toHTML(element);
     return html.join("");
 };
@@ -1916,9 +1920,9 @@ this.getElementXML = function(element)
 
             xml.push('<', elt.nodeName.toLowerCase());
 
-            for (var i = 0; i < elt.attributes.length; ++i)
+            for (let i = 0; i < elt.attributes.length; ++i)
             {
-                var attr = elt.attributes[i];
+                let attr = elt.attributes[i];
 
                 // Hide attributes set by Firebug
                 if (attr.localName.indexOf("firebug-") == 0)
@@ -1938,7 +1942,7 @@ this.getElementXML = function(element)
             {
                 xml.push('>');
 
-                for (var child = elt.firstChild; child; child = child.nextSibling)
+                for (let child = elt.firstChild; child; child = child.nextSibling)
                     toXML(child);
 
                 xml.push('</', elt.nodeName.toLowerCase(), '>');
@@ -1954,7 +1958,7 @@ this.getElementXML = function(element)
             xml.push('<!--', elt.nodeValue, '-->');
     }
 
-    var xml = [];
+    let xml = [];
     toXML(element);
     return xml.join("");
 };
@@ -1968,17 +1972,17 @@ this.hasClass = function(node, name) // className, className, ...
     // TODO: xxxpedro when lib.hasClass is called with more than 2 arguments?
     // this function can be optimized a lot if assumed 2 arguments only,
     // which seems to be what happens 99% of the time
-    if (arguments.length == 2)
+    if (arguments.length == 2 && node)
         return (' '+node.className+' ').indexOf(' '+name+' ') != -1;
     
     if (!node || node.nodeType != 1)
         return false;
     else
     {
-        for (var i=1; i<arguments.length; ++i)
+        for (let i=1; i<arguments.length; ++i)
         {
-            var name = arguments[i];
-            var re = new RegExp("(^|\\s)"+name+"($|\\s)");
+            let name = arguments[i];
+            let re = new RegExp("(^|\\s)"+name+"($|\\s)");
             if (!re.exec(node.className))
                 return false;
         }
@@ -1993,10 +1997,10 @@ this.old_hasClass = function(node, name) // className, className, ...
         return false;
     else
     {
-        for (var i=1; i<arguments.length; ++i)
+        for (let i=1; i<arguments.length; ++i)
         {
-            var name = arguments[i];
-            var re = new RegExp("(^|\\s)"+name+"($|\\s)");
+            let name = arguments[i];
+            let re = new RegExp("(^|\\s)"+name+"($|\\s)");
             if (!re.exec(node.className))
                 return false;
         }
@@ -2014,8 +2018,8 @@ this.setClass = function(node, name)
 
 this.getClassValue = function(node, name)
 {
-    var re = new RegExp(name+"-([^ ]+)");
-    var m = re.exec(node.className);
+    let re = new RegExp(name+"-([^ ]+)");
+    let m = re.exec(node.className);
     return m ? m[1] : "";
 };
 
@@ -2023,10 +2027,10 @@ this.removeClass = function(node, name)
 {
     if (node && node.className)
     {
-        var index = node.className.indexOf(name);
+        let index = node.className.indexOf(name);
         if (index >= 0)
         {
-            var size = name.length;
+            let size = name.length;
             node.className = node.className.substr(0,index-1) + node.className.substr(index+size);
         }
     }
@@ -2095,10 +2099,10 @@ this.$$ = function(selector, doc)
 
 this.getChildByClass = function(node) // ,classname, classname, classname...
 {
-    for (var i = 1; i < arguments.length; ++i)
+    for (let i = 1; i < arguments.length; ++i)
     {
-        var className = arguments[i];
-        var child = node.firstChild;
+        let className = arguments[i];
+        let child = node.firstChild;
         node = null;
         for (; child; child = child.nextSibling)
         {
@@ -2115,7 +2119,7 @@ this.getChildByClass = function(node) // ,classname, classname, classname...
 
 this.getAncestorByClass = function(node, className)
 {
-    for (var parent = node; parent; parent = parent.parentNode)
+    for (let parent = node; parent; parent = parent.parentNode)
     {
         if (this.hasClass(parent, className))
             return parent;
@@ -2127,9 +2131,9 @@ this.getAncestorByClass = function(node, className)
 
 this.getElementsByClass = function(node, className)
 {
-    var result = [];
+    let result = [];
     
-    for (var child = node.firstChild; child; child = child.nextSibling)
+    for (let child = node.firstChild; child; child = child.nextSibling)
     {
         if (this.hasClass(child, className))
             result.push(child);
@@ -2140,15 +2144,15 @@ this.getElementsByClass = function(node, className)
 
 this.getElementByClass = function(node, className)  // className, className, ...
 {
-    var args = cloneArray(arguments); args.splice(0, 1);
-    for (var child = node.firstChild; child; child = child.nextSibling)
+    let args = cloneArray(arguments); args.splice(0, 1);
+    for (let child = node.firstChild; child; child = child.nextSibling)
     {
-        var args1 = cloneArray(args); args1.unshift(child);
+        let args1 = cloneArray(args); args1.unshift(child);
         if (FBL.hasClass.apply(null, args1))
             return child;
         else
         {
-            var found = FBL.getElementByClass.apply(null, args1);
+            let found = FBL.getElementByClass.apply(null, args1);
             if (found)
                 return found;
         }
@@ -2159,7 +2163,7 @@ this.getElementByClass = function(node, className)  // className, className, ...
 
 this.isAncestor = function(node, potentialAncestor)
 {
-    for (var parent = node; parent; parent = parent.parentNode)
+    for (let parent = node; parent; parent = parent.parentNode)
     {
         if (parent == potentialAncestor)
             return true;
@@ -2189,7 +2193,7 @@ this.getBody = function(doc)
     if (doc.body)
         return doc.body;
 
-    var body = doc.getElementsByTagName("body")[0];
+    let body = doc.getElementsByTagName("body")[0];
     if (body)
         return body;
 
@@ -2201,12 +2205,12 @@ this.findNextDown = function(node, criteria)
     if (!node)
         return null;
 
-    for (var child = node.firstChild; child; child = child.nextSibling)
+    for (let child = node.firstChild; child; child = child.nextSibling)
     {
         if (criteria(child))
             return child;
 
-        var next = this.findNextDown(child, criteria);
+        let next = this.findNextDown(child, criteria);
         if (next)
             return next;
     }
@@ -2217,9 +2221,9 @@ this.findPreviousUp = function(node, criteria)
     if (!node)
         return null;
 
-    for (var child = node.lastChild; child; child = child.previousSibling)
+    for (let child = node.lastChild; child; child = child.previousSibling)
     {
-        var next = this.findPreviousUp(child, criteria);
+        let next = this.findPreviousUp(child, criteria);
         if (next)
             return next;
 
@@ -2235,17 +2239,17 @@ this.findNext = function(node, criteria, upOnly, maxRoot)
 
     if (!upOnly)
     {
-        var next = this.findNextDown(node, criteria);
+        let next = this.findNextDown(node, criteria);
         if (next)
             return next;
     }
 
-    for (var sib = node.nextSibling; sib; sib = sib.nextSibling)
+    for (let sib = node.nextSibling; sib; sib = sib.nextSibling)
     {
         if (criteria(sib))
             return sib;
 
-        var next = this.findNextDown(sib, criteria);
+        let next = this.findNextDown(sib, criteria);
         if (next)
             return next;
     }
@@ -2259,9 +2263,9 @@ this.findPrevious = function(node, criteria, downOnly, maxRoot)
     if (!node)
         return null;
 
-    for (var sib = node.previousSibling; sib; sib = sib.previousSibling)
+    for (let sib = node.previousSibling; sib; sib = sib.previousSibling)
     {
-        var prev = this.findPreviousUp(sib, criteria);
+        let prev = this.findPreviousUp(sib, criteria);
         if (prev)
             return prev;
 
@@ -2271,7 +2275,7 @@ this.findPrevious = function(node, criteria, downOnly, maxRoot)
 
     if (!downOnly)
     {
-        var next = this.findPreviousUp(node, criteria);
+        let next = this.findPreviousUp(node, criteria);
         if (next)
             return next;
     }
@@ -2287,13 +2291,13 @@ this.findPrevious = function(node, criteria, downOnly, maxRoot)
 
 this.getNextByClass = function(root, state)
 {
-    var iter = function iter(node) { return node.nodeType == 1 && FBL.hasClass(node, state); };
+    let iter = function iter(node) { return node.nodeType == 1 && FBL.hasClass(node, state); };
     return this.findNext(root, iter);
 };
 
 this.getPreviousByClass = function(root, state)
 {
-    var iter = function iter(node) { return node.nodeType == 1 && FBL.hasClass(node, state); };
+    let iter = function iter(node) { return node.nodeType == 1 && FBL.hasClass(node, state); };
     return this.findPrevious(root, iter);
 };
 
@@ -2312,7 +2316,7 @@ this.isElement = function(o)
 // DOM Modification
 
 // TODO: xxxpedro use doc fragments in Context API 
-var appendFragment = null;
+let appendFragment = null;
 
 this.appendInnerHTML = function(element, html, referenceElement)
 {
@@ -2320,16 +2324,16 @@ this.appendInnerHTML = function(element, html, referenceElement)
     // when executing element.insertBefore(firstChild, referenceElement)
     referenceElement = referenceElement || null;
     
-    var doc = element.ownerDocument;
+    let doc = element.ownerDocument;
     
     // doc.createRange not available in IE
     if (doc.createRange)
     {
-        var range = doc.createRange();  // a helper object
+        let range = doc.createRange();  // a helper object
         range.selectNodeContents(element); // the environment to interpret the html
     
-        var fragment = range.createContextualFragment(html);  // parse
-        var firstChild = fragment.firstChild;
+        let fragment = range.createContextualFragment(html);  // parse
+        firstChild = fragment.firstChild;
         element.insertBefore(fragment, referenceElement);
     }
     else
@@ -2337,10 +2341,10 @@ this.appendInnerHTML = function(element, html, referenceElement)
         if (!appendFragment || appendFragment.ownerDocument != doc)
             appendFragment = doc.createDocumentFragment();
         
-        var div = doc.createElement("div");
+        let div = doc.createElement("div");
         div.innerHTML = html;
         
-        var firstChild = div.firstChild;
+        firstChild = div.firstChild;
         while (div.firstChild)
             appendFragment.appendChild(div.firstChild);
 
@@ -2359,11 +2363,11 @@ this.appendInnerHTML = function(element, html, referenceElement)
 this.createElement = function(tagName, properties)
 {
     properties = properties || {};
-    var doc = properties.document || FBL.Firebug.chrome.document;
+    let doc = properties.document || FBL.Firebug.chrome.document;
     
-    var element = doc.createElement(tagName);
+    let element = doc.createElement(tagName);
     
-    for(var name in properties)
+    for(let name in properties)
     {
         if (name != "document")
         {
@@ -2377,15 +2381,15 @@ this.createElement = function(tagName, properties)
 this.createGlobalElement = function(tagName, properties)
 {
     properties = properties || {};
-    var doc = FBL.Env.browser.document;
+    let doc = FBL.Env.browser.document;
     
-    var element = this.NS && doc.createElementNS ? 
+    let element = this.NS && doc.createElementNS ? 
             doc.createElementNS(FBL.NS, tagName) :
             doc.createElement(tagName); 
             
-    for(var name in properties)
+    for(let name in properties)
     {
-        var propname = name;
+        let propname = name;
         if (FBL.isIE && name == "class") propname = "className";
         
         if (name != "document")
@@ -2546,15 +2550,15 @@ this.cancelEvent = function(e, preventDefault)
 
 this.addGlobalEvent = function(name, handler)
 {
-    var doc = this.Firebug.browser.document;
-    var frames = this.Firebug.browser.window.frames;
+    let doc = this.Firebug.browser.document;
+    let frames = this.Firebug.browser.window.frames;
     
     this.addEvent(doc, name, handler);
     
     if (this.Firebug.chrome.type == "popup")
         this.addEvent(this.Firebug.chrome.document, name, handler);
   
-    for (var i = 0, frame; frame = frames[i]; i++)
+    for (let i = 0, frame; frame = frames[i]; i++)
     {
         try
         {
@@ -2569,15 +2573,15 @@ this.addGlobalEvent = function(name, handler)
 
 this.removeGlobalEvent = function(name, handler)
 {
-    var doc = this.Firebug.browser.document;
-    var frames = this.Firebug.browser.window.frames;
+    let doc = this.Firebug.browser.document;
+    let frames = this.Firebug.browser.window.frames;
     
     this.removeEvent(doc, name, handler);
     
     if (this.Firebug.chrome.type == "popup")
         this.removeEvent(this.Firebug.chrome.document, name, handler);
   
-    for (var i = 0, frame; frame = frames[i]; i++)
+    for (let i = 0, frame; frame = frames[i]; i++)
     {
         try
         {
@@ -2602,9 +2606,9 @@ this.dispatch = function(listeners, name, args)
         {
             if (FBTrace.DBG_DISPATCH) FBTrace.sysout("FBL.dispatch", name+" to "+listeners.length+" listeners");
     
-            for (var i = 0; i < listeners.length; ++i)
+            for (let i = 0; i < listeners.length; ++i)
             {
-                var listener = listeners[i];
+                let listener = listeners[i];
                 if ( listener[name] )
                     listener[name].apply(listener, args);
             }
@@ -2613,9 +2617,9 @@ this.dispatch = function(listeners, name, args)
         {
             if (FBTrace.DBG_DISPATCH) FBTrace.sysout("FBL.dispatch", name+" to listeners of an object");
             
-            for (var prop in listeners)
+            for (let prop in listeners)
             {
-                var listener = listeners[prop];
+                let listener = listeners[prop];
                 if ( listener[name] )
                     listener[name].apply(listener, args);
             }
@@ -2634,7 +2638,7 @@ this.dispatch = function(listeners, name, args)
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var disableTextSelectionHandler = function(event)
+let disableTextSelectionHandler = function(event)
 {
     FBL.cancelEvent(event, true);
     
@@ -2678,7 +2682,7 @@ this.restoreTextSelection = function(e)
 // ************************************************************************************************
 // DOM Events
 
-var eventTypes =
+let eventTypes =
 {
     composition: [
         "composition",
@@ -2758,10 +2762,10 @@ this.getEventFamily = function(eventType)
     {
         this.families = {};
 
-        for (var family in eventTypes)
+        for (let family in eventTypes)
         {
-            var types = eventTypes[family];
-            for (var i = 0; i < types.length; ++i)
+            let types = eventTypes[family];
+            for (let i = 0; i < types.length; ++i)
                 this.families[types[i]] = family;
         }
     }
@@ -2775,7 +2779,7 @@ this.getEventFamily = function(eventType)
 
 this.getFileName = function(url)
 {
-    var split = this.splitURLBase(url);
+    let split = this.splitURLBase(url);
     return split.name;
 };
 
@@ -2788,21 +2792,21 @@ this.splitURLBase = function(url)
 
 this.splitDataURL = function(url)
 {
-    var mark = url.indexOf(':', 3);
+    let mark = url.indexOf(':', 3);
     if (mark != 4)
         return false;   //  the first 5 chars must be 'data:'
 
-    var point = url.indexOf(',', mark+1);
+    let point = url.indexOf(',', mark+1);
     if (point < mark)
         return false; // syntax error
 
-    var props = { encodedContent: url.substr(point+1) };
+    let props = { encodedContent: url.substr(point+1) };
 
-    var metadataBuffer = url.substr(mark+1, point);
-    var metadata = metadataBuffer.split(';');
-    for (var i = 0; i < metadata.length; i++)
+    let metadataBuffer = url.substr(mark+1, point);
+    let metadata = metadataBuffer.split(';');
+    for (let i = 0; i < metadata.length; i++)
     {
-        var nv = metadata[i].split('=');
+        let nv = metadata[i].split('=');
         if (nv.length == 2)
             props[nv[0]] = nv[1];
     }
@@ -2810,14 +2814,14 @@ this.splitDataURL = function(url)
     // Additional Firebug-specific properties
     if (props.hasOwnProperty('fileName'))
     {
-         var caller_URL = decodeURIComponent(props['fileName']);
-         var caller_split = this.splitURLTrue(caller_URL);
+         let caller_URL = decodeURIComponent(props['fileName']);
+         let caller_split = this.splitURLTrue(caller_URL);
 
         if (props.hasOwnProperty('baseLineNumber'))  // this means it's probably an eval()
         {
             props['path'] = caller_split.path;
             props['line'] = props['baseLineNumber'];
-            var hint = decodeURIComponent(props['encodedContent'].substr(0,200)).replace(/\s*$/, "");
+            let hint = decodeURIComponent(props['encodedContent'].substr(0,200)).replace(/\s*$/, "");
             props['name'] =  'eval->'+hint;
         }
         else
@@ -2839,7 +2843,7 @@ this.splitDataURL = function(url)
 
 this.splitURLTrue = function(url)
 {
-    var m = reSplitFile.exec(url);
+    let m = reSplitFile.exec(url);
     if (!m)
         return {name: url, path: url};
     else if (!m[2])
@@ -2854,12 +2858,12 @@ this.getFileExtension = function(url)
         return null;
 
     // Remove query string from the URL if any.
-    var queryString = url.indexOf("?");
+    let queryString = url.indexOf("?");
     if (queryString != -1)
         url = url.substr(0, queryString);
 
     // Now get the file extension.
-    var lastDot = url.lastIndexOf(".");
+    let lastDot = url.lastIndexOf(".");
     return url.substr(lastDot+1);
 };
 
@@ -2886,7 +2890,7 @@ this.isSystemPage = function(win)
 {
     try
     {
-        var doc = win.document;
+        let doc = win.document;
         if (!doc)
             return false;
 
@@ -2910,7 +2914,7 @@ this.isSystemPage = function(win)
 
 this.isSystemStyleSheet = function(sheet)
 {
-    var href = sheet && sheet.href;
+    let href = sheet && sheet.href;
     return href && FBL.isSystemURL(href);
 };
 
@@ -2948,23 +2952,23 @@ this.getLocalPath = function(url)
 {
     if (this.isLocalURL(url))
     {
-        var fileHandler = ioService.getProtocolHandler("file").QueryInterface(Ci.nsIFileProtocolHandler);
-        var file = fileHandler.getFileFromURLSpec(url);
+        let fileHandler = ioService.getProtocolHandler("file").QueryInterface(Ci.nsIFileProtocolHandler);
+        let file = fileHandler.getFileFromURLSpec(url);
         return file.path;
     }
 };
 
 this.getURLFromLocalFile = function(file)
 {
-    var fileHandler = ioService.getProtocolHandler("file").QueryInterface(Ci.nsIFileProtocolHandler);
-    var URL = fileHandler.getURLSpecFromFile(file);
+    let fileHandler = ioService.getProtocolHandler("file").QueryInterface(Ci.nsIFileProtocolHandler);
+    let URL = fileHandler.getURLSpecFromFile(file);
     return URL;
 };
 
 this.getDataURLForContent = function(content, url)
 {
     // data:text/javascript;fileName=x%2Cy.js;baseLineNumber=10,<the-url-encoded-data>
-    var uri = "data:text/html;";
+    let uri = "data:text/html;";
     uri += "fileName="+encodeURIComponent(url)+ ",";
     uri += encodeURIComponent(content);
     return uri;
@@ -2972,19 +2976,19 @@ this.getDataURLForContent = function(content, url)
 
 this.getDomain = function(url)
 {
-    var m = /[^:]+:\/{1,3}([^\/]+)/.exec(url);
+    let m = /[^:]+:\/{1,3}([^\/]+)/.exec(url);
     return m ? m[1] : "";
 };
 
 this.getURLPath = function(url)
 {
-    var m = /[^:]+:\/{1,3}[^\/]+(\/.*?)$/.exec(url);
+    let m = /[^:]+:\/{1,3}[^\/]+(\/.*?)$/.exec(url);
     return m ? m[1] : "";
 };
 
 this.getPrettyDomain = function(url)
 {
-    var m = /[^:]+:\/{1,3}(www\.)?([^\/]+)/.exec(url);
+    let m = /[^:]+:\/{1,3}(www\.)?([^\/]+)/.exec(url);
     return m ? m[2] : "";
 };
 
@@ -2998,17 +3002,17 @@ this.absoluteURLWithDots = function(url, baseURL)
     if (url[0] == "?")
         return baseURL + url;
 
-    var reURL = /(([^:]+:)\/{1,2}[^\/]*)(.*?)$/;
-    var m = reURL.exec(url);
+    let reURL = /(([^:]+:)\/{1,2}[^\/]*)(.*?)$/;
+    let m = reURL.exec(url);
     if (m)
         return url;
 
-    var m = reURL.exec(baseURL);
+    m = reURL.exec(baseURL);
     if (!m)
         return "";
 
-    var head = m[1];
-    var tail = m[3];
+    let head = m[1];
+    let tail = m[3];
     if (url.substr(0, 2) == "//")
         return m[2] + url;
     else if (url[0] == "/")
@@ -3019,7 +3023,7 @@ this.absoluteURLWithDots = function(url, baseURL)
         return baseURL + url;
     else
     {
-        var parts = tail.split("/");
+        let parts = tail.split("/");
         return head + parts.slice(0, parts.length-1).join("/") + "/" + url;
     }
 };
@@ -3040,7 +3044,7 @@ this.normalizeURL = function(url)  // this gets called a lot, any performance im
         url = url.replace(/file:\/([^\/])/g, "file:///$1");
         if (url.indexOf('chrome:')==0)
         {
-            var m = reChromeCase.exec(url);  // 1 is package name, 2 is path
+            let m = reChromeCase.exec(url);  // 1 is package name, 2 is path
             if (m)
             {
                 url = "chrome://"+m[1].toLowerCase()+"/"+m[2];
@@ -3057,12 +3061,12 @@ this.denormalizeURL = function(url)
 
 this.parseURLParams = function(url)
 {
-    var q = url ? url.indexOf("?") : -1;
+    let q = url ? url.indexOf("?") : -1;
     if (q == -1)
         return [];
 
-    var search = url.substr(q+1);
-    var h = search.lastIndexOf("#");
+    let search = url.substr(q+1);
+    let h = search.lastIndexOf("#");
     if (h != -1)
         search = search.substr(0, h);
 
@@ -3074,19 +3078,19 @@ this.parseURLParams = function(url)
 
 this.parseURLEncodedText = function(text)
 {
-    var maxValueLength = 25000;
+    let maxValueLength = 25000;
 
-    var params = [];
+    let params = [];
 
     // Unescape '+' characters that are used to encode a space.
     // See section 2.2.in RFC 3986: http://www.ietf.org/rfc/rfc3986.txt
     text = text.replace(/\+/g, " ");
 
-    var args = text.split("&");
-    for (var i = 0; i < args.length; ++i)
+    let args = text.split("&");
+    for (let i = 0; i < args.length; ++i)
     {
         try {
-            var parts = args[i].split("=");
+            let parts = args[i].split("=");
             if (parts.length == 2)
             {
                 if (parts[1].length > maxValueLength)
@@ -3116,12 +3120,12 @@ this.parseURLEncodedText = function(text)
 // as in response/request headers and get/post parameters in Net module?
 this.parseURLParamsArray = function(url)
 {
-    var q = url ? url.indexOf("?") : -1;
+    let q = url ? url.indexOf("?") : -1;
     if (q == -1)
         return [];
 
-    var search = url.substr(q+1);
-    var h = search.lastIndexOf("#");
+    let search = url.substr(q+1);
+    let h = search.lastIndexOf("#");
     if (h != -1)
         search = search.substr(0, h);
 
@@ -3133,19 +3137,19 @@ this.parseURLParamsArray = function(url)
 
 this.parseURLEncodedTextArray = function(text)
 {
-    var maxValueLength = 25000;
+    let maxValueLength = 25000;
 
-    var params = [];
+    let params = [];
 
     // Unescape '+' characters that are used to encode a space.
     // See section 2.2.in RFC 3986: http://www.ietf.org/rfc/rfc3986.txt
     text = text.replace(/\+/g, " ");
 
-    var args = text.split("&");
-    for (var i = 0; i < args.length; ++i)
+    let args = text.split("&");
+    for (let i = 0; i < args.length; ++i)
     {
         try {
-            var parts = args[i].split("=");
+            let parts = args[i].split("=");
             if (parts.length == 2)
             {
                 if (parts[1].length > maxValueLength)
@@ -3173,14 +3177,14 @@ this.parseURLEncodedTextArray = function(text)
 
 this.reEncodeURL = function(file, text)
 {
-    var lines = text.split("\n");
-    var params = this.parseURLEncodedText(lines[lines.length-1]);
+    let lines = text.split("\n");
+    let params = this.parseURLEncodedText(lines[lines.length-1]);
 
-    var args = [];
-    for (var i = 0; i < params.length; ++i)
+    let args = [];
+    for (let i = 0; i < params.length; ++i)
         args.push(encodeURIComponent(params[i].name)+"="+encodeURIComponent(params[i].value));
 
-    var url = file.href;
+    let url = file.href;
     url += (url.indexOf("?") == -1 ? "?" : "&") + args.join("&");
 
     return url;
@@ -3190,8 +3194,8 @@ this.getResource = function(aURL)
 {
     try
     {
-        var channel=ioService.newChannel(aURL,null,null);
-        var input=channel.open();
+        let channel=ioService.newChannel(aURL,null,null);
+        let input=channel.open();
         return FBL.readFromStream(input);
     }
     catch (e)
@@ -3204,8 +3208,8 @@ this.getResource = function(aURL)
 this.parseJSONString = function(jsonString, originURL)
 {
     // See if this is a Prototype style *-secure request.
-    var regex = new RegExp(/^\/\*-secure-([\s\S]*)\*\/\s*$/);
-    var matches = regex.exec(jsonString);
+    let regex = new RegExp(/^\/\*-secure-([\s\S]*)\*\/\s*$/);
+    let matches = regex.exec(jsonString);
 
     if (matches)
     {
@@ -3229,8 +3233,8 @@ this.parseJSONString = function(jsonString, originURL)
     // throw on the extra parentheses
     jsonString = "(" + jsonString + ")";
 
-    ///var s = Components.utils.Sandbox(originURL);
-    var jsonObject = null;
+    ///let s = Components.utils.Sandbox(originURL);
+    let jsonObject = null;
 
     try
     {
@@ -3244,7 +3248,7 @@ this.parseJSONString = function(jsonString, originURL)
         /***
         if (e.message.indexOf("is not defined"))
         {
-            var parts = e.message.split(" ");
+            let parts = e.message.split(" ");
             s[parts[0]] = function(str){ return str; };
             try {
                 jsonObject = Components.utils.evalInSandbox(jsonString, s);
@@ -3286,7 +3290,7 @@ this.setSelectionRange = function(input, start, length)
 {
     if (input.createTextRange)
     {
-        var range = input.createTextRange(); 
+        let range = input.createTextRange(); 
         range.moveStart("character", start); 
         range.moveEnd("character", length - input.value.length); 
         range.select();
@@ -3305,8 +3309,8 @@ this.getInputSelectionStart = function(input)
 {
     if (document.selection)
     {
-        var range = input.ownerDocument.selection.createRange();
-        var text = range.text;
+        let range = input.ownerDocument.selection.createRange();
+        let text = range.text;
         
         //console.log("range", range.text);
         
@@ -3377,7 +3381,7 @@ function EventCopy(event)
 {
     // Because event objects are destroyed arbitrarily by Gecko, we must make a copy of them to
     // represent them long term in the inspector.
-    for (var name in event)
+    for (let name in event)
     {
         try {
             this[name] = event[name];
@@ -3391,8 +3395,8 @@ this.EventCopy = EventCopy;
 // ************************************************************************************************
 // Type Checking
 
-var toString = Object.prototype.toString;
-var reFunction = /^\s*function(\s+[\w_$][\w\d_$]*)?\s*\(/; 
+let toString = Object.prototype.toString;
+let reFunction = /^\s*function(\s+[\w_$][\w\d_$]*)?\s*\(/; 
 
 this.isArray = function(object) {
     return toString.call(object) === '[object Array]'; 
@@ -3419,7 +3423,7 @@ this.instanceOf = function(object, className)
     if (object.ownerDocument)
     {
         // find the correct window of the object
-        var win = object.ownerDocument.defaultView || object.ownerDocument.parentWindow;
+        let win = object.ownerDocument.defaultView || object.ownerDocument.parentWindow;
         
         // if the class is accessible in the window, uses the native instanceof operator
         // if the instanceof evaluates to "true" we can assume it is a instance, but if it
@@ -3436,31 +3440,31 @@ this.instanceOf = function(object, className)
         // TODO: xxxpedro context
         // Since we're not using yet a Firebug.context, we'll just use the top window
         // (browser) as a reference
-        var win = Firebug.browser.window;
+        let win = Firebug.browser.window;
         if (className in win)
             return object instanceof win[className];
     }
     
     // get the duck type model from the cache 
-    var cache = instanceCheckMap[className];
+    let cache = instanceCheckMap[className];
     if (!cache)
         return false;
 
     // starts the hacky duck type detection
-    for(var n in cache)
+    for(let n in cache)
     {
-        var obj = cache[n];
-        var type = typeof obj;
+        let obj = cache[n];
+        let type = typeof obj;
         obj = type == "object" ? obj : [obj];
         
-        for(var name in obj)
+        for(let name in obj)
         {
             // avoid problems with extended native objects
             // See Issue 3524: Firebug Lite Style Panel doesn't work if the native Element is extended
             if (!obj.hasOwnProperty(name))
                 continue;
             
-            var value = obj[name];
+            let value = obj[name];
             
             if( n == "property" && !(value in object) ||
                 n == "method" && !this.isFunction(object[value]) ||
@@ -3472,7 +3476,7 @@ this.instanceOf = function(object, className)
     return true;
 };
 
-var instanceCheckMap = 
+let instanceCheckMap = 
 {
     // DuckTypeCheck:
     // {
@@ -3582,21 +3586,21 @@ var instanceCheckMap =
 Problems:
 
   - IE does not have window.Node, window.Element, etc
-  - for (var name in Node.prototype) return nothing on FF
+  - for (let name in Node.prototype) return nothing on FF
 
 */
 
 
-var domMemberMap2 = {};
+let domMemberMap2 = {};
 
-var domMemberMap2Sandbox = null;
+let domMemberMap2Sandbox = null;
 
-var getDomMemberMap2 = function(name)
+let getDomMemberMap2 = function(name)
 {
     if (!domMemberMap2Sandbox)
     {
-        var doc = Firebug.chrome.document;
-        var frame = doc.createElement("iframe");
+        let doc = Firebug.chrome.document;
+        let frame = doc.createElement("iframe");
         
         frame.id = "FirebugSandbox";
         frame.style.display = "none";
@@ -3607,12 +3611,12 @@ var getDomMemberMap2 = function(name)
         domMemberMap2Sandbox = frame.window || frame.contentWindow;
     }
     
-    var props = [];
+    let props = [];
     
-    //var object = domMemberMap2Sandbox[name];
+    //let object = domMemberMap2Sandbox[name];
     //object = object.prototype || object;
     
-    var object = null;
+    let object = null;
     
     if (name == "Window")
         object = domMemberMap2Sandbox.window;
@@ -3637,7 +3641,7 @@ var getDomMemberMap2 = function(name)
         
         //props  = 'addEventListener,document,location,navigator,window'.split(',');
         
-        for (var n in object)
+        for (let n in object)
           props.push(n);
     }
     /**/
@@ -3653,10 +3657,10 @@ this.getDOMMembers = function(object)
     {
         FBL.domMemberCache = domMemberCache = {};
         
-        for (var name in domMemberMap)
+        for (let name in domMemberMap)
         {
-            var builtins = getDomMemberMap2(name);
-            var cache = domMemberCache[name] = {};
+            let builtins = getDomMemberMap2(name);
+            let cache = domMemberCache[name] = {};
             
             /*
             if (name.indexOf("Element") != -1)
@@ -3666,7 +3670,7 @@ this.getDOMMembers = function(object)
             }
             /**/
             
-            for (var i = 0; i < builtins.length; ++i)
+            for (let i = 0; i < builtins.length; ++i)
                 cache[builtins[i]] = i;
         }
     }
@@ -3737,12 +3741,12 @@ this.getDOMMembers = function(object)
     {
         domMemberCache = {};
         
-        for (var name in domMemberMap)
+        for (let name in domMemberMap)
         {
-            var builtins = domMemberMap[name];
-            var cache = domMemberCache[name] = {};
+            let builtins = domMemberMap[name];
+            let cache = domMemberCache[name] = {};
 
-            for (var i = 0; i < builtins.length; ++i)
+            for (let i = 0; i < builtins.length; ++i)
                 cache[builtins[i]] = i;
         }
     }
@@ -3805,12 +3809,12 @@ this.getDOMMembers = function(object)
 
 this.isDOMMember = function(object, propName)
 {
-    var members = this.getDOMMembers(object);
+    let members = this.getDOMMembers(object);
     return members && propName in members;
 };
 
-var domMemberCache = null;
-var domMemberMap = {};
+let domMemberCache = null;
+let domMemberMap = {};
 
 domMemberMap.Window =
 [
@@ -4766,14 +4770,14 @@ this.cssInfo =
     "display": ["display", "none"],
     "empty-cells": [],
     "float": ["float", "none"],
-    "font": ["fontStyle", "fontVariant", "fontWeight", "fontFamily"],
+    "font": ["fontStyle", "fontletiant", "fontWeight", "fontFamily"],
 
     "font-family": ["fontFamily"],
     "font-size": ["fontSize"],
     "font-size-adjust": [],
     "font-stretch": [],
     "font-style": ["fontStyle"],
-    "font-variant": ["fontVariant"],
+    "font-letiant": ["fontletiant"],
     "font-weight": ["fontWeight"],
 
     "height": ["auto"],
@@ -4877,7 +4881,7 @@ this.inheritedStyleNames =
     "font-size-adjust": 1,
     "font-size": 1,
     "font-style": 1,
-    "font-variant": 1,
+    "font-letiant": 1,
     "font-weight": 1,
     "letter-spacing": 1,
     "line-height": 1,
@@ -5307,7 +5311,7 @@ this.cssKeywords =
         "inherit"
     ],
 
-    "fontVariant":
+    "fontletiant":
     [
         "normal",
         "small-caps",
@@ -5558,7 +5562,7 @@ this.selfClosingTags =
     "embed":1
 };
 
-var invisibleTags = this.invisibleTags =
+let invisibleTags = this.invisibleTags =
 {
     "HTML": 1,
     "HEAD": 1,
@@ -5737,19 +5741,19 @@ this.Ajax =
     
     getXHRObject: function()
     {
-        var xhrObj = false;
+        xhrObj = false;
         try
         {
             xhrObj = new XMLHttpRequest();
         }
         catch(e)
         {
-            var progid = [
+            progid = [
                     "MSXML2.XMLHTTP.5.0", "MSXML2.XMLHTTP.4.0", 
                     "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"
                 ];
               
-            for ( var i=0; i < progid.length; ++i ) {
+            for ( let i=0; i < progid.length; ++i ) {
                 try
                 {
                     xhrObj = new ActiveXObject(progid[i]);
@@ -5789,7 +5793,7 @@ this.Ajax =
     request: function(options)
     {
         // process options
-        var o = FBL.extend(
+        let o = FBL.extend(
                 {
                     // default values
                     type: "get",
@@ -5802,19 +5806,19 @@ this.Ajax =
     
         this.requests.push(o);
     
-        var s = this.getState();
+        let s = this.getState();
         if (s == "Uninitialized" || s == "Complete" || s == "Loaded") 
             this.sendRequest();
     },
     
     serialize: function(data)
     {
-        var r = [""], rl = 0;
+        let r = [""], rl = 0;
         if (data) {
             if (typeof data == "string")  r[rl++] = data;
               
             else if (data.innerHTML && data.elements) {
-                for (var i=0,el,l=(el=data.elements).length; i < l; i++)
+                for (let i=0,el,l=(el=data.elements).length; i < l; i++)
                     if (el[i].name) {
                         r[rl++] = encodeURIComponent(el[i].name); 
                         r[rl++] = "=";
@@ -5823,7 +5827,7 @@ this.Ajax =
                     }
                     
             } else 
-                for(var param in data) {
+                for(let param in data) {
                     r[rl++] = encodeURIComponent(param); 
                     r[rl++] = "=";
                     r[rl++] = encodeURIComponent(data[param]);
@@ -5835,7 +5839,7 @@ this.Ajax =
   
     sendRequest: function()
     {
-        var t = FBL.Ajax.transport, r = FBL.Ajax.requests.shift(), data;
+        let t = FBL.Ajax.transport, r = FBL.Ajax.requests.shift(), data;
     
         // open XHR object
         t.open(r.type, r.url, r.async);
@@ -5865,14 +5869,14 @@ this.Ajax =
      */     
     onStateChange: function(options)
     {
-        var fn, o = options, t = this.transport;
-        var state = this.getState(t); 
+        let fn, o = options, t = this.transport;
+        let state = this.getState(t); 
     
         if (fn = o["on" + state]) fn(this.getResponse(o), o);
     
         if (state == "Complete")
         {
-            var success = t.status == 200, response = this.getResponse(o);
+            let success = t.status == 200, response = this.getResponse(o);
       
             if (fn = o["onUpdate"])
               fn(response, o);
@@ -5892,7 +5896,7 @@ this.Ajax =
      */
     getResponse: function(options)
     {
-        var t = this.transport, type = options.dataType;
+        let t = this.transport, type = options.dataType;
     
         if      (t.status != 200) return t.statusText;
         else if (type == "text")  return t.responseText;
@@ -5919,14 +5923,15 @@ this.createCookie = function(name,value,days)
 {
     if ('cookie' in document)
     {
+        let expires;
         if (days)
         {
-            var date = new Date();
+            let date = new Date();
             date.setTime(date.getTime()+(days*24*60*60*1000));
-            var expires = "; expires="+date.toGMTString();
+            expires = "; expires="+date.toGMTString();
         }
         else 
-            var expires = "";
+            expires = "";
         
         document.cookie = name+"="+value+expires+"; path=/";
     }
@@ -5936,12 +5941,12 @@ this.readCookie = function (name)
 {
     if ('cookie' in document)
     {
-        var nameEQ = name + "=";
-        var ca = document.cookie.split(';');
+        let nameEQ = name + "=";
+        let ca = document.cookie.split(';');
         
-        for(var i=0; i < ca.length; i++)
+        for(let i=0; i < ca.length; i++)
         {
-            var c = ca[i];
+            let c = ca[i];
             while (c.charAt(0)==' ') c = c.substring(1,c.length);
             if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
         }
@@ -5958,7 +5963,7 @@ this.removeCookie = function(name)
 
 // ************************************************************************************************
 // http://www.mister-pixel.com/#Content__state=is_that_simple
-var fixIE6BackgroundImageCache = function(doc)
+let fixIE6BackgroundImageCache = function(doc)
 {
     doc = doc || document;
     try
@@ -5974,11 +5979,11 @@ var fixIE6BackgroundImageCache = function(doc)
 // ************************************************************************************************
 // calculatePixelsPerInch
 
-var resetStyle = "margin:0; padding:0; border:0; position:absolute; overflow:hidden; display:block;";
+let resetStyle = "margin:0; padding:0; border:0; position:absolute; overflow:hidden; display:block;";
 
-var calculatePixelsPerInch = function calculatePixelsPerInch(doc, body)
+let calculatePixelsPerInch = function calculatePixelsPerInch(doc, body)
 {
-    var inch = FBL.createGlobalElement("div");
+    let inch = FBL.createGlobalElement("div");
     inch.style.cssText = resetStyle + "width:1in; height:1in; position:absolute; top:-1234px; left:-1234px;";
     body.appendChild(inch);
     
