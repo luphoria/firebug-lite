@@ -9,7 +9,7 @@ mimeTypes = {
   jpeg: "image/jpeg",
   jpg: "image/jpeg",
   png: "image/png",
-  gif: "image/png",
+  gif: "image/gif",
   ico: "image/x-icon",
   svg: "image/svg+xml",
   json: "application/json",
